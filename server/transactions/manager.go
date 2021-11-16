@@ -17,6 +17,7 @@ type Transaction struct {
 }
 
 var counter uint64
+var transactionChannel = make(chan *Transaction, 500)
 
 // Hello verifies that get requests work.
 func Hello(writer http.ResponseWriter, req *http.Request) {
