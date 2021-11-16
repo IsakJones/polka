@@ -4,8 +4,10 @@ import (
 	"fmt"
 	// "bufio"
 	"net/http"
+	//"sync/atomic"
 	"encoding/json"
 )
+
 
 // Transaction captures the data in transactions POST requests.
 type transaction struct {
@@ -24,12 +26,12 @@ func Hello(writer http.ResponseWriter, req *http.Request) {
 func Transaction(writer http.ResponseWriter, req *http.Request) {
 
 	// Verify that a transaction has been received
-	fmt.Println("Successfully received a transaction!")
-	if req.Method == "POST" {
-		fmt.Fprintf(writer, "Successfully sent a post!\n")
-	} else {
-		fmt.Fprintf(writer, "Something wrong happened...")
-	}
+	// fmt.Println("Successfully received a transaction!")
+	// if req.Method == "POST" {
+	// 	fmt.Fprintf(writer, "Successfully sent a post!\n")
+	// } else {
+	// 	fmt.Fprintf(writer, "Something wrong happened...")
+	// }
 	//fmt.Println(*req.Body)
 
 	// Read the body
@@ -42,6 +44,7 @@ func Transaction(writer http.ResponseWriter, req *http.Request) {
 
 	fmt.Fprintf(writer, "Received transaction: %+v\n", current)
 	fmt.Printf("Received transaction: %+v\n", current)
+	// atomic.AddUint64(&reqsReceived, 1)
 
 }
 
