@@ -1,4 +1,4 @@
-package views
+package transactions
 
 import (
 	"fmt"
@@ -9,14 +9,14 @@ import (
 	"encoding/json"
 )
 
-var counter uint64
-
 // Transaction captures the data in transactions POST requests.
-type transaction struct {
+type Transaction struct {
 	Sender string
 	Receiver string
 	Sum int
 }
+
+var counter uint64
 
 // Hello verifies that get requests work.
 func Hello(writer http.ResponseWriter, req *http.Request) {
@@ -44,10 +44,11 @@ func Transaction(writer http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	// Clear transaction and send response
+	clearTransaction(&current)
 	fmt.Fprintf(writer, "Received transaction: %+v\n", current)
 	// fmt.Printf("Received transaction: %+v\n", current)
 	atomic.AddUint64(&counter, 1)
-
 }
 
 func PrintCounter() {
