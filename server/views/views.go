@@ -2,12 +2,14 @@ package views
 
 import (
 	"fmt"
+	"time"
 	// "bufio"
 	"net/http"
-	//"sync/atomic"
+	"sync/atomic"
 	"encoding/json"
 )
 
+var counter uint64
 
 // Transaction captures the data in transactions POST requests.
 type transaction struct {
@@ -43,9 +45,13 @@ func Transaction(writer http.ResponseWriter, req *http.Request) {
 	}
 
 	fmt.Fprintf(writer, "Received transaction: %+v\n", current)
-	fmt.Printf("Received transaction: %+v\n", current)
-	// atomic.AddUint64(&reqsReceived, 1)
+	// fmt.Printf("Received transaction: %+v\n", current)
+	atomic.AddUint64(&counter, 1)
 
+}
+
+func PrintCounter() {
+	fmt.Printf("Processed %d transactions by %s.\n", counter, time.Now().Format("15:04:05"))
 }
 
 // // readTransaction prints out the contents of the json

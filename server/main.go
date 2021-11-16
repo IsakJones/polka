@@ -1,7 +1,8 @@
 package main 
 
 import (
-	// "fmt"
+	"fmt"
+	"time"
 	"net/http"
 
 	"github.com/IsakJones/polka/server/views"
@@ -18,5 +19,11 @@ func main() {
 	// }
 	// fmt.Println(hostName)
 
-	http.ListenAndServe(":8090", nil)
+	go	http.ListenAndServe(":8090", nil)
+
+	fmt.Println("Requests received:")
+	ticker := time.NewTicker(5 * time.Second)
+	for range ticker.C {
+		views.PrintCounter()
+	}
 }
