@@ -1,28 +1,23 @@
 package gospammer
 
 import (
+	"fmt"
+	"sync"
+	"time"
 	"bufio"
 	"bytes"
-	"encoding/json"
-	"fmt"
-	"math/rand"
 	"net/http"
-	"time"
+	"math/rand"
+	"encoding/json"
 )
 
 const (
 	lo = 0
 	hi = 1000
 
-<<<<<<< HEAD
 	channelCapacity = 100
 	contentType = "transaction/json"
 	timeout = 3 * time.Second
-=======
-	channelCapacity = 1000
-	contentType     = "transaction/json"
-	timeout         = 3 * time.Second
->>>>>>> basic-clearing
 )
 
 // transaction stores information constituting a transaction.
@@ -52,7 +47,8 @@ var banks = []string{
 func TransactionSpammer(dest string, times int) {
 
 	reqCollection := make([]bytes.Buffer, times)
-	respChannel := make(chan *http.Response, channelCapacity)
+	chanCollection := make ([]chan *http.Response, times)
+	// respChannel := make(chan *http.Response, channelCapacity)
 
 	// Generate request payloads
 	rand.Seed(time.Now().UnixNano())
@@ -78,33 +74,35 @@ func TransactionSpammer(dest string, times int) {
 
 	// Send the number of requests
 	// start := time.Now()
+	var wg sync.WaitGroup
 	fmt.Printf("\nSending %d requests concurrently.\n", len(reqCollection))
 	for i := 0; i < times; i++ {
-		go SendTransaction(dest, &reqCollection[i], respChannel)
+		go SendTransaction(dest, &reqCollection[i], chanCollection[i], &wg)
+		go ProcessResponse(chanCollection[i], &wg)
 	}
 
 	// Process the responses
-	for i := 0; i < times; i++ {
-		select {
-		case resp := <-respChannel:
-			ProcessResponse(resp)
-		// Break if responses lag
-		case <-time.After(timeout):
-			fmt.Println("Waited response for too long.")
-			break
-		}
-	}
-<<<<<<< HEAD
+	// for i := 0; i < times; i++ {
+	// 	select {
+	// 	case resp := <-respChannel:
+	// 		ProcessResponse(resp)
+	// 	// Break if responses lag
+	// 	case <-time.After(timeout):
+	// 		fmt.Println("Waited response for too long.")
+	// 		break
+	// 	}
+	// }
 	// end := time.Now()
 	// fmt.Println(end.Sub(start))
-=======
-
->>>>>>> basic-clearing
 }
 
 // SendTransaction sends a post request with transaction information
 // and prints the response's contents.
-func SendTransaction(dest string, payload *bytes.Buffer, respChannel chan<- *http.Response) {
+func SendTransaction(dest string, payload *bytes.Buffer, respChannel chan<- *http.Response, wg *sync.WaitGroup) {
+
+	// Update waitgroup
+	wg.Add(1)
+	defer wg.Done()
 
 	// Post request
 	resp, err := http.Post(dest, contentType, payload)
@@ -117,7 +115,14 @@ func SendTransaction(dest string, payload *bytes.Buffer, respChannel chan<- *htt
 }
 
 // Prints the contents of responses and "handles" errors.
-func ProcessResponse(resp *http.Response) {
+func ProcessResponse(channel <-chan *http.Response, wg *sync.WaitGroup) {
+
+	// Update waitgroup
+	wg.Add(1)
+	defer wg.Done()
+
+	// Get response from channel
+	resp := <- channel
 	defer resp.Body.Close()
 	fmt.Println("Response status:", resp.Status)
 
