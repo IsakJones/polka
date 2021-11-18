@@ -1,4 +1,4 @@
-package views
+package transactions
 
 import (
 	"fmt"
@@ -9,14 +9,15 @@ import (
 	"encoding/json"
 )
 
-var counter uint64
-
 // Transaction captures the data in transactions POST requests.
-type transaction struct {
+type Transaction struct {
 	Sender string
 	Receiver string
 	Sum int
 }
+
+var counter uint64
+var transactionChannel = make(chan *Transaction, 500)
 
 // Hello verifies that get requests work.
 func Hello(writer http.ResponseWriter, req *http.Request) {
@@ -25,7 +26,7 @@ func Hello(writer http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(writer, "Hello!!!\n")
 }
 
-func Transaction(writer http.ResponseWriter, req *http.Request) {
+func Manage(writer http.ResponseWriter, req *http.Request) {
 
 	// Verify that a transaction has been received
 	// fmt.Println("Successfully received a transaction!")
@@ -37,17 +38,18 @@ func Transaction(writer http.ResponseWriter, req *http.Request) {
 	//fmt.Println(*req.Body)
 
 	// Read the body
-	var current transaction
+	var current Transaction
 	err := json.NewDecoder(req.Body).Decode(&current)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	fmt.Fprintf(writer, "Received transaction: %+v\n", current)
+	// Clear transaction and send response
+	go UpdateDues(&current)
+	// fmt.Fprintf(writer, "Received transaction: %+v\n", current)
 	// fmt.Printf("Received transaction: %+v\n", current)
 	atomic.AddUint64(&counter, 1)
-
 }
 
 func PrintCounter() {

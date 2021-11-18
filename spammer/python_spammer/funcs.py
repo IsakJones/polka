@@ -2,6 +2,7 @@ import random
 import enums
 
 
+
 def make_request(lo=1, hi=1000) -> dict:
     
     sum = random.randint(lo, hi)

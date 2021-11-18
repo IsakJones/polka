@@ -5,13 +5,13 @@ import (
 	"time"
 	"net/http"
 
-	"github.com/IsakJones/polka/server/views"
+	"github.com/IsakJones/polka/server/transactions"
 )
 
 func main() {
 	
-	http.HandleFunc("/transaction", views.Transaction)
-	http.HandleFunc("/hello", views.Hello)
+	http.HandleFunc("/transaction", transactions.Manage)
+	http.HandleFunc("/hello", transactions.Hello)
 
 	// hostName, err := os.Hostname()
 	// if err != nil {
@@ -24,6 +24,7 @@ func main() {
 	fmt.Println("Requests received:")
 	ticker := time.NewTicker(5 * time.Second)
 	for range ticker.C {
-		views.PrintCounter()
+		transactions.PrintCounter()
+		transactions.PrintDues()
 	}
 }

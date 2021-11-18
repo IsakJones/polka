@@ -1,47 +1,53 @@
 package gospammer
 
 import (
-	"fmt"
-	"time"
-	"bytes"
 	"bufio"
-	"net/http"
-	"math/rand"
+	"bytes"
 	"encoding/json"
+	"fmt"
+	"math/rand"
+	"net/http"
+	"time"
 )
 
 const (
 	lo = 0
 	hi = 1000
 
+<<<<<<< HEAD
 	channelCapacity = 100
 	contentType = "transaction/json"
 	timeout = 3 * time.Second
+=======
+	channelCapacity = 1000
+	contentType     = "transaction/json"
+	timeout         = 3 * time.Second
+>>>>>>> basic-clearing
 )
 
 // transaction stores information constituting a transaction.
 type transaction struct {
-	Sender string
+	Sender   string
 	Receiver string
-	Sum int
+	Sum      int
 }
 
 // list of the 10 largest US banks
 var banks = []string{
-    "JP Morgan Chase",
-    "Bank of America",
-    "Wells Fargo",
-    "Citigroup",
-    "U.S. Bancorp",
-    "Truist Financial",
-    "PNC Financial Services Group",
-    "TD Group US",
-    "Bank of New York Mellon",
-    "Capital One Financial",
+	"JP Morgan Chase",
+	"Bank of America",
+	"Wells Fargo",
+	"Citigroup",
+	"U.S. Bancorp",
+	"Truist Financial",
+	"PNC Financial Services Group",
+	"TD Group US",
+	"Bank of New York Mellon",
+	"Capital One Financial",
 }
 
 // TransactionSpammer sends *times POST requests concurrently,
-// to the specified dest. The goal is to send requests as 
+// to the specified dest. The goal is to send requests as
 // close to simultaneous as possible.
 func TransactionSpammer(dest string, times int) {
 
@@ -76,26 +82,31 @@ func TransactionSpammer(dest string, times int) {
 	for i := 0; i < times; i++ {
 		go SendTransaction(dest, &reqCollection[i], respChannel)
 	}
-	
+
 	// Process the responses
 	for i := 0; i < times; i++ {
 		select {
-		case resp := <- respChannel:
+		case resp := <-respChannel:
 			ProcessResponse(resp)
-		case <- time.After(timeout):
+		// Break if responses lag
+		case <-time.After(timeout):
 			fmt.Println("Waited response for too long.")
 			break
 		}
 	}
+<<<<<<< HEAD
 	// end := time.Now()
 	// fmt.Println(end.Sub(start))
+=======
+
+>>>>>>> basic-clearing
 }
 
 // SendTransaction sends a post request with transaction information
 // and prints the response's contents.
 func SendTransaction(dest string, payload *bytes.Buffer, respChannel chan<- *http.Response) {
 
-	// Post request 
+	// Post request
 	resp, err := http.Post(dest, contentType, payload)
 	if err != nil {
 		panic(err)
@@ -132,19 +143,19 @@ func GenerateTransaction(lo, hi int) *bytes.Buffer {
 
 	// Make sure that the sending bank and the receiving bank are different
 	if receiverIndex == senderIndex {
-		if receiverIndex < len(banks)-1 { 
-			receiverIndex++ 
+		if receiverIndex < len(banks)-1 {
+			receiverIndex++
 		} else {
-			receiverIndex=0 
+			receiverIndex = 0
 		}
 		// receiverIndex = rand.Intn(len(banks))
 	}
 
 	// create transaction and assigh pointer
 	result := &transaction{
-		Sender: banks[senderIndex],
+		Sender:   banks[senderIndex],
 		Receiver: banks[receiverIndex],
-		Sum: sum,
+		Sum:      sum,
 	}
 
 	// format into payload for request
