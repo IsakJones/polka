@@ -26,7 +26,7 @@ func Hello(writer http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(writer, "Hello!!!\n")
 }
 
-func Transaction(writer http.ResponseWriter, req *http.Request) {
+func Manage(writer http.ResponseWriter, req *http.Request) {
 
 	// Verify that a transaction has been received
 	// fmt.Println("Successfully received a transaction!")
@@ -38,7 +38,7 @@ func Transaction(writer http.ResponseWriter, req *http.Request) {
 	//fmt.Println(*req.Body)
 
 	// Read the body
-	var current transaction
+	var current Transaction
 	err := json.NewDecoder(req.Body).Decode(&current)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
@@ -46,8 +46,8 @@ func Transaction(writer http.ResponseWriter, req *http.Request) {
 	}
 
 	// Clear transaction and send response
-	clearTransaction(&current)
-	fmt.Fprintf(writer, "Received transaction: %+v\n", current)
+	go UpdateDues(&current)
+	// fmt.Fprintf(writer, "Received transaction: %+v\n", current)
 	// fmt.Printf("Received transaction: %+v\n", current)
 	atomic.AddUint64(&counter, 1)
 }
