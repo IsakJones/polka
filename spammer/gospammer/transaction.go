@@ -14,7 +14,7 @@ const (
 	lo = 0
 	hi = 1000
 
-	channelCapacity = 100000
+	channelCapacity = 100
 	contentType = "transaction/json"
 	timeout = 3 * time.Second
 )
@@ -71,6 +71,7 @@ func TransactionSpammer(dest string, times int) {
 	}
 
 	// Send the number of requests
+	// start := time.Now()
 	fmt.Printf("\nSending %d requests concurrently.\n", len(reqCollection))
 	for i := 0; i < times; i++ {
 		go SendTransaction(dest, &reqCollection[i], respChannel)
@@ -86,7 +87,8 @@ func TransactionSpammer(dest string, times int) {
 			break
 		}
 	}
-	
+	// end := time.Now()
+	// fmt.Println(end.Sub(start))
 }
 
 // SendTransaction sends a post request with transaction information
