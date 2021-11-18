@@ -1,14 +1,14 @@
 package gospammer
 
 import (
-	"fmt"
-	"sync"
-	"time"
 	"bufio"
 	"bytes"
-	"net/http"
-	"math/rand"
 	"encoding/json"
+	"fmt"
+	"math/rand"
+	"net/http"
+	"sync"
+	"time"
 )
 
 const (
@@ -16,7 +16,7 @@ const (
 	hi = 1000
 
 	contentType = "transaction/json"
-	timeout = 3 * time.Second
+	timeout     = 3 * time.Second
 )
 
 // transaction stores information constituting a transaction.
@@ -70,7 +70,6 @@ func TransactionSpammer(dest string, times int) {
 		}
 	}
 
-	
 	var wg sync.WaitGroup
 	defer wg.Wait()
 
@@ -79,7 +78,7 @@ func TransactionSpammer(dest string, times int) {
 	for i := 0; i < times; i++ {
 		go SendTransaction(dest, &reqCollection[i], &wg)
 	}
-	
+
 }
 
 // SendTransaction sends a post request with transaction information

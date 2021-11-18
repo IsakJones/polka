@@ -3,7 +3,7 @@ package main
 import "github.com/IsakJones/polka/spammer/gospammer"
 
 const (
-	requestNumber = 4000
+	requestNumber   = 4000
 	transactionDest = "http://localhost:8090/transaction"
 	// helloDest = "http://localhost:8090/hello"
 )
