@@ -1,6 +1,6 @@
 # Polka Payments
 
-The goal is to simulate an online payments processor (think Stripe) through a REST API concurrent Go server.
+The goal is to simulate an online payments processor (think Stripe) through a concurrent Go REST API.
 
 Currently, the server only accepts POST requests with three parameters: the paying bank (sender), the paid bank (receiver), and the sum of money transacted (sum).
 All the server does is respond with the decoded information to the requests sender, and print how many requests it has processed. I'm working on implementing additional features.
