@@ -7,7 +7,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/IsakJones/polka/api/cache"
+	"github.com/IsakJones/polka/api/memstore"
 	"github.com/IsakJones/polka/api/utils"
 )
 
@@ -25,7 +25,7 @@ func Trans(writer http.ResponseWriter, req *http.Request) {
 			return
 		}
 		atomic.AddUint64(&counter, 1)
-		go cache.UpdateDues(&current)
+		go memstore.UpdateDues(&current)
 	}
 }
 

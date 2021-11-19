@@ -9,7 +9,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/IsakJones/polka/api/cache"
+	"github.com/IsakJones/polka/api/memstore"
 	"github.com/IsakJones/polka/api/service"
 	"github.com/IsakJones/polka/api/service/handlers"
 )
@@ -38,17 +38,25 @@ func main() {
 		ticker := time.NewTicker(updateFrequency)
 		for range ticker.C {
 			handlers.PrintProcessedTransactions()
-			cache.PrintDues()
+			memstore.PrintDues()
 		}
 	}()
 
 	signalChannel := make(chan os.Signal, 1)
 	signal.Notify(signalChannel, os.Interrupt, syscall.SIGTERM)
 
-	// Block until a SIGTERM comes through
+	// Block until a SIGTERM comes through or the context shuts down
 	select {
 	case <-signalChannel:
 		log.Println("Signal received, shutting down...")
-		// TODO
+		break
+	case <-ctx.Done():
+		log.Println("Main context cancelled, shutting down...")
+		break
+		
+	}
+	err := httpService.Close()
+	if err != nil {
+		log.Fatalf("Failed to close service: %s", err)
 	}
 }
