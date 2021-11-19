@@ -23,7 +23,7 @@ const (
 type transaction struct {
 	Sender   string
 	Receiver string
-	Sum      int
+	Amount   int
 }
 
 // list of the 10 largest US banks
@@ -40,7 +40,7 @@ var banks = []string{
 	"Capital One Financial",
 }
 
-// TransactionSpammer sends *times POST requests concurrently,
+// TransactionSpammer sends #times POST requests concurrently,
 // to the specified dest. The goal is to send requests as
 // close to simultaneous as possible.
 func TransactionSpammer(dest string, times int) {
@@ -131,7 +131,7 @@ func GenerateTransaction(lo, hi int) *bytes.Buffer {
 	result := &transaction{
 		Sender:   banks[senderIndex],
 		Receiver: banks[receiverIndex],
-		Sum:      sum,
+		Amount:   sum,
 	}
 
 	// format into payload for request
