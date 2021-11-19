@@ -35,12 +35,14 @@ func UpdateDues(current *utils.Transaction) {
 // PrintDues prints to the console how much Polka owes to
 // each bank, listed in no specific order.
 func PrintDues() {
-	register.RLock()
-	defer register.RUnlock()
 
 	fmt.Printf("Dues:\n{\n")
+
+	register.RLock()
 	for key, value := range register.Dues {
 		fmt.Printf("%s: %d\n", key, value)
 	}
+	defer register.RUnlock()
+
 	fmt.Println("}\n")
 }

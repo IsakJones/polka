@@ -139,3 +139,18 @@ func GenerateTransaction(lo, hi int) *bytes.Buffer {
 	json.NewEncoder(payloadBuffer).Encode(result)
 	return payloadBuffer
 }
+
+// func GenerteTransaction() *bytes.Buffer {
+
+// 	// create transaction and assigh pointer
+// 	result := &transaction{
+// 		Sender:   "JPMorgan",
+// 		Receiver: "BofA",
+// 		Amount:   100,
+// 	}
+
+// 	// format into payload for request
+// 	payloadBuffer := new(bytes.Buffer)
+// 	json.NewEncoder(payloadBuffer).Encode(result)
+// 	return payloadBuffer
+// }

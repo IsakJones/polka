@@ -26,6 +26,7 @@ func Trans(writer http.ResponseWriter, req *http.Request) {
 		}
 		atomic.AddUint64(&counter, 1)
 		go memstore.UpdateDues(&current)
+		// TODO blocker or other way
 	}
 }
 
