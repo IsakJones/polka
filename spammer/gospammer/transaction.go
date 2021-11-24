@@ -24,6 +24,7 @@ type transaction struct {
 	Sender   bankInfo
 	Receiver bankInfo
 	Amount   int
+	Time time.Time
 }
 
 type bankInfo struct {
@@ -119,6 +120,7 @@ func GenerateTransaction(lo, hi int) *bytes.Buffer {
 
 	// calculate basic transaction attributes
 	sum := rand.Intn(hi-lo) + lo
+	time := time.Now()
 	sendAcc := rand.Intn(100)
 	receiverAcc := rand.Intn(100)
 	senderIndex := rand.Intn(len(banks))
@@ -145,6 +147,7 @@ func GenerateTransaction(lo, hi int) *bytes.Buffer {
 			Account: receiverAcc,
 		},
 		Amount: sum,
+		Time: time,
 	}
 
 	// format into payload for request

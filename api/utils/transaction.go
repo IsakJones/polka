@@ -1,5 +1,7 @@
 package utils
 
+import "time"
+
 type TransactionRecord interface {
 	GetSenBank() string
 	GetRecBank() string
@@ -8,12 +10,14 @@ type TransactionRecord interface {
 	GetRecAcc() int
 
 	GetAmount() int
+	GetTime() time.Time
 }
 
 type Transaction struct {
 	Sender   BankInfo
 	Receiver BankInfo
 	Amount   int
+	Time time.Time
 }
 
 type BankInfo struct {
@@ -39,4 +43,8 @@ func (trans *Transaction) GetRecAcc() int {
 
 func (trans *Transaction) GetAmount() int {
 	return trans.Amount
+}
+
+func (trans *Transaction) GetTime() time.Time {
+	return trans.Time
 }
