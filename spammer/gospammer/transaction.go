@@ -21,9 +21,14 @@ const (
 
 // transaction stores information constituting a transaction.
 type transaction struct {
-	Sender   string
-	Receiver string
+	Sender   bankInfo
+	Receiver bankInfo
 	Amount   int
+}
+
+type bankInfo struct {
+	Name string
+	Account int
 }
 
 // list of the 10 largest US banks
@@ -114,6 +119,8 @@ func GenerateTransaction(lo, hi int) *bytes.Buffer {
 
 	// calculate basic transaction attributes
 	sum := rand.Intn(hi-lo) + lo
+	sendAcc := rand.Intn(100)
+	receiverAcc := rand.Intn(100)
 	senderIndex := rand.Intn(len(banks))
 	receiverIndex := rand.Intn(len(banks))
 
@@ -129,8 +136,14 @@ func GenerateTransaction(lo, hi int) *bytes.Buffer {
 
 	// create transaction and assigh pointer
 	result := &transaction{
-		Sender:   banks[senderIndex],
-		Receiver: banks[receiverIndex],
+		Sender:   bankInfo{
+			Name: banks[senderIndex],
+			Account: sendAcc,
+		},
+		Receiver: bankInfo{
+			Name : banks[receiverIndex],
+			Account : receiverAcc,
+		},
 		Amount:   sum,
 	}
 
@@ -140,6 +153,7 @@ func GenerateTransaction(lo, hi int) *bytes.Buffer {
 	return payloadBuffer
 }
 
+// For testing purposes
 // func GenerteTransaction() *bytes.Buffer {
 
 // 	// create transaction and assigh pointer
