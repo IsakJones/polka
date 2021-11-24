@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/IsakJones/polka/api/service/handlers"
+	"github.com/IsakJones/polka/api/utils"
 )
 
 const (
@@ -16,7 +17,7 @@ const (
 )
 
 type Service struct {
-	address  string
+	conf     *utils.Config
 	listener net.Listener
 	logger   *log.Logger
 	mux      *http.ServeMux
@@ -25,14 +26,13 @@ type Service struct {
 }
 
 // New returns an uninitialized http service.
-func New(address string, ctx context.Context) (serv *Service) {
-	serv = &Service{
-		ctx:     ctx,
-		address: address,
-		// date, time, and file
+func New(conf *utils.Config, ctx context.Context) *Service {
+	serv := &Service{
+		ctx:    ctx,
+		conf:   conf,
 		logger: log.New(os.Stderr, "[main] ", log.LstdFlags),
 	}
-	return
+	return serv
 }
 
 // Start sets up a server and listener for incoming requests.
@@ -48,7 +48,7 @@ func (s *Service) Start() error {
 	}
 
 	// Set up listener
-	lstn, err := net.Listen("tcp", s.address)
+	lstn, err := net.Listen("tcp", s.conf.GetListenPort())
 	if err != nil {
 		return err
 	}

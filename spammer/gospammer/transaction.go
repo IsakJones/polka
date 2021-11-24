@@ -27,7 +27,7 @@ type transaction struct {
 }
 
 type bankInfo struct {
-	Name string
+	Name    string
 	Account int
 }
 
@@ -136,15 +136,15 @@ func GenerateTransaction(lo, hi int) *bytes.Buffer {
 
 	// create transaction and assigh pointer
 	result := &transaction{
-		Sender:   bankInfo{
-			Name: banks[senderIndex],
+		Sender: bankInfo{
+			Name:    banks[senderIndex],
 			Account: sendAcc,
 		},
 		Receiver: bankInfo{
-			Name : banks[receiverIndex],
-			Account : receiverAcc,
+			Name:    banks[receiverIndex],
+			Account: receiverAcc,
 		},
-		Amount:   sum,
+		Amount: sum,
 	}
 
 	// format into payload for request

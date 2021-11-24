@@ -5,16 +5,24 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/joho/godotenv"
+
 	"github.com/IsakJones/polka/spammer/gospammer"
 )
 
 const (
-	mainUrl  = "http://localhost:8090"
+	envPath  = "spammer.env"
 	transUrl = "/transaction"
 	helloUrl = "/hello"
 )
 
 func main() {
+
+	// Get url to api
+	if err := godotenv.Load(envPath); err != nil {
+		log.Fatalf("Environmental variables failed to load: %s\n", err)
+	}
+	mainUrl := os.Getenv("URL")
 
 	// Check for right args
 	args := os.Args
@@ -25,12 +33,14 @@ func main() {
 	}
 
 	// Parse number of requests
-	requestNumber, err := strconv.ParseInt(args[1], 10, 32)
+	requestNumber, err := strconv.Atoi(args[1])
 	if err != nil {
 		log.Fatal("Argument must be an integer.")
 	}
+	// Say hello if asked!
 	if len(args) == 3 && args[2] == "hello" {
-		gospammer.SayHello(mainUrl+helloUrl)
+		gospammer.SayHello(mainUrl + helloUrl)
 	}
+
 	gospammer.TransactionSpammer(mainUrl+transUrl, int(requestNumber))
 }
