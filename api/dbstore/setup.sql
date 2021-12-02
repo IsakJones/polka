@@ -28,7 +28,6 @@ VALUES
 ('Capital One Financial');
 
 
-
 CREATE TABLE transactions (
     id SERIAL,
     sending_account INT,

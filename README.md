@@ -7,3 +7,8 @@ All the server does is respond with the decoded information to the requests send
 
 There is also a spammer that sends requests to the server. Instead of sending them sequentially, the spammer first generates random transaction and encodes them,
 then asks for permission to spam the server. Once permission is granted, it concurrently sends all the requests, putting a lot of pressure on the server!
+
+TODO
+ - Add database driver 
+ - Add each transaction 
+ - Fix interface / struct interactions

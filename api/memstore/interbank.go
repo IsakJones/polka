@@ -22,7 +22,7 @@ var register = Register{
 }
 
 // UpdateDues changes the dues according to clearinghouse logic.
-func UpdateDues(current utils.TransactionRecord) {
+func UpdateDues(current utils.Transaction) {
 
 	// These operations make writing concurrently safe.
 	register.Lock()
@@ -44,5 +44,5 @@ func PrintDues() {
 	}
 	defer register.RUnlock()
 
-	fmt.Println("}\n")
+	fmt.Printf("}\n")
 }

@@ -12,6 +12,7 @@ import (
 
 	"github.com/joho/godotenv"
 
+	"github.com/IsakJones/polka/api/dbstore"
 	"github.com/IsakJones/polka/api/memstore"
 	"github.com/IsakJones/polka/api/service"
 	"github.com/IsakJones/polka/api/service/handlers"
@@ -46,7 +47,7 @@ func main() {
 	host := os.Getenv("HOST")
 	port, err := strconv.Atoi(os.Getenv("PORT"))
 	if err != nil {
-		log.Fatalf("Unable to read environmental port variable: %s", port)
+		log.Fatalf("Unable to read environmental port variable: %s", err)
 	}
 	config := &utils.Config{
 		Host: host,
@@ -57,8 +58,11 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
+	// Initialize database connection
+	db := dbstore.New(ctx)
+
 	// Start service
-	httpService := service.New(config, ctx)
+	httpService := service.New(config, db, ctx)
 	if err := httpService.Start(); err != nil {
 		log.Fatalf("HTTP service failed to start: %s\n", err)
 	}
