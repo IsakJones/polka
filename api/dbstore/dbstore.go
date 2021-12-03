@@ -6,8 +6,10 @@ import (
 	"log"
 	"os"
 
-	"github.com/jackc/pgx"
+	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/joho/godotenv"
+
+	"github.com/IsakJones/polka/api/utils"
 )
 
 const (
@@ -18,7 +20,7 @@ type DB struct {
 	Path   string
 	Ctx    context.Context
 	Logger log.Logger
-	Conn   *pgx.Conn
+	Conn   *pgxpool.Pool
 }
 
 func (db *DB) GetPath() string {
@@ -29,7 +31,7 @@ func (db *DB) GetCtx() context.Context {
 	return db.Ctx
 }
 
-func (db *DB) GetConn() *pgx.Conn {
+func (db *DB) GetConn() *pgxpool.Pool {
 	return db.Conn
 }
 
@@ -41,22 +43,17 @@ func New(ctx context.Context) *DB {
 	}
 
 	// Write db url
-	user := os.Getenv("DBUSER")
-	pass := os.Getenv("DBPASS")
-	host := os.Getenv("DBHOST")
-	port := os.Getenv("DBPORT")
-	name := os.Getenv("DBNAME")
-	path := fmt.Sprintf("postgres://%s:%s@%s:%s/%s", user, pass, host, port, name)
-	fmt.Println(path)
-
-	// Parse connection url
-	dbconfig, err := pgx.ParseConnectionString(path)
-	if err != nil {
-		log.Fatalf("Failed to parse connection url: %s", err)
-	}
+	path := fmt.Sprintf(
+		"postgres://%s:%s@%s:%s/%s",
+		os.Getenv("DBUSER"),
+		os.Getenv("DBPASS"),
+		os.Getenv("DBHOST"),
+		os.Getenv("DBPORT"),
+		os.Getenv("DBNAME"),
+	)
 
 	// Connect to database
-	conn, err := pgx.Connect(dbconfig)
+	conn, err := pgxpool.Connect(ctx, path) // ConnPool?
 	if err != nil {
 		log.Fatalf("Failed to establish a connection with the database server: %s", err)
 	}
@@ -69,6 +66,10 @@ func New(ctx context.Context) *DB {
 	}
 
 	return dbs
+}
+
+func (db *DB) InsertTransaction(trans *utils.Transaction) { //error {
+
 }
 
 // connConf := pgx.ConnConfig{

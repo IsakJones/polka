@@ -22,7 +22,7 @@ var register = Register{
 }
 
 // UpdateDues changes the dues according to clearinghouse logic.
-func UpdateDues(current utils.Transaction) {
+func UpdateDues(current utils.Transaction) error {
 
 	// These operations make writing concurrently safe.
 	register.Lock()
@@ -30,6 +30,8 @@ func UpdateDues(current utils.Transaction) {
 
 	register.Dues[current.GetSenBank()] -= int64(current.GetAmount())
 	register.Dues[current.GetRecBank()] += int64(current.GetAmount())
+
+	return nil
 }
 
 // PrintDues prints to the console how much Polka owes to

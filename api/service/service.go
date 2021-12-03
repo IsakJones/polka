@@ -42,7 +42,7 @@ func New(conf *utils.Config, db *dbstore.DB, ctx context.Context) *Service {
 func (s *Service) Start() error {
 	// Set up the mux
 	s.mux = http.NewServeMux()
-	s.mux.HandleFunc(transPath, handlers.Trans)
+	s.mux.HandleFunc(transPath, handlers.Transactions)
 	s.mux.HandleFunc(helloPath, handlers.Hello)
 
 	// Set up server
