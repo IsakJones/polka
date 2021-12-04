@@ -16,12 +16,32 @@ import (
 	"github.com/IsakJones/polka/api/memstore"
 	"github.com/IsakJones/polka/api/service"
 	"github.com/IsakJones/polka/api/service/handlers"
-	"github.com/IsakJones/polka/api/utils"
 )
 
 const (
 	envPath = "api.env"
 )
+
+type Config struct {
+	Host string
+	Port int
+}
+
+func (c *Config) GetHost() string {
+	return c.Host
+}
+
+func (c *Config) GetPort() int {
+	return c.Port
+}
+
+func (c *Config) GetAddress() string {
+	return fmt.Sprintf("%s:%d", c.Host, c.Port)
+}
+
+func (c *Config) GetListenPort() string {
+	return fmt.Sprintf(":%d", c.Port)
+}
 
 func main() {
 	var err error
@@ -49,7 +69,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Unable to read environmental port variable: %s", err)
 	}
-	config := &utils.Config{
+	config := &Config{
 		Host: host,
 		Port: port,
 	}

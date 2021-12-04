@@ -17,7 +17,7 @@ const (
 )
 
 type Service struct {
-	conf     *utils.Config
+	conf     utils.Config
 	listener net.Listener
 	logger   *log.Logger
 	mux      *http.ServeMux
@@ -26,7 +26,7 @@ type Service struct {
 }
 
 // New returns an uninitialized http service.
-func New(conf *utils.Config, ctx context.Context) *Service {
+func New(conf utils.Config, ctx context.Context) *Service {
 	serv := &Service{
 		ctx:    ctx,
 		conf:   conf,

@@ -11,7 +11,6 @@ import (
 	"github.com/IsakJones/polka/api/dbstore"
 	"github.com/IsakJones/polka/api/memstore"
 	"github.com/IsakJones/polka/api/utils"
-	// "github.com/IsakJones/polka/api/dbstore"
 )
 
 type transaction struct {

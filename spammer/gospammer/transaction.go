@@ -1,10 +1,9 @@
 package gospammer
 
 import (
-	"bufio"
 	"bytes"
 	"encoding/json"
-	"fmt"
+	"log"
 	"math/rand"
 	"net/http"
 	"sync"
@@ -46,72 +45,74 @@ var banks = []string{
 	"Capital One Financial",
 }
 
-// TransactionSpammer sends #times POST requests concurrently,
+// TransactionSpammer sends transactionNumber POST requests concurrently,
 // to the specified dest. The goal is to send requests as
 // close to simultaneous as possible.
-func TransactionSpammer(dest string, times int) {
-
-	// This splice will store the generated transactions
-	reqCollection := make([]bytes.Buffer, times)
-
-	// Generate request payloads
-	rand.Seed(time.Now().UnixNano())
-	for i := 0; i < times; i++ {
-		reqCollection[i] = *GenerateTransaction(lo, hi)
-	}
-
-	// Ask for confirmation
-	var answer string
-	for {
-		fmt.Printf("%d payloads on standby. Send? (yes/no)\t", len(reqCollection))
-		fmt.Scanf("%s", &answer)
-
-		if answer == "yes" {
-			break
-		} else if answer == "no" {
-			fmt.Println("Payloads suspended.")
-			return
-		} else {
-			fmt.Println("Answer not recognized, please try again.")
-		}
-	}
+func TransactionSpammer(dest string, transactionNumber int) {
 
 	var wg sync.WaitGroup
-	defer wg.Wait()
 
-	// Send requests
-	fmt.Printf("\nSending %d requests concurrently.\n", len(reqCollection))
-	for i := 0; i < times; i++ {
-		wg.Add(1)
-		go SendTransaction(dest, &reqCollection[i], &wg)
+	doneChan := make(chan bool)
+	codeChan := make(chan string)
+
+	// The main body is off in a goroutine...
+	go func() {
+		// Send requests
+		rand.Seed(time.Now().UnixNano())
+		log.Printf("Sending %d requests concurrently.\n", transactionNumber)
+		for i := 0; i < transactionNumber; i++ {
+			wg.Add(1)
+			go SendTransaction(lo, hi, dest, codeChan, &wg)
+		}
+		wg.Wait()
+		doneChan <- true
+	}()
+
+	// So it's easier to detect whether anything goes wrong.
+	noErrors := true
+	select {
+	case respStatus := <-codeChan:
+		noErrors = false
+		log.Printf("Request failed: %s\n", respStatus)
+	case <-doneChan:
+		log.Printf("Completed all request attempts.\n")
+		break
 	}
 
+	if noErrors {
+		log.Printf("All requests sent successfully!")
+	}
 }
 
 // SendTransaction sends a post request with transaction information
 // and prints the response's contents.
-func SendTransaction(dest string, payload *bytes.Buffer, wg *sync.WaitGroup) {
+func SendTransaction(lo, hi int, dest string, codeChan chan<- string, wg *sync.WaitGroup) {
 
 	// Report to waitgroup
 	defer wg.Done()
 
+	// Generate random transaction
+	payload := GenerateTransaction(lo, hi)
+
 	// Post request
 	resp, err := http.Post(dest, contentType, payload)
 	if err != nil {
-		panic(err)
+		log.Printf("Error sending request: %s", err)
 	}
 
 	defer resp.Body.Close()
-	fmt.Println("Response status:", resp.Status)
+	if resp.StatusCode > 299 {
+		codeChan <- resp.Status
+	}
 
-	// Scan the body and check for errors
-	scanner := bufio.NewScanner(resp.Body)
-	for scanner.Scan() {
-		fmt.Println(scanner.Text())
-	}
-	if err := scanner.Err(); err != nil {
-		panic(err)
-	}
+	// // Scan the body and check for errors
+	// scanner := bufio.NewScanner(resp.Body)
+	// for scanner.Scan() {
+	// 	log.Println(scanner.Text())
+	// }
+	// if err := scanner.Err(); err != nil {
+	// 	return err
+	// }
 }
 
 // Returns a buffer fit for the POST request encoding
