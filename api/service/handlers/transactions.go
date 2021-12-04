@@ -8,6 +8,7 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/IsakJones/polka/api/dbstore"
 	"github.com/IsakJones/polka/api/memstore"
 	"github.com/IsakJones/polka/api/utils"
 	// "github.com/IsakJones/polka/api/dbstore"
@@ -79,12 +80,20 @@ func Transactions(writer http.ResponseWriter, req *http.Request) {
 			http.Error(writer, err.Error(), http.StatusBadRequest)
 			return
 		}
-		atomic.AddUint64(&counter, 1)
+		// Insert transaction data into db
+		// TODO wrap in httpDo, or replace memstore call with that
+		err = dbstore.InsertTransaction(ctx, &currentTransaction)
+		if err != nil {
+			http.Error(writer, err.Error(), http.StatusBadRequest)
+			return
+		}
+		// Update dues with context
 		httpDo(
 			ctx,
 			&currentTransaction,
 			memstore.UpdateDues,
 		)
+		atomic.AddUint64(&counter, 1)
 	}
 }
 
@@ -97,7 +106,7 @@ func httpDo(ctx context.Context, ct utils.Transaction, f func(utils.Transaction)
 	// Return an error if the context times out or if the function returns an error.
 	select {
 	case <-ctx.Done():
-		<-fChan // If the context is done, then why should we wait for the function to return a value?
+		<-fChan
 		return ctx.Err()
 	case err := <-fChan:
 		return err

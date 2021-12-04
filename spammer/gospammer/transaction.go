@@ -24,7 +24,7 @@ type transaction struct {
 	Sender   bankInfo
 	Receiver bankInfo
 	Amount   int
-	Time time.Time
+	Time     time.Time
 }
 
 type bankInfo struct {
@@ -82,6 +82,7 @@ func TransactionSpammer(dest string, times int) {
 	// Send requests
 	fmt.Printf("\nSending %d requests concurrently.\n", len(reqCollection))
 	for i := 0; i < times; i++ {
+		wg.Add(1)
 		go SendTransaction(dest, &reqCollection[i], &wg)
 	}
 
@@ -91,8 +92,7 @@ func TransactionSpammer(dest string, times int) {
 // and prints the response's contents.
 func SendTransaction(dest string, payload *bytes.Buffer, wg *sync.WaitGroup) {
 
-	// Update waitgroup
-	wg.Add(1)
+	// Report to waitgroup
 	defer wg.Done()
 
 	// Post request
@@ -136,7 +136,7 @@ func GenerateTransaction(lo, hi int) *bytes.Buffer {
 		// receiverIndex = rand.Intn(len(banks))
 	}
 
-	// create transaction and assigh pointer
+	// create transaction and assign pointer
 	result := &transaction{
 		Sender: bankInfo{
 			Name:    banks[senderIndex],
@@ -147,7 +147,7 @@ func GenerateTransaction(lo, hi int) *bytes.Buffer {
 			Account: receiverAcc,
 		},
 		Amount: sum,
-		Time: time,
+		Time:   time,
 	}
 
 	// format into payload for request

@@ -59,10 +59,13 @@ func main() {
 	defer cancel()
 
 	// Initialize database connection
-	db := dbstore.New(ctx)
+	err = dbstore.New(ctx)
+	if err != nil {
+		log.Fatalf("Could not init DB connection: %s", err)
+	}
 
 	// Start service
-	httpService := service.New(config, db, ctx)
+	httpService := service.New(config, ctx)
 	if err := httpService.Start(); err != nil {
 		log.Fatalf("HTTP service failed to start: %s\n", err)
 	}

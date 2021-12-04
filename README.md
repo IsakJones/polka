@@ -13,4 +13,4 @@ TODO
  - DONE Add database driver 
  - Implement transaction DB insertion
  - Set up request timeouts in the spammer
- - Use request-level contexts in the api
+ - DONE Use request-level contexts in the api

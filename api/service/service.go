@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/IsakJones/polka/api/dbstore"
 	"github.com/IsakJones/polka/api/service/handlers"
 	"github.com/IsakJones/polka/api/utils"
 )
@@ -24,15 +23,13 @@ type Service struct {
 	mux      *http.ServeMux
 	server   *http.Server
 	ctx      context.Context
-	db       *dbstore.DB
 }
 
 // New returns an uninitialized http service.
-func New(conf *utils.Config, db *dbstore.DB, ctx context.Context) *Service {
+func New(conf *utils.Config, ctx context.Context) *Service {
 	serv := &Service{
 		ctx:    ctx,
 		conf:   conf,
-		db:     db,
 		logger: log.New(os.Stderr, "[main] ", log.LstdFlags),
 	}
 	return serv

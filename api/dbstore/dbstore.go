@@ -13,13 +13,33 @@ import (
 )
 
 const (
-	envPath = "dbstore/db.env"
+	envPath        = "dbstore/db.env"
+	insertTransSQL = `
+	INSERT INTO transactions (
+		sending_bank_id,
+		receiving_bank_id,
+		sending_account,
+		receiving_account,
+		dollar_amount,
+		time
+	) VALUES (
+		(SELECT id FROM banks WHERE name=$1),
+		(SELECT id FROM banks WHERE name=$2),
+		$3,
+		$4,
+		$5,
+		$6
+	);
+	`
 )
+
+// Create singleton DB
+var db *DB
 
 type DB struct {
 	Path   string
 	Ctx    context.Context
-	Logger log.Logger
+	Logger *log.Logger
 	Conn   *pgxpool.Pool
 }
 
@@ -35,11 +55,13 @@ func (db *DB) GetConn() *pgxpool.Pool {
 	return db.Conn
 }
 
-func New(ctx context.Context) *DB {
+func New(ctx context.Context) error {
+
+	logger := log.New(os.Stderr, "[postgres] ", log.LstdFlags)
 
 	// Get environment variables and format url
 	if err := godotenv.Load(envPath); err != nil {
-		log.Fatalf("DB environmental variables failed to load: %s", err)
+		return err
 	}
 
 	// Write db url
@@ -55,28 +77,31 @@ func New(ctx context.Context) *DB {
 	// Connect to database
 	conn, err := pgxpool.Connect(ctx, path) // ConnPool?
 	if err != nil {
-		log.Fatalf("Failed to establish a connection with the database server: %s", err)
+		return err
 	}
 
 	// Insert variables inside object
-	dbs := &DB{
-		Path: path,
-		Ctx:  ctx,
-		Conn: conn,
+	db = &DB{
+		Path:   path,
+		Ctx:    ctx,
+		Conn:   conn,
+		Logger: logger,
 	}
 
-	return dbs
+	return nil
 }
 
-func (db *DB) InsertTransaction(trans *utils.Transaction) { //error {
+func InsertTransaction(ctx context.Context, transaction utils.Transaction) error {
 
+	_, err := db.Conn.Exec(
+		ctx,
+		insertTransSQL,
+		transaction.GetSenBank(),
+		transaction.GetRecBank(),
+		transaction.GetSenAcc(),
+		transaction.GetRecAcc(),
+		transaction.GetAmount(),
+		transaction.GetTime(),
+	)
+	return err
 }
-
-// connConf := pgx.ConnConfig{
-// 	Host:     os.Getenv("DBHOST"),
-// 	Port:     uint16(os.Getenv("DBPORT")),
-// 	User:     os.Getenv("DBUSER"),
-// 	Password: os.Getenv("DBPASS"),
-// 	Database: os.Getenv("DBNAME"),
-// 	Logger:   log.New(os.Stderr, "[postgresql] "),
-// }
