@@ -9,8 +9,5 @@ There is also a spammer that sends requests to the server. Instead of sending th
 then asks for permission to spam the server. Once permission is granted, it concurrently sends all the requests, putting a lot of pressure on the server!
 
 TODO
- - DONE Fix interface / struct interactions
- - DONE Add database driver 
- - Implement transaction DB insertion
- - Set up request timeouts in the spammer
- - DONE Use request-level contexts in the api
+ - Set up request timeouts in spammer
+ - Set up Get API access point to get a transaction by values

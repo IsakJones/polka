@@ -84,10 +84,10 @@ func main() {
 		log.Fatalf("Could not init DB connection: %s", err)
 	}
 
-	// Start service
-	httpService := service.New(config, ctx)
-	if err := httpService.Start(); err != nil {
-		log.Fatalf("HTTP service failed to start: %s\n", err)
+	// Initialize service
+	httpService, err := service.New(config, ctx)
+	if err != nil {
+		log.Fatalf("Failed to initialize service: %s", err)
 	}
 	log.Println("HTTP service started successfully.")
 
@@ -101,6 +101,7 @@ func main() {
 		}
 	}()
 
+	// Pipe incoming OS signals to channel
 	signalChannel := make(chan os.Signal, 1)
 	signal.Notify(signalChannel, os.Interrupt, syscall.SIGTERM)
 
