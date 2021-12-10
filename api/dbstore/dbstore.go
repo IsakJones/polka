@@ -18,14 +18,13 @@ import (
 const (
 	envPath         = "dbstore/db.env"
 	getTransByTrans = `
-	SELECT (
-		sending_bank_id,
-		receiving_bank_id,
-		sending_account,
-		receiving_account,
-		dollar_amount,
-		time
-	)
+	SELECT 
+		sending_bank_id AND
+		receiving_bank_id AND
+		sending_account AND
+		receiving_account AND
+		dollar_amount AND
+		time 
 	FROM transactions WHERE 
 	sending_bank_id=(SELECT id FROM banks WHERE name=$1) AND
 	receiving_bank_id=(SELECT id FROM banks WHERE name=$2) AND
@@ -37,6 +36,13 @@ const (
 	getLatestTrans = `
 	SELECT * FROM transactions
 	ORDER BY time
+	LIMIT 1;
+	`
+	getBankNames = `
+	SELECT sender.name, receiver.name
+	FROM banks sender
+	INNER JOIN transactions ON sender.id=$1
+	INNER JOIN banks receiver ON receiver.id=$2
 	LIMIT 1;
 	`
 	insertTransSQL = `
@@ -143,21 +149,25 @@ func GetTransaction(ctx context.Context, destTransaction utils.Transaction) erro
 
 	err = db.Conn.QueryRow(
 		ctx,
-		"select name from banks where id=$1;",
+		getBankNames,
 		transactionRows[0].Sending_bank_id,
-	).Scan(&senBank)
+		transactionRows[0].Receiving_bank_id,
+	).Scan(
+		&senBank,
+		&recBank,
+	)
 	if err != nil {
 		return err
 	}
 
-	err = db.Conn.QueryRow(
-		ctx,
-		"select name from banks where id=$1;",
-		transactionRows[0].Receiving_bank_id,
-	).Scan(&recBank)
-	if err != nil {
-		return err
-	}
+	// err = db.Conn.QueryRow(
+	// 	ctx,
+	// 	"select name from banks where id=$1;",
+	// 	transactionRows[0].Receiving_bank_id,
+	// ).Scan(&recBank)
+	// if err != nil {
+	// 	return err
+	// }
 
 	destTransaction.SetSenBank(senBank)
 	destTransaction.SetRecBank(recBank)
@@ -167,62 +177,6 @@ func GetTransaction(ctx context.Context, destTransaction utils.Transaction) erro
 	destTransaction.SetTime(transactionRows[0].Time)
 
 	return err
-
-	// var (
-	// 	senBankId int
-	// 	recBankId int
-	// 	senBank   string
-	// 	recBank   string
-	// 	senAcc    int
-	// 	recAcc    int
-	// 	amount    int
-	// 	time      time.Time
-	// 	err       error
-	// )
-	// // var trans transaction
-
-	// err = db.Conn.QueryRow(
-	// 	ctx,
-	// 	getLatestTrans,
-	// ).Scan(
-	// 	&senBankId,
-	// 	&recBankId,
-	// 	&senAcc,
-	// 	&recAcc,
-	// 	&amount,
-	// 	&time,
-	// )
-	// if err != nil {
-	// 	return err
-	// }
-
-	// log.Printf("sending bank id: %d\n", senBankId)
-	// err = db.Conn.QueryRow(
-	// 	ctx,
-	// 	"select name from banks where id=$1;",
-	// 	senBankId,
-	// ).Scan(&senBank)
-	// if err != nil {
-	// 	return err
-	// }
-
-	// err = db.Conn.QueryRow(
-	// 	ctx,
-	// 	"select name from banks where id=$1;",
-	// 	recBankId,
-	// ).Scan(&recBank)
-	// if err != nil {
-	// 	return err
-	// }
-
-	// destTransaction.SetSenBank(senBank)
-	// destTransaction.SetRecBank(recBank)
-	// destTransaction.SetSenAcc(senAcc)
-	// destTransaction.SetRecAcc(recAcc)
-	// destTransaction.SetAmount(amount)
-	// destTransaction.SetTime(time)
-
-	// return err
 }
 
 func InsertTransaction(ctx context.Context, transaction utils.Transaction) error {
