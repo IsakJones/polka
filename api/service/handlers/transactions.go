@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"sync/atomic"
 	"time"
@@ -49,14 +50,40 @@ func (trans *transaction) GetTime() time.Time {
 	return trans.Time
 }
 
+func (trans *transaction) SetSenBank(name string) {
+	trans.Sender.Name = name
+}
+
+func (trans *transaction) SetSenAcc(acc int) {
+	trans.Sender.Account = acc
+}
+
+func (trans *transaction) SetRecBank(name string) {
+	trans.Receiver.Name = name
+}
+
+func (trans *transaction) SetRecAcc(acc int) {
+	trans.Sender.Account = acc
+}
+
+func (trans *transaction) SetTime(time time.Time) {
+	trans.Time = time
+}
+
+func (trans *transaction) SetAmount(amount int) {
+	trans.Amount = amount
+}
+
 var counter uint64
 
 // Trans handles http requests concerning transactions.
 func Transactions(writer http.ResponseWriter, req *http.Request) {
 
 	var (
-		ctx    context.Context
-		cancel context.CancelFunc
+		err                error
+		ctx                context.Context
+		cancel             context.CancelFunc
+		currentTransaction transaction
 	)
 
 	// Spawn context with timeout if request has timeout
@@ -73,7 +100,6 @@ func Transactions(writer http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodPost:
 		// Read the Body
-		var currentTransaction transaction
 		err := json.NewDecoder(req.Body).Decode(&currentTransaction)
 		if err != nil {
 			http.Error(writer, err.Error(), http.StatusBadRequest)
@@ -93,6 +119,17 @@ func Transactions(writer http.ResponseWriter, req *http.Request) {
 			memstore.UpdateDues,
 		)
 		atomic.AddUint64(&counter, 1)
+	case http.MethodGet:
+		// Scan table row in current transaction struct
+		err = dbstore.GetTransaction(ctx, &currentTransaction)
+		if err != nil {
+			log.Printf("Error: %s", err)
+			http.Error(writer, err.Error(), http.StatusBadRequest)
+			return
+		}
+		fmt.Fprintf(writer, "%+v", currentTransaction)
+
+		// Encode transaction data and send back to client
 	}
 }
 
