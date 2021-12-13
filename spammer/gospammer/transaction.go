@@ -50,38 +50,122 @@ var banks = []string{
 // close to simultaneous as possible.
 func TransactionSpammer(dest string, transactionNumber int) {
 
-	var wg sync.WaitGroup
+	/*
 
-	doneChan := make(chan bool)
-	codeChan := make(chan string)
+		doneChan := make(chan bool)
+		codeChan := make(chan string)
+	*/
 
-	// The main body is off in a goroutine...
-	go func() {
-		// Send requests
-		rand.Seed(time.Now().UnixNano())
-		log.Printf("Sending %d requests concurrently.\n", transactionNumber)
-		for i := 0; i < transactionNumber; i++ {
+	/*
+			 - Subscriber
+		==== - Subscriber
+			 ....
+	*/
+
+	//var wg sync.WaitGroup
+	workChan := make(chan interface{})
+	doneChanNew := make(chan interface{})
+	maxSubscriberGoroutines := 1000
+	//maxPublisherGoroutines := 100
+
+	log.Printf("initializing workers")
+	for i := 0; i < maxSubscriberGoroutines; i++ {
+		go Worker(lo, hi, dest, workChan, doneChanNew)
+	}
+
+	log.Printf("filling work channel")
+	for i := 0; i < transactionNumber; i++ {
+		workChan <- true
+		if i == maxSubscriberGoroutines {
+			log.Printf("Reached %d", maxSubscriberGoroutines)
+		}
+	}
+
+	// Spam into work for n requests
+	/*
+		for i := 0; i < maxPublisherGoroutines; i++ {
 			wg.Add(1)
-			go SendTransaction(lo, hi, dest, codeChan, &wg)
+			go func() {
+				defer wg.Done()
+				for j := 0; j < transactionNumber/maxPublisherGoroutines; j++ {
+					workChan <- true
+				}
+			}()
 		}
 		wg.Wait()
-		doneChan <- true
-	}()
+	*/
 
-	// So it's easier to detect whether anything goes wrong.
-	noErrors := true
-	select {
-	case respStatus := <-codeChan:
-		noErrors = false
-		log.Printf("Request failed: %s\n", respStatus)
-	case <-doneChan:
-		log.Printf("Completed all request attempts.\n")
-		break
+	log.Printf("killing workers")
+	// Tell workers to end
+	for i := 0; i < maxSubscriberGoroutines; i++ {
+		doneChanNew <- true
 	}
+	log.Printf("All has ended.\n")
 
-	if noErrors {
-		log.Printf("All requests sent successfully!")
+	/*
+		// The main body is off in a goroutine...
+		go func() {
+			// Send requests
+			rand.Seed(time.Now().UnixNano())
+			log.Printf("Sending %d requests concurrently.\n", transactionNumber)
+			for i := 0; i < transactionNumber; i++ {
+				wg.Add(1)
+				go SendTransaction(lo, hi, dest, codeChan, &wg)
+			}
+			wg.Wait()
+			doneChan <- true
+		}()
+
+		// So it's easier to detect whether anything goes wrong.
+		noErrors := true
+		select {
+		case respStatus := <-codeChan:
+			noErrors = false
+			log.Printf("Request failed: %s\n", respStatus)
+		case <-doneChan:
+			log.Printf("Completed all request attempts.\n")
+			break
+		}
+
+		if noErrors {
+			log.Printf("All requests sent successfully!")
+		}
+	*/
+}
+
+func Worker(lo, hi int, dest string, work <-chan interface{}, done <-chan interface{}) {
+	for {
+		select {
+		case <-done:
+			return
+		case <-work:
+			SendTransactionNew(lo, hi, dest)
+		}
 	}
+}
+
+func SendTransactionNew(lo, hi int, dest string) {
+	payload := GenerateTransaction(lo, hi)
+	// Set timeout
+	/*
+		client := http.Client{
+			Timeout: timeout * time.Second,
+		}
+	*/
+	// Post request
+	// start := time.Now()
+	ActuallySendTransaction(dest, payload)
+	// end := time.Now()
+	// log.Printf("Actually send transation took %s", end.Sub(start))
+}
+
+func ActuallySendTransaction(dest string, payload *bytes.Buffer) {
+	resp, err := http.Post(dest, contentType, payload)
+	if err != nil {
+		log.Printf("Error sending request: %s", err)
+		return
+	}
+	defer resp.Body.Close()
 }
 
 // SendTransaction sends a post request with transaction information
@@ -94,25 +178,19 @@ func SendTransaction(lo, hi int, dest string, codeChan chan<- string, wg *sync.W
 	// Generate random transaction
 	payload := GenerateTransaction(lo, hi)
 
+	// Set timeout
+	client := http.Client{
+		Timeout: timeout * time.Second,
+	}
 	// Post request
-	resp, err := http.Post(dest, contentType, payload)
+	resp, err := client.Post(dest, contentType, payload)
 	if err != nil {
 		log.Printf("Error sending request: %s", err)
 	}
-
 	defer resp.Body.Close()
 	if resp.StatusCode > 299 {
 		codeChan <- resp.Status
 	}
-
-	// // Scan the body and check for errors
-	// scanner := bufio.NewScanner(resp.Body)
-	// for scanner.Scan() {
-	// 	log.Println(scanner.Text())
-	// }
-	// if err := scanner.Err(); err != nil {
-	// 	return err
-	// }
 }
 
 // Returns a buffer fit for the POST request encoding

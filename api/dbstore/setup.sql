@@ -8,6 +8,7 @@ Initially, the database is supposed to hold two tables:
 CREATE TABLE banks (
     id SERIAL,
     name VARCHAR(128),
+    balance BIGINT,
     PRIMARY KEY (id),
     UNIQUE (name)
 );

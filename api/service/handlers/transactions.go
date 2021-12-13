@@ -54,16 +54,16 @@ func (trans *transaction) SetSenBank(name string) {
 	trans.Sender.Name = name
 }
 
-func (trans *transaction) SetSenAcc(acc int) {
-	trans.Sender.Account = acc
+func (trans *transaction) SetSenAcc(accNum int) {
+	trans.Sender.Account = accNum
 }
 
 func (trans *transaction) SetRecBank(name string) {
 	trans.Receiver.Name = name
 }
 
-func (trans *transaction) SetRecAcc(acc int) {
-	trans.Sender.Account = acc
+func (trans *transaction) SetRecAcc(accNum int) {
+	trans.Receiver.Account = accNum
 }
 
 func (trans *transaction) SetTime(time time.Time) {
@@ -79,6 +79,7 @@ var counter uint64
 // Trans handles http requests concerning transactions.
 func Transactions(writer http.ResponseWriter, req *http.Request) {
 
+	// start := time.Now()
 	var (
 		err                error
 		ctx                context.Context
@@ -87,17 +88,17 @@ func Transactions(writer http.ResponseWriter, req *http.Request) {
 	)
 
 	// Spawn context with timeout if request has timeout
-	timeout, err := time.ParseDuration(req.FormValue("timeout"))
+	timeout, err := time.ParseDuration(req.FormValue("Timeout"))
 	if err == nil {
 		ctx, cancel = context.WithTimeout(context.Background(), timeout)
 	} else {
-		// log.Printf("Creating context without timeout.")
 		ctx, cancel = context.WithCancel(context.Background())
 	}
 	defer cancel()
 
 	// Multiplex according to method
 	switch req.Method {
+
 	case http.MethodPost:
 		// Read the Body
 		err := json.NewDecoder(req.Body).Decode(&currentTransaction)
@@ -105,13 +106,26 @@ func Transactions(writer http.ResponseWriter, req *http.Request) {
 			http.Error(writer, err.Error(), http.StatusBadRequest)
 			return
 		}
+		//TODO these operations should either occur concurrently
+		// OR in the same db txn
+		// innerStart := time.Now()
 		// Insert transaction data into db
-		// TODO wrap in httpDo, or replace memstore call with that
 		err = dbstore.InsertTransaction(ctx, &currentTransaction)
 		if err != nil {
 			http.Error(writer, err.Error(), http.StatusBadRequest)
 			return
 		}
+		// innerEnd := time.Now()
+		// log.Printf("insert duration %s", innerEnd.Sub(innerStart))
+		// Update dues in banks table
+		// innerStart = time.Now()
+		err = dbstore.UpdateDues(ctx, &currentTransaction)
+		if err != nil {
+			http.Error(writer, err.Error(), http.StatusBadRequest)
+			return
+		}
+		// innerEnd = time.Now()
+		// log.Printf("update duration %s", innerEnd.Sub(innerStart))
 		// Update dues with context
 		httpDo(
 			ctx,
@@ -119,6 +133,7 @@ func Transactions(writer http.ResponseWriter, req *http.Request) {
 			memstore.UpdateDues,
 		)
 		atomic.AddUint64(&counter, 1)
+
 	case http.MethodGet:
 		// Scan table row in current transaction struct
 		err = dbstore.GetTransaction(ctx, &currentTransaction)
@@ -131,6 +146,9 @@ func Transactions(writer http.ResponseWriter, req *http.Request) {
 
 		// Encode transaction data and send back to client
 	}
+	// end := time.Now()
+	// duration := end.Sub(start)
+	// log.Printf("Handling request took %s", duration)
 }
 
 // httpDo calls the f function on the current transaction while abiding by the context.

@@ -43,6 +43,14 @@ func (c *Config) GetListenPort() string {
 	return fmt.Sprintf(":%d", c.Port)
 }
 
+/*
+TODOS:
+ * Play with indexes to see if it increases DB performance
+ * Deploy to cloud nodes
+ * Run over longer dataset to establish consistant QPS
+ * Look at system metrics to see load
+   * Is it just too much concurrency, or is db under too much load
+*/
 func main() {
 	var err error
 	var frequency int

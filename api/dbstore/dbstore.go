@@ -7,8 +7,6 @@ import (
 	"os"
 	"time"
 
-	// "github.com/georgysavva/scany/pgxscan"
-	"github.com/georgysavva/scany/pgxscan"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/joho/godotenv"
 
@@ -16,52 +14,7 @@ import (
 )
 
 const (
-	envPath         = "dbstore/db.env"
-	getTransByTrans = `
-	SELECT 
-		sending_bank_id AND
-		receiving_bank_id AND
-		sending_account AND
-		receiving_account AND
-		dollar_amount AND
-		time 
-	FROM transactions WHERE 
-	sending_bank_id=(SELECT id FROM banks WHERE name=$1) AND
-	receiving_bank_id=(SELECT id FROM banks WHERE name=$2) AND
-	sending_account=$3 AND
-	receiving_account=$4 AND
-	dollar_amount=$5 AND
-	time=$6;
-	`
-	getLatestTrans = `
-	SELECT * FROM transactions
-	ORDER BY time
-	LIMIT 1;
-	`
-	getBankNames = `
-	SELECT sender.name, receiver.name
-	FROM banks sender
-	INNER JOIN transactions ON sender.id=$1
-	INNER JOIN banks receiver ON receiver.id=$2
-	LIMIT 1;
-	`
-	insertTransSQL = `
-	INSERT INTO transactions (
-		sending_bank_id,
-		receiving_bank_id,
-		sending_account,
-		receiving_account,
-		dollar_amount,
-		time
-	) VALUES (
-		(SELECT id FROM banks WHERE name=$1),
-		(SELECT id FROM banks WHERE name=$2),
-		$3,
-		$4,
-		$5,
-		$6
-	);
-	`
+	envPath = "dbstore/db.env"
 )
 
 // Create singleton DB
@@ -122,6 +75,7 @@ func New(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
+	log.Printf("Max Connections: %d", conn.Stat().MaxConns())
 
 	// Insert variables inside object
 	db = &DB{
@@ -136,51 +90,75 @@ func New(ctx context.Context) error {
 
 func GetTransaction(ctx context.Context, destTransaction utils.Transaction) error {
 	var (
-		transactionRows []*dbTransaction
-		err             error
-		senBank         string
-		recBank         string
+		senBank string
+		recBank string
+		senAcc  int
+		recAcc  int
+		amount  int
+		time    time.Time
+		err     error
 	)
-
-	err = pgxscan.Select(ctx, db.Conn, &transactionRows, getLatestTrans)
-	if err != nil {
-		return err
-	}
 
 	err = db.Conn.QueryRow(
 		ctx,
-		getBankNames,
-		transactionRows[0].Sending_bank_id,
-		transactionRows[0].Receiving_bank_id,
+		getLatestTransaction,
 	).Scan(
 		&senBank,
 		&recBank,
+		&senAcc,
+		&recAcc,
+		&amount,
+		&time,
 	)
 	if err != nil {
 		return err
 	}
 
-	// err = db.Conn.QueryRow(
-	// 	ctx,
-	// 	"select name from banks where id=$1;",
-	// 	transactionRows[0].Receiving_bank_id,
-	// ).Scan(&recBank)
+	destTransaction.SetSenBank(senBank)
+	destTransaction.SetRecBank(recBank)
+	destTransaction.SetSenAcc(senAcc)
+	destTransaction.SetRecAcc(recAcc)
+	destTransaction.SetAmount(amount)
+	destTransaction.SetTime(time)
+
+	return err
+
+	// var (
+	// 	transactionRows []*dbTransaction
+	// 	err             error
+	// 	senBank         string
+	// 	recBank         string
+	// )
+
+	// err = pgxscan.Select(ctx, db.Conn, &transactionRows, getLatestTrans)
 	// if err != nil {
 	// 	return err
 	// }
 
-	destTransaction.SetSenBank(senBank)
-	destTransaction.SetRecBank(recBank)
-	destTransaction.SetSenAcc(transactionRows[0].Sending_account)
-	destTransaction.SetRecAcc(transactionRows[0].Receiving_account)
-	destTransaction.SetAmount(transactionRows[0].Dollar_amount)
-	destTransaction.SetTime(transactionRows[0].Time)
+	// err = db.Conn.QueryRow(
+	// 	ctx,
+	// 	getBankNames,
+	// 	transactionRows[0].Sending_bank_id,
+	// 	transactionRows[0].Receiving_bank_id,
+	// ).Scan(
+	// 	&senBank,
+	// 	&recBank,
+	// )
+	// if err != nil {
+	// 	return err
+	// }
 
-	return err
+	// destTransaction.SetSenBank(senBank)
+	// destTransaction.SetRecBank(recBank)
+	// destTransaction.SetSenAcc(transactionRows[0].Sending_account)
+	// destTransaction.SetRecAcc(transactionRows[0].Receiving_account)
+	// destTransaction.SetAmount(transactionRows[0].Dollar_amount)
+	// destTransaction.SetTime(transactionRows[0].Time)
+
+	// return err
 }
 
 func InsertTransaction(ctx context.Context, transaction utils.Transaction) error {
-
 	_, err := db.Conn.Exec(
 		ctx,
 		insertTransSQL,
@@ -191,5 +169,28 @@ func InsertTransaction(ctx context.Context, transaction utils.Transaction) error
 		transaction.GetAmount(),
 		transaction.GetTime(),
 	)
+	return err
+}
+
+func UpdateDues(ctx context.Context, transaction utils.Transaction) error {
+	var err error
+
+	_, err = db.Conn.Exec(
+		ctx,
+		subtractDues,
+		transaction.GetSenBank(),
+		transaction.GetAmount(),
+	)
+	if err != nil {
+		return err
+	}
+
+	_, err = db.Conn.Exec(
+		ctx,
+		addDues,
+		transaction.GetRecBank(),
+		transaction.GetAmount(),
+	)
+
 	return err
 }
