@@ -6,7 +6,6 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
-	"sync"
 	"time"
 )
 
@@ -14,8 +13,9 @@ const (
 	lo = 0
 	hi = 1000
 
-	contentType = "transaction/json"
-	timeout     = 3 * time.Second
+	maxSubscriberGoroutines = 7000
+	contentType             = "transaction/json"
+	timeout                 = 3 * time.Second
 )
 
 // transaction stores information constituting a transaction.
@@ -50,23 +50,8 @@ var banks = []string{
 // close to simultaneous as possible.
 func TransactionSpammer(dest string, transactionNumber int) {
 
-	/*
-
-		doneChan := make(chan bool)
-		codeChan := make(chan string)
-	*/
-
-	/*
-			 - Subscriber
-		==== - Subscriber
-			 ....
-	*/
-
-	//var wg sync.WaitGroup
 	workChan := make(chan interface{})
 	doneChanNew := make(chan interface{})
-	maxSubscriberGoroutines := 1000
-	//maxPublisherGoroutines := 100
 
 	log.Printf("initializing workers")
 	for i := 0; i < maxSubscriberGoroutines; i++ {
@@ -81,56 +66,13 @@ func TransactionSpammer(dest string, transactionNumber int) {
 		}
 	}
 
-	// Spam into work for n requests
-	/*
-		for i := 0; i < maxPublisherGoroutines; i++ {
-			wg.Add(1)
-			go func() {
-				defer wg.Done()
-				for j := 0; j < transactionNumber/maxPublisherGoroutines; j++ {
-					workChan <- true
-				}
-			}()
-		}
-		wg.Wait()
-	*/
-
 	log.Printf("killing workers")
 	// Tell workers to end
 	for i := 0; i < maxSubscriberGoroutines; i++ {
 		doneChanNew <- true
 	}
-	log.Printf("All has ended.\n")
+	log.Printf("Finished.")
 
-	/*
-		// The main body is off in a goroutine...
-		go func() {
-			// Send requests
-			rand.Seed(time.Now().UnixNano())
-			log.Printf("Sending %d requests concurrently.\n", transactionNumber)
-			for i := 0; i < transactionNumber; i++ {
-				wg.Add(1)
-				go SendTransaction(lo, hi, dest, codeChan, &wg)
-			}
-			wg.Wait()
-			doneChan <- true
-		}()
-
-		// So it's easier to detect whether anything goes wrong.
-		noErrors := true
-		select {
-		case respStatus := <-codeChan:
-			noErrors = false
-			log.Printf("Request failed: %s\n", respStatus)
-		case <-doneChan:
-			log.Printf("Completed all request attempts.\n")
-			break
-		}
-
-		if noErrors {
-			log.Printf("All requests sent successfully!")
-		}
-	*/
 }
 
 func Worker(lo, hi int, dest string, work <-chan interface{}, done <-chan interface{}) {
@@ -139,27 +81,22 @@ func Worker(lo, hi int, dest string, work <-chan interface{}, done <-chan interf
 		case <-done:
 			return
 		case <-work:
-			SendTransactionNew(lo, hi, dest)
+			generateAndSendTransaction(lo, hi, dest)
 		}
 	}
 }
 
-func SendTransactionNew(lo, hi int, dest string) {
-	payload := GenerateTransaction(lo, hi)
-	// Set timeout
-	/*
-		client := http.Client{
-			Timeout: timeout * time.Second,
-		}
-	*/
+func generateAndSendTransaction(lo, hi int, dest string) {
+	payload := generateTransaction(lo, hi)
+
 	// Post request
 	// start := time.Now()
-	ActuallySendTransaction(dest, payload)
+	sendTransaction(dest, payload)
 	// end := time.Now()
-	// log.Printf("Actually send transation took %s", end.Sub(start))
+	// log.Printf("Sending the transation took %s", end.Sub(start))
 }
 
-func ActuallySendTransaction(dest string, payload *bytes.Buffer) {
+func sendTransaction(dest string, payload *bytes.Buffer) {
 	resp, err := http.Post(dest, contentType, payload)
 	if err != nil {
 		log.Printf("Error sending request: %s", err)
@@ -168,34 +105,9 @@ func ActuallySendTransaction(dest string, payload *bytes.Buffer) {
 	defer resp.Body.Close()
 }
 
-// SendTransaction sends a post request with transaction information
-// and prints the response's contents.
-func SendTransaction(lo, hi int, dest string, codeChan chan<- string, wg *sync.WaitGroup) {
-
-	// Report to waitgroup
-	defer wg.Done()
-
-	// Generate random transaction
-	payload := GenerateTransaction(lo, hi)
-
-	// Set timeout
-	client := http.Client{
-		Timeout: timeout * time.Second,
-	}
-	// Post request
-	resp, err := client.Post(dest, contentType, payload)
-	if err != nil {
-		log.Printf("Error sending request: %s", err)
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode > 299 {
-		codeChan <- resp.Status
-	}
-}
-
 // Returns a buffer fit for the POST request encoding
 // a transaction struct.
-func GenerateTransaction(lo, hi int) *bytes.Buffer {
+func generateTransaction(lo, hi int) *bytes.Buffer {
 
 	// calculate basic transaction attributes
 	sum := rand.Intn(hi-lo) + lo
@@ -234,19 +146,3 @@ func GenerateTransaction(lo, hi int) *bytes.Buffer {
 	json.NewEncoder(payloadBuffer).Encode(result)
 	return payloadBuffer
 }
-
-// For testing purposes
-// func GenerteTransaction() *bytes.Buffer {
-
-// 	// create transaction and assigh pointer
-// 	result := &transaction{
-// 		Sender:   "JPMorgan",
-// 		Receiver: "BofA",
-// 		Amount:   100,
-// 	}
-
-// 	// format into payload for request
-// 	payloadBuffer := new(bytes.Buffer)
-// 	json.NewEncoder(payloadBuffer).Encode(result)
-// 	return payloadBuffer
-// }

@@ -106,7 +106,7 @@ func Transactions(writer http.ResponseWriter, req *http.Request) {
 			http.Error(writer, err.Error(), http.StatusBadRequest)
 			return
 		}
-		//TODO these operations should either occur concurrently
+		// TODO these operations should either occur concurrently
 		// OR in the same db txn
 		// innerStart := time.Now()
 		// Insert transaction data into db

@@ -123,39 +123,6 @@ func GetTransaction(ctx context.Context, destTransaction utils.Transaction) erro
 
 	return err
 
-	// var (
-	// 	transactionRows []*dbTransaction
-	// 	err             error
-	// 	senBank         string
-	// 	recBank         string
-	// )
-
-	// err = pgxscan.Select(ctx, db.Conn, &transactionRows, getLatestTrans)
-	// if err != nil {
-	// 	return err
-	// }
-
-	// err = db.Conn.QueryRow(
-	// 	ctx,
-	// 	getBankNames,
-	// 	transactionRows[0].Sending_bank_id,
-	// 	transactionRows[0].Receiving_bank_id,
-	// ).Scan(
-	// 	&senBank,
-	// 	&recBank,
-	// )
-	// if err != nil {
-	// 	return err
-	// }
-
-	// destTransaction.SetSenBank(senBank)
-	// destTransaction.SetRecBank(recBank)
-	// destTransaction.SetSenAcc(transactionRows[0].Sending_account)
-	// destTransaction.SetRecAcc(transactionRows[0].Receiving_account)
-	// destTransaction.SetAmount(transactionRows[0].Dollar_amount)
-	// destTransaction.SetTime(transactionRows[0].Time)
-
-	// return err
 }
 
 func InsertTransaction(ctx context.Context, transaction utils.Transaction) error {
@@ -193,4 +160,14 @@ func UpdateDues(ctx context.Context, transaction utils.Transaction) error {
 	)
 
 	return err
+
+	// _, err = db.Conn.Exec(
+	// 	ctx,
+	// 	updateDues,
+	// 	transaction.GetSenBank(),
+	// 	transaction.GetRecBank(),
+	// 	transaction.GetAmount(),
+	// )
+
+	// return err
 }

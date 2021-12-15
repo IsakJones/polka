@@ -29,6 +29,7 @@ const (
 	// INNER JOIN banks receiver ON receiver.id=$2
 	// LIMIT 1;
 	// `
+
 	getLatestTransaction = `
 	SELECT
 		sender.name,
@@ -42,6 +43,14 @@ const (
 	JOIN banks receiver ON receiver.id=transactions.receiving_bank_id
 	ORDER BY time;
 	`
+	updateDues = `
+	UPDATE banks
+	   SET balance = CASE name
+	   				 WHEN $1 THEN balance - $3
+					 WHEN $2 THEN balance + $3
+					 END
+	WHERE name = $1 OR name = $2;
+	`
 	addDues = `
 	UPDATE banks SET balance = balance + $2
 	WHERE name=$1;
@@ -50,6 +59,7 @@ const (
 	UPDATE banks SET balance = balance - $2
 	WHERE name=$1;
 	`
+
 	insertTransSQL = `
 	INSERT INTO transactions (
 		sending_bank_id,
