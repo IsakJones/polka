@@ -10,11 +10,11 @@ import (
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/joho/godotenv"
 
-	"github.com/IsakJones/polka/api/utils"
+	"github.com/sekerez/polka/api/utils"
 )
 
 const (
-	envPath = "dbstore/db.env"
+	envPath = "db.env"
 )
 
 // Create singleton DB
@@ -160,14 +160,4 @@ func UpdateDues(ctx context.Context, transaction utils.Transaction) error {
 	)
 
 	return err
-
-	// _, err = db.Conn.Exec(
-	// 	ctx,
-	// 	updateDues,
-	// 	transaction.GetSenBank(),
-	// 	transaction.GetRecBank(),
-	// 	transaction.GetAmount(),
-	// )
-
-	// return err
 }

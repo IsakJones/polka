@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/IsakJones/polka/api/utils"
+	"github.com/sekerez/polka/api/utils"
 )
 
 // Dues registers how much Polka owes each bank.

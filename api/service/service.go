@@ -8,8 +8,8 @@ import (
 	"os"
 	"sync"
 
-	"github.com/IsakJones/polka/api/service/handlers"
-	"github.com/IsakJones/polka/api/utils"
+	"github.com/sekerez/polka/api/service/handlers"
+	"github.com/sekerez/polka/api/utils"
 )
 
 const (

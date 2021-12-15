@@ -12,10 +12,10 @@ import (
 
 	"github.com/joho/godotenv"
 
-	"github.com/IsakJones/polka/api/dbstore"
-	"github.com/IsakJones/polka/api/memstore"
-	"github.com/IsakJones/polka/api/service"
-	"github.com/IsakJones/polka/api/service/handlers"
+	"github.com/sekerez/polka/api/dbstore"
+	"github.com/sekerez/polka/api/memstore"
+	"github.com/sekerez/polka/api/service"
+	"github.com/sekerez/polka/api/service/handlers"
 )
 
 const (

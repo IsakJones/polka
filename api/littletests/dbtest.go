@@ -1,41 +1,34 @@
 package littletests
 
-import (
-	"context"
-	"fmt"
+// func Dbtest() {
+// 	fmt.Println("Hello")
+// 	db := dbstore.New(context.Background())
 
-	"github.com/IsakJones/polka/api/dbstore"
-)
+// 	rows, err := db.Conn.Query(
+// 		db.Ctx,
+// 		"select * from banks",
+// 	)
+// 	if err != nil {
+// 		fmt.Printf("21%s\n", err)
+// 	}
 
-func Dbtest() {
-	fmt.Println("Hello")
-	db := dbstore.New(context.Background())
+// 	defer rows.Close()
 
-	rows, err := db.Conn.Query(
-		db.Ctx,
-		"select * from banks",
-	)
-	if err != nil {
-		fmt.Printf("21%s\n", err)
-	}
+// 	// Iterate through the result set
+// 	for rows.Next() {
+// 		var n int32
+// 		var s string
+// 		err = rows.Scan(&n, &s)
+// 		if err != nil {
+// 			fmt.Printf("31%s\n", err)
+// 		}
+// 		fmt.Printf("%d, %s\n", n, s)
+// 	}
 
-	defer rows.Close()
+// 	// Any errors encountered by rows.Next or rows.Scan will be returned here
+// 	if rows.Err() != nil {
+// 		fmt.Printf("38%s", err)
+// 	}
 
-	// Iterate through the result set
-	for rows.Next() {
-		var n int32
-		var s string
-		err = rows.Scan(&n, &s)
-		if err != nil {
-			fmt.Printf("31%s\n", err)
-		}
-		fmt.Printf("%d, %s\n", n, s)
-	}
-
-	// Any errors encountered by rows.Next or rows.Scan will be returned here
-	if rows.Err() != nil {
-		fmt.Printf("38%s", err)
-	}
-
-	db.Conn.Close()
-}
+// 	db.Conn.Close()
+// }

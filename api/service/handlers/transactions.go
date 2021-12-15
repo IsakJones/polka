@@ -9,9 +9,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/IsakJones/polka/api/dbstore"
-	"github.com/IsakJones/polka/api/memstore"
-	"github.com/IsakJones/polka/api/utils"
+	"github.com/sekerez/polka/api/dbstore"
+	"github.com/sekerez/polka/api/memstore"
+	"github.com/sekerez/polka/api/utils"
 )
 
 type transaction struct {

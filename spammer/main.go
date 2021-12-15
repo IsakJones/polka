@@ -7,7 +7,7 @@ import (
 
 	"github.com/joho/godotenv"
 
-	"github.com/IsakJones/polka/spammer/gospammer"
+	"github.com/sekerez/polka/spammer/gospammer"
 )
 
 const (
