@@ -12,14 +12,19 @@ import (
 
 	"github.com/joho/godotenv"
 
+	"github.com/sekerez/polka/api/client"
 	"github.com/sekerez/polka/api/dbstore"
-	"github.com/sekerez/polka/api/memstore"
 	"github.com/sekerez/polka/api/service"
 	"github.com/sekerez/polka/api/service/handlers"
 )
 
 const (
-	envPath = "api.env"
+	mainEnv             = "api.env"
+	cacheEnv            = "cache.env"
+	cacheConnTimeout    = 30 * time.Second
+	cacheReqTimeout     = 10 * time.Second
+	balanceInterval     = 1
+	balanceChanCapacity = 20
 )
 
 type Config struct {
@@ -68,7 +73,7 @@ func main() {
 	}
 
 	// Get env variables and set a config
-	if err := godotenv.Load(envPath); err != nil {
+	if err := godotenv.Load(mainEnv); err != nil {
 		log.Fatalf("Environmental variables failed to load: %s\n", err)
 	}
 
@@ -86,6 +91,16 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
+	// Initialize client
+	if err := godotenv.Load(cacheEnv); err != nil {
+		log.Fatalf("Cache environmental variables failed to load: %s\n", err)
+	}
+	err = client.New(
+		os.Getenv("CACHEADDRESS"),
+		cacheConnTimeout,
+		cacheReqTimeout,
+	)
+
 	// Initialize database connection
 	err = dbstore.New(ctx)
 	if err != nil {
@@ -101,11 +116,9 @@ func main() {
 
 	// Update state every 5 seconds
 	go func() {
-		fmt.Println("Transactions processed:")
 		ticker := time.NewTicker(time.Duration(frequency) * time.Second)
 		for range ticker.C {
 			handlers.PrintProcessedTransactions()
-			memstore.PrintDues()
 		}
 	}()
 

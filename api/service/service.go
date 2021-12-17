@@ -91,7 +91,8 @@ func (s *Service) Start() {
 	}
 }
 
-func (s *Service) Close() error {
+func (s *Service) Close() (err error) {
 	s.listener.Close()
-	return nil
+	err = s.server.Shutdown(s.ctx)
+	return
 }

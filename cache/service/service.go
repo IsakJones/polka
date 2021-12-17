@@ -55,7 +55,6 @@ func New(conf utils.Config, ctx context.Context) (*Service, error) {
 	// Set up multiplexor
 	mux := http.NewServeMux()
 	mux.HandleFunc(transPath, handlers.Transactions)
-	mux.HandleFunc(helloPath, handlers.Hello)
 
 	// Set up server
 	server := &http.Server{

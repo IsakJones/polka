@@ -1,6 +1,6 @@
 package utils
 
 type BankBalance struct {
-	name    string
-	balance int64
+	Name    string
+	Balance int64
 }

@@ -21,35 +21,37 @@ const (
 var db *DB
 
 type DB struct {
-	Path   string
-	Ctx    context.Context
-	Logger *log.Logger
-	Conn   *pgxpool.Pool
+	path    string
+	ctx     context.Context
+	logger  *log.Logger
+	conn    *pgxpool.Pool
+	quit    <-chan bool
+	memChan <-chan utils.BankBalance
 }
 
 func (db *DB) GetPath() string {
-	return db.Path
+	return db.path
 }
 
 func (db *DB) GetCtx() context.Context {
-	return db.Ctx
+	return db.ctx
 }
 
 func (db *DB) GetConn() *pgxpool.Pool {
-	return db.Conn
+	return db.conn
 }
 
 // Define transaction struct
 
-type dbTransaction struct {
-	ID                int
-	Sending_account   int
-	Receiving_account int
-	Dollar_amount     int
-	Time              time.Time
-	Sending_bank_id   int
-	Receiving_bank_id int
-}
+// type dbTransaction struct {
+// 	ID                int
+// 	Sending_account   int
+// 	Receiving_account int
+// 	Dollar_amount     int
+// 	Time              time.Time
+// 	Sending_bank_id   int
+// 	Receiving_bank_id int
+// }
 
 func New(ctx context.Context) error {
 
@@ -79,10 +81,10 @@ func New(ctx context.Context) error {
 
 	// Insert variables inside object
 	db = &DB{
-		Path:   path,
-		Ctx:    ctx,
-		Conn:   conn,
-		Logger: logger,
+		path:   path,
+		ctx:    ctx,
+		conn:   conn,
+		logger: logger,
 	}
 
 	return nil
@@ -99,7 +101,7 @@ func GetTransaction(ctx context.Context, destTransaction utils.Transaction) erro
 		err     error
 	)
 
-	err = db.Conn.QueryRow(
+	err = db.conn.QueryRow(
 		ctx,
 		getLatestTransaction,
 	).Scan(
@@ -126,7 +128,7 @@ func GetTransaction(ctx context.Context, destTransaction utils.Transaction) erro
 }
 
 func InsertTransaction(ctx context.Context, transaction utils.Transaction) error {
-	_, err := db.Conn.Exec(
+	_, err := db.conn.Exec(
 		ctx,
 		insertTransSQL,
 		transaction.GetSenBank(),
@@ -136,28 +138,5 @@ func InsertTransaction(ctx context.Context, transaction utils.Transaction) error
 		transaction.GetAmount(),
 		transaction.GetTime(),
 	)
-	return err
-}
-
-func UpdateDues(ctx context.Context, transaction utils.Transaction) error {
-	var err error
-
-	_, err = db.Conn.Exec(
-		ctx,
-		subtractDues,
-		transaction.GetSenBank(),
-		transaction.GetAmount(),
-	)
-	if err != nil {
-		return err
-	}
-
-	_, err = db.Conn.Exec(
-		ctx,
-		addDues,
-		transaction.GetRecBank(),
-		transaction.GetAmount(),
-	)
-
 	return err
 }

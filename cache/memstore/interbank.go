@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/sekerez/polka/api/utils"
+	"github.com/sekerez/polka/cache/utils"
 )
 
 // Dues registers how much Polka owes each bank.

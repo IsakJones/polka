@@ -81,19 +81,15 @@ func Worker(lo, hi int, dest string, work <-chan interface{}, done <-chan interf
 		case <-done:
 			return
 		case <-work:
-			generateAndSendTransaction(lo, hi, dest)
+			payload := generateTransaction(lo, hi)
+
+			// Post request
+			// start := time.Now()
+			sendTransaction(dest, payload)
+			// end := time.Now()
+			// log.Printf("Sending the transation took %s", end.Sub(start))
 		}
 	}
-}
-
-func generateAndSendTransaction(lo, hi int, dest string) {
-	payload := generateTransaction(lo, hi)
-
-	// Post request
-	// start := time.Now()
-	sendTransaction(dest, payload)
-	// end := time.Now()
-	// log.Printf("Sending the transation took %s", end.Sub(start))
 }
 
 func sendTransaction(dest string, payload *bytes.Buffer) {

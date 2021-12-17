@@ -4,14 +4,14 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"sync/atomic"
 	"time"
 
+	"github.com/sekerez/polka/api/client"
 	"github.com/sekerez/polka/api/dbstore"
-	"github.com/sekerez/polka/api/memstore"
-	"github.com/sekerez/polka/api/utils"
 )
 
 type transaction struct {
@@ -81,7 +81,6 @@ func Transactions(writer http.ResponseWriter, req *http.Request) {
 
 	// start := time.Now()
 	var (
-		err                error
 		ctx                context.Context
 		cancel             context.CancelFunc
 		currentTransaction transaction
@@ -100,14 +99,22 @@ func Transactions(writer http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 
 	case http.MethodPost:
+
+		cacheErr := make(chan error)
+		// Concurrently send request over to cache
+		go func() {
+			byteBody, err := ioutil.ReadAll(req.Body)
+			if err != nil {
+				log.Printf("Error reading request body: %s", err)
+			}
+			cacheErr <- client.SendTransactionUpdate(byteBody)
+		}()
 		// Read the Body
 		err := json.NewDecoder(req.Body).Decode(&currentTransaction)
 		if err != nil {
 			http.Error(writer, err.Error(), http.StatusBadRequest)
 			return
 		}
-		// TODO these operations should either occur concurrently
-		// OR in the same db txn
 		// innerStart := time.Now()
 		// Insert transaction data into db
 		err = dbstore.InsertTransaction(ctx, &currentTransaction)
@@ -117,21 +124,15 @@ func Transactions(writer http.ResponseWriter, req *http.Request) {
 		}
 		// innerEnd := time.Now()
 		// log.Printf("insert duration %s", innerEnd.Sub(innerStart))
-		// Update dues in banks table
-		// innerStart = time.Now()
-		err = dbstore.UpdateDues(ctx, &currentTransaction)
-		if err != nil {
-			http.Error(writer, err.Error(), http.StatusBadRequest)
-			return
-		}
-		// innerEnd = time.Now()
-		// log.Printf("update duration %s", innerEnd.Sub(innerStart))
+
+		// check error from cache
+		err = <-cacheErr
 		// Update dues with context
-		httpDo(
-			ctx,
-			&currentTransaction,
-			memstore.UpdateDues,
-		)
+		// httpDo(
+		// 	ctx,
+		// 	&currentTransaction,
+		// 	memstore.UpdateDues,
+		// )
 		atomic.AddUint64(&counter, 1)
 
 	case http.MethodGet:
@@ -152,21 +153,21 @@ func Transactions(writer http.ResponseWriter, req *http.Request) {
 }
 
 // httpDo calls the f function on the current transaction while abiding by the context.
-func httpDo(ctx context.Context, ct utils.Transaction, f func(utils.Transaction) error) error {
-	// Update the dues in a goroutine and pass the result to fChan
-	fChan := make(chan error)
-	go func() { fChan <- f(ct) }()
+// func httpDo(ctx context.Context, ct utils.Transaction, f func(utils.Transaction) error) error {
+// 	// Update the dues in a goroutine and pass the result to fChan
+// 	fChan := make(chan error)
+// 	go func() { fChan <- f(ct) }()
 
-	// Return an error if the context times out or if the function returns an error.
-	select {
-	case <-ctx.Done():
-		<-fChan
-		return ctx.Err()
-	case err := <-fChan:
-		return err
-	}
-}
+// 	// Return an error if the context times out or if the function returns an error.
+// 	select {
+// 	case <-ctx.Done():
+// 		<-fChan
+// 		return ctx.Err()
+// 	case err := <-fChan:
+// 		return err
+// 	}
+// }
 
 func PrintProcessedTransactions() {
-	fmt.Printf("Processed %d transactions by %s.\n", counter, time.Now().Format("15:04:05"))
+	log.Printf("Processed %d transactions.", counter)
 }

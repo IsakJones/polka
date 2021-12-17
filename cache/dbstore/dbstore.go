@@ -5,20 +5,16 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"time"
 
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/joho/godotenv"
 
-	"github.com/sekerez/polka/api/utils"
+	"github.com/sekerez/polka/cache/utils"
 )
 
-const (
-	envPath = "db.env"
-)
+const envPath = "db.env"
 
-// Create singleton DB
-var db *DB
+var db *DB // Create singleton DB
 
 type DB struct {
 	path    string
@@ -27,30 +23,6 @@ type DB struct {
 	conn    *pgxpool.Pool
 	quit    <-chan bool
 	memChan <-chan utils.BankBalance
-}
-
-func (db *DB) GetPath() string {
-	return db.path
-}
-
-func (db *DB) GetCtx() context.Context {
-	return db.ctx
-}
-
-func (db *DB) GetConn() *pgxpool.Pool {
-	return db.conn
-}
-
-// Define transaction struct
-
-type dbTransaction struct {
-	ID                int
-	Sending_account   int
-	Receiving_account int
-	Dollar_amount     int
-	Time              time.Time
-	Sending_bank_id   int
-	Receiving_bank_id int
 }
 
 func New(ctx context.Context, quit <-chan bool, memChan <-chan utils.BankBalance) error {
@@ -92,43 +64,6 @@ func New(ctx context.Context, quit <-chan bool, memChan <-chan utils.BankBalance
 	go periodicallyUpdateDues()
 
 	return nil
-}
-
-func GetTransaction(ctx context.Context, destTransaction utils.Transaction) error {
-	var (
-		senBank string
-		recBank string
-		senAcc  int
-		recAcc  int
-		amount  int
-		time    time.Time
-		err     error
-	)
-
-	err = db.conn.QueryRow(
-		ctx,
-		getLatestTransaction,
-	).Scan(
-		&senBank,
-		&recBank,
-		&senAcc,
-		&recAcc,
-		&amount,
-		&time,
-	)
-	if err != nil {
-		return err
-	}
-
-	destTransaction.SetSenBank(senBank)
-	destTransaction.SetRecBank(recBank)
-	destTransaction.SetSenAcc(senAcc)
-	destTransaction.SetRecAcc(recAcc)
-	destTransaction.SetAmount(amount)
-	destTransaction.SetTime(time)
-
-	return err
-
 }
 
 func periodicallyUpdateDues() {
