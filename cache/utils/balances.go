@@ -6,9 +6,20 @@ type BankBalance struct {
 	Balance int64
 }
 
+// AccountBalance transfers account balance data from the cache to the database.
+type AccountBalance struct {
+	Num     uint16
+	Balance int
+}
+
 // SRBalance captures data from the api and feeds it into the cache.
 type SRBalance struct {
-	Sender   string
-	Receiver string
+	Sender   *bankInfo
+	Receiver *bankInfo
 	Amount   int
+}
+
+type bankInfo struct {
+	Name    string
+	Account uint16
 }

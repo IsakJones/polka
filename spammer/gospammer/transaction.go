@@ -54,7 +54,7 @@ func TransactionSpammer(dest string, transactionNumber int) {
 	doneChanNew := make(chan interface{})
 
 	// Reset randomness
-	rand.Seed(0)
+	rand.Seed(int64(time.Now().Second()))
 
 	// Initialize limited number of workers
 	log.Printf("initializing workers")

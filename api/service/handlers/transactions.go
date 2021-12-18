@@ -28,8 +28,8 @@ type bankInfo struct {
 
 // bankBalance stores information processed by the cache.
 type bankBalance struct {
-	Sender   string
-	Receiver string
+	Sender   bankInfo
+	Receiver bankInfo
 	Amount   int
 }
 
@@ -119,8 +119,8 @@ func Transactions(w http.ResponseWriter, req *http.Request) {
 		go func() {
 			payloadBuffer := new(bytes.Buffer)
 			currentBalance := &bankBalance{
-				Sender:   currentTransaction.Sender.Name,
-				Receiver: currentTransaction.Receiver.Name,
+				Sender:   currentTransaction.Sender,
+				Receiver: currentTransaction.Receiver,
 				Amount:   currentTransaction.Amount,
 			}
 			json.NewEncoder(payloadBuffer).Encode(currentBalance)
