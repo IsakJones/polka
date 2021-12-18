@@ -1,10 +1,10 @@
 package handlers
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"sync/atomic"
@@ -24,6 +24,13 @@ type transaction struct {
 type bankInfo struct {
 	Name    string
 	Account int
+}
+
+// bankBalance stores information processed by the cache.
+type bankBalance struct {
+	Sender   string
+	Receiver string
+	Amount   int
 }
 
 func (trans *transaction) GetSenBank() string {
@@ -77,7 +84,7 @@ func (trans *transaction) SetAmount(amount int) {
 var counter uint64
 
 // Trans handles http requests concerning transactions.
-func Transactions(writer http.ResponseWriter, req *http.Request) {
+func Transactions(w http.ResponseWriter, req *http.Request) {
 
 	// start := time.Now()
 	var (
@@ -97,29 +104,33 @@ func Transactions(writer http.ResponseWriter, req *http.Request) {
 
 	// Multiplex according to method
 	switch req.Method {
-
 	case http.MethodPost:
 
-		cacheErr := make(chan error)
-		// Concurrently send request over to cache
-		go func() {
-			byteBody, err := ioutil.ReadAll(req.Body)
-			if err != nil {
-				log.Printf("Error reading request body: %s", err)
-			}
-			cacheErr <- client.SendTransactionUpdate(byteBody)
-		}()
 		// Read the Body
 		err := json.NewDecoder(req.Body).Decode(&currentTransaction)
 		if err != nil {
-			http.Error(writer, err.Error(), http.StatusBadRequest)
+			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
+
+		// Concurrently send request over to cache
+		cacheErr := make(chan error)
+
+		go func() {
+			payloadBuffer := new(bytes.Buffer)
+			currentBalance := &bankBalance{
+				Sender:   currentTransaction.Sender.Name,
+				Receiver: currentTransaction.Receiver.Name,
+				Amount:   currentTransaction.Amount,
+			}
+			json.NewEncoder(payloadBuffer).Encode(currentBalance)
+			cacheErr <- client.SendTransactionUpdate(payloadBuffer)
+		}()
 		// innerStart := time.Now()
 		// Insert transaction data into db
 		err = dbstore.InsertTransaction(ctx, &currentTransaction)
 		if err != nil {
-			http.Error(writer, err.Error(), http.StatusBadRequest)
+			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 		// innerEnd := time.Now()
@@ -127,12 +138,9 @@ func Transactions(writer http.ResponseWriter, req *http.Request) {
 
 		// check error from cache
 		err = <-cacheErr
-		// Update dues with context
-		// httpDo(
-		// 	ctx,
-		// 	&currentTransaction,
-		// 	memstore.UpdateDues,
-		// )
+		if err != nil {
+			log.Printf("Error from cache: %s", err)
+		}
 		atomic.AddUint64(&counter, 1)
 
 	case http.MethodGet:
@@ -140,33 +148,21 @@ func Transactions(writer http.ResponseWriter, req *http.Request) {
 		err = dbstore.GetTransaction(ctx, &currentTransaction)
 		if err != nil {
 			log.Printf("Error: %s", err)
-			http.Error(writer, err.Error(), http.StatusBadRequest)
+			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		fmt.Fprintf(writer, "%+v", currentTransaction)
+		fmt.Fprintf(w, "%+v", currentTransaction)
 
 		// Encode transaction data and send back to client
-	}
 	// end := time.Now()
 	// duration := end.Sub(start)
 	// log.Printf("Handling request took %s", duration)
+	case http.MethodPut:
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	case http.MethodDelete:
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
 }
-
-// httpDo calls the f function on the current transaction while abiding by the context.
-// func httpDo(ctx context.Context, ct utils.Transaction, f func(utils.Transaction) error) error {
-// 	// Update the dues in a goroutine and pass the result to fChan
-// 	fChan := make(chan error)
-// 	go func() { fChan <- f(ct) }()
-
-// 	// Return an error if the context times out or if the function returns an error.
-// 	select {
-// 	case <-ctx.Done():
-// 		<-fChan
-// 		return ctx.Err()
-// 	case err := <-fChan:
-// 		return err
-// 	}
-// }
 
 func PrintProcessedTransactions() {
 	log.Printf("Processed %d transactions.", counter)

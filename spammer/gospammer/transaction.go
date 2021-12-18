@@ -13,7 +13,7 @@ const (
 	lo = 0
 	hi = 1000
 
-	maxSubscriberGoroutines = 7000
+	maxSubscriberGoroutines = 3000
 	contentType             = "transaction/json"
 	timeout                 = 3 * time.Second
 )
@@ -53,21 +53,26 @@ func TransactionSpammer(dest string, transactionNumber int) {
 	workChan := make(chan interface{})
 	doneChanNew := make(chan interface{})
 
+	// Reset randomness
+	rand.Seed(0)
+
+	// Initialize limited number of workers
 	log.Printf("initializing workers")
 	for i := 0; i < maxSubscriberGoroutines; i++ {
 		go Worker(lo, hi, dest, workChan, doneChanNew)
 	}
 
+	// Assign work to workers
 	log.Printf("filling work channel")
 	for i := 0; i < transactionNumber; i++ {
 		workChan <- true
-		if i == maxSubscriberGoroutines {
-			log.Printf("Reached %d", maxSubscriberGoroutines)
-		}
+		// if i == maxSubscriberGoroutines {
+		// 	log.Printf("Reached %d", maxSubscriberGoroutines)
+		// }
 	}
 
+	// End workers
 	log.Printf("killing workers")
-	// Tell workers to end
 	for i := 0; i < maxSubscriberGoroutines; i++ {
 		doneChanNew <- true
 	}

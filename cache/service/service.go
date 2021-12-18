@@ -2,19 +2,20 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 	"log"
 	"net"
 	"net/http"
 	"os"
 	"sync"
+	"time"
 
-	"github.com/sekerez/polka/api/service/handlers"
-	"github.com/sekerez/polka/api/utils"
+	"github.com/sekerez/polka/cache/memstore"
+	"github.com/sekerez/polka/cache/utils"
 )
 
 const (
-	transPath = "/transaction"
-	helloPath = "/hello"
+	path = "/updatebalance"
 )
 
 // Service manages the main application functions.
@@ -26,14 +27,6 @@ type Service struct {
 	mux      *http.ServeMux
 	wg       sync.WaitGroup
 	ctx      context.Context
-}
-
-func (s *Service) Address() net.Addr {
-	return s.listener.Addr()
-}
-
-func (s *Service) BaseContext() context.Context {
-	return s.ctx
 }
 
 // New returns an uninitialized http service.
@@ -54,7 +47,7 @@ func New(conf utils.Config, ctx context.Context) (*Service, error) {
 
 	// Set up multiplexor
 	mux := http.NewServeMux()
-	mux.HandleFunc(transPath, handlers.Transactions)
+	mux.HandleFunc(path, duesHandler)
 
 	// Set up server
 	server := &http.Server{
@@ -74,13 +67,13 @@ func New(conf utils.Config, ctx context.Context) (*Service, error) {
 
 	// Start listening for requests
 	s.wg.Add(1)
-	go s.Start()
+	go s.Serve()
 
 	return s, nil
 }
 
 // Start sets up a server and listener for incoming requests.
-func (s *Service) Start() {
+func (s *Service) Serve() {
 	defer s.wg.Done()
 
 	// Activate server
@@ -90,7 +83,62 @@ func (s *Service) Start() {
 	}
 }
 
-func (s *Service) Close() error {
+func duesHandler(w http.ResponseWriter, req *http.Request) {
+
+	var (
+		ctx            context.Context
+		cancel         context.CancelFunc
+		currentBalance utils.SRBalance
+	)
+
+	// Spawn context with timeout if request has timeout
+	timeout, err := time.ParseDuration(req.FormValue("Timeout"))
+	if err == nil {
+		ctx, cancel = context.WithTimeout(context.Background(), timeout)
+	} else {
+		ctx, cancel = context.WithCancel(context.Background())
+	}
+	defer cancel()
+
+	switch req.Method {
+	case http.MethodPost:
+		err := json.NewDecoder(req.Body).Decode(&currentBalance)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+
+		httpDo(
+			ctx,
+			&currentBalance,
+			memstore.UpdateDues,
+		)
+	case http.MethodGet:
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	case http.MethodPut:
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	case http.MethodDelete:
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
+}
+
+// httpDo calls the f function on the current transaction while abiding by the context.
+func httpDo(ctx context.Context, cb *utils.SRBalance, f func(*utils.SRBalance) error) error {
+	// Update the dues in a goroutine and pass the result to fChan
+	fChan := make(chan error)
+	go func() { fChan <- f(cb) }()
+
+	// Return an error if the context times out or if the function returns an error.
+	select {
+	case <-ctx.Done():
+		<-fChan
+		return ctx.Err()
+	case err := <-fChan:
+		return err
+	}
+}
+
+func (s *Service) Close() (err error) {
 	s.listener.Close()
-	return nil
+	err = s.server.Shutdown(s.ctx)
+	return
 }
