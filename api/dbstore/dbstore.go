@@ -21,12 +21,10 @@ const (
 var db *DB
 
 type DB struct {
-	path    string
-	ctx     context.Context
-	logger  *log.Logger
-	conn    *pgxpool.Pool
-	quit    <-chan bool
-	memChan <-chan utils.BankBalance
+	path   string
+	ctx    context.Context
+	logger *log.Logger
+	conn   *pgxpool.Pool
 }
 
 func (db *DB) GetPath() string {
@@ -40,18 +38,6 @@ func (db *DB) GetCtx() context.Context {
 func (db *DB) GetConn() *pgxpool.Pool {
 	return db.conn
 }
-
-// Define transaction struct
-
-// type dbTransaction struct {
-// 	ID                int
-// 	Sending_account   int
-// 	Receiving_account int
-// 	Dollar_amount     int
-// 	Time              time.Time
-// 	Sending_bank_id   int
-// 	Receiving_bank_id int
-// }
 
 func New(ctx context.Context) error {
 
@@ -103,7 +89,7 @@ func GetTransaction(ctx context.Context, destTransaction utils.Transaction) erro
 
 	err = db.conn.QueryRow(
 		ctx,
-		getLatestTransaction,
+		getLatestTransactionQ,
 	).Scan(
 		&senBank,
 		&recBank,
@@ -130,7 +116,21 @@ func GetTransaction(ctx context.Context, destTransaction utils.Transaction) erro
 func InsertTransaction(ctx context.Context, transaction utils.Transaction) error {
 	_, err := db.conn.Exec(
 		ctx,
-		insertTransSQL,
+		insertTransactionQ,
+		transaction.GetSenBank(),
+		transaction.GetRecBank(),
+		transaction.GetSenAcc(),
+		transaction.GetRecAcc(),
+		transaction.GetAmount(),
+		transaction.GetTime(),
+	)
+	return err
+}
+
+func DeleteTransaction(ctx context.Context, transaction utils.Transaction) error {
+	_, err := db.conn.Exec(
+		ctx,
+		deleteTransactionQ,
 		transaction.GetSenBank(),
 		transaction.GetRecBank(),
 		transaction.GetSenAcc(),

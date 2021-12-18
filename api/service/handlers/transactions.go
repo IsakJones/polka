@@ -87,10 +87,11 @@ var counter uint64
 func Transactions(w http.ResponseWriter, req *http.Request) {
 
 	// start := time.Now()
+	// ct stands for current transaction
 	var (
-		ctx                context.Context
-		cancel             context.CancelFunc
-		currentTransaction transaction
+		ctx    context.Context
+		cancel context.CancelFunc
+		ct     transaction
 	)
 
 	// Spawn context with timeout if request has timeout
@@ -102,33 +103,26 @@ func Transactions(w http.ResponseWriter, req *http.Request) {
 	}
 	defer cancel()
 
+	// Read body if post or delete request
+	if req.Method == http.MethodPost || req.Method == http.MethodDelete {
+		// Read the body
+		err := json.NewDecoder(req.Body).Decode(&ct)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+	}
+
 	// Multiplex according to method
 	switch req.Method {
 	case http.MethodPost:
 
-		// Read the Body
-		err := json.NewDecoder(req.Body).Decode(&currentTransaction)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-
 		// Concurrently send request over to cache
 		cacheErr := make(chan error)
+		go sendTransactionToCache(&ct, ct.Amount, cacheErr)
 
-		go func() {
-			payloadBuffer := new(bytes.Buffer)
-			currentBalance := &bankBalance{
-				Sender:   currentTransaction.Sender,
-				Receiver: currentTransaction.Receiver,
-				Amount:   currentTransaction.Amount,
-			}
-			json.NewEncoder(payloadBuffer).Encode(currentBalance)
-			cacheErr <- client.SendTransactionUpdate(payloadBuffer)
-		}()
 		// innerStart := time.Now()
 		// Insert transaction data into db
-		err = dbstore.InsertTransaction(ctx, &currentTransaction)
+		err = dbstore.InsertTransaction(ctx, &ct)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
@@ -145,13 +139,13 @@ func Transactions(w http.ResponseWriter, req *http.Request) {
 
 	case http.MethodGet:
 		// Scan table row in current transaction struct
-		err = dbstore.GetTransaction(ctx, &currentTransaction)
+		err = dbstore.GetTransaction(ctx, &ct)
 		if err != nil {
 			log.Printf("Error: %s", err)
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		fmt.Fprintf(w, "%+v", currentTransaction)
+		fmt.Fprintf(w, "%+v", ct)
 
 		// Encode transaction data and send back to client
 	// end := time.Now()
@@ -160,8 +154,43 @@ func Transactions(w http.ResponseWriter, req *http.Request) {
 	case http.MethodPut:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	case http.MethodDelete:
-		w.WriteHeader(http.StatusMethodNotAllowed)
+
+		// Read the body
+		err := json.NewDecoder(req.Body).Decode(&ct)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+
+		// Concurrently update cache
+		cacheErr := make(chan error)
+		// Send the negative of the amount
+		go sendTransactionToCache(&ct, -ct.Amount, cacheErr)
+
+		// Update database
+		err = dbstore.DeleteTransaction(ctx, &ct)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		// check error from cache
+		err = <-cacheErr
+		if err != nil {
+			log.Printf("Error from cache: %s", err)
+		}
+
 	}
+}
+
+func sendTransactionToCache(ct *transaction, amount int, cacheErr chan<- error) {
+	payloadBuffer := new(bytes.Buffer)
+	currentBalance := &bankBalance{
+		Sender:   ct.Sender,
+		Receiver: ct.Receiver,
+		Amount:   amount,
+	}
+	json.NewEncoder(payloadBuffer).Encode(currentBalance)
+	cacheErr <- client.SendTransactionUpdate(payloadBuffer)
 }
 
 func PrintProcessedTransactions() {

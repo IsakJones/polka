@@ -1,7 +1,7 @@
 package dbstore
 
 const (
-	getTransByTrans = `
+	getTransByTransQ = `
 	SELECT 
 		sending_bank_id AND
 		receiving_bank_id AND
@@ -17,20 +17,7 @@ const (
 	dollar_amount=$5 AND
 	time=$6;
 	`
-	// getLatestTrans = `
-	// SELECT * FROM transactions
-	// ORDER BY time
-	// LIMIT 1;
-	// `
-	// getBankNames = `
-	// SELECT sender.name, receiver.name
-	// FROM banks sender
-	// INNER JOIN transactions ON sender.id=$1
-	// INNER JOIN banks receiver ON receiver.id=$2
-	// LIMIT 1;
-	// `
-
-	getLatestTransaction = `
+	getLatestTransactionQ = `
 	SELECT
 		sender.name,
 		receiver.name,
@@ -43,24 +30,7 @@ const (
 	JOIN banks receiver ON receiver.id=transactions.receiving_bank_id
 	ORDER BY time;
 	`
-	updateDues = `
-	UPDATE banks
-	   SET balance = CASE name
-	   				 WHEN $1 THEN balance - $3
-					 WHEN $2 THEN balance + $3
-					 END
-	WHERE name = $1 OR name = $2;
-	`
-	addDues = `
-	UPDATE banks SET balance = balance + $2
-	WHERE name=$1;
-	`
-	subtractDues = `
-	UPDATE banks SET balance = balance - $2
-	WHERE name=$1;
-	`
-
-	insertTransSQL = `
+	insertTransactionQ = `
 	INSERT INTO transactions (
 		sending_bank_id,
 		receiving_bank_id,
@@ -76,5 +46,14 @@ const (
 		$5,
 		$6
 	);
+	`
+	deleteTransactionQ = `
+	DELETE FROM transactions WHERE 
+	sending_bank_id=(SELECT id FROM banks WHERE name=$1) AND
+	receiving_bank_id=(SELECT id FROM banks WHERE name=$2) AND
+	sending_account=$3 AND
+	receiving_account=$4 AND
+	dollar_amount=$5 AND
+	time=$6;
 	`
 )
