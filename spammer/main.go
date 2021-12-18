@@ -1,9 +1,9 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"os"
-	"strconv"
 
 	"github.com/joho/godotenv"
 
@@ -18,29 +18,29 @@ const (
 
 func main() {
 
+	// Check for right args
+	// args := os.Args
+	// if len(args) < 2 {
+	// 	log.Fatal("No transaction number provided.")
+	// } else if len(args) > 4 {
+	// 	log.Fatal("Too many arguments provided.")
+	// }
+	helloPtr := flag.Bool("h", false, "whether to send a hello GET request")
+	workerPtr := flag.Int("w", 3000, "the number of workers")
+	transactionsPtr := flag.Int("t", 100, "the number of transactions sent")
+	flag.Parse()
+
 	// Get url to api
 	if err := godotenv.Load(envPath); err != nil {
 		log.Fatalf("Environmental variables failed to load: %s\n", err)
 	}
 	mainUrl := os.Getenv("URL")
 
-	// Check for right args
-	args := os.Args
-	if len(args) < 2 {
-		log.Fatal("No transaction number provided.")
-	} else if len(args) > 3 {
-		log.Fatal("Too many arguments provided.")
-	}
-
-	// Parse number of requests
-	requestNumber, err := strconv.Atoi(args[1])
-	if err != nil {
-		log.Fatal("Argument must be an integer.")
-	}
 	// Say hello if asked!
-	if len(args) == 3 && args[2] == "hello" {
+	if *helloPtr {
 		gospammer.SayHello(mainUrl + helloUrl)
 	}
 
-	gospammer.TransactionSpammer(mainUrl+transUrl, int(requestNumber))
+	log.Printf("Sending %d transactions with %d workers", *transactionsPtr, *workerPtr)
+	gospammer.TransactionSpammer(mainUrl+transUrl, *workerPtr, *transactionsPtr)
 }

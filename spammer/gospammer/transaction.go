@@ -13,9 +13,8 @@ const (
 	lo = 0
 	hi = 1000
 
-	maxSubscriberGoroutines = 3000
-	contentType             = "transaction/json"
-	timeout                 = 3 * time.Second
+	contentType = "transaction/json"
+	timeout     = 3 * time.Second
 )
 
 // transaction stores information constituting a transaction.
@@ -48,7 +47,7 @@ var banks = []string{
 // TransactionSpammer sends transactionNumber POST requests concurrently,
 // to the specified dest. The goal is to send requests as
 // close to simultaneous as possible.
-func TransactionSpammer(dest string, transactionNumber int) {
+func TransactionSpammer(dest string, maxGoroutines, transactionNumber int) {
 
 	workChan := make(chan interface{})
 	doneChanNew := make(chan interface{})
@@ -58,7 +57,7 @@ func TransactionSpammer(dest string, transactionNumber int) {
 
 	// Initialize limited number of workers
 	log.Printf("initializing workers")
-	for i := 0; i < maxSubscriberGoroutines; i++ {
+	for i := 0; i < maxGoroutines; i++ {
 		go Worker(lo, hi, dest, workChan, doneChanNew)
 	}
 
@@ -73,7 +72,7 @@ func TransactionSpammer(dest string, transactionNumber int) {
 
 	// End workers
 	log.Printf("killing workers")
-	for i := 0; i < maxSubscriberGoroutines; i++ {
+	for i := 0; i < maxGoroutines; i++ {
 		doneChanNew <- true
 	}
 	log.Printf("Finished.")
