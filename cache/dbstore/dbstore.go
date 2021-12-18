@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/georgysavva/scany/pgxscan"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/joho/godotenv"
 
@@ -21,11 +22,12 @@ type DB struct {
 	ctx     context.Context
 	logger  *log.Logger
 	conn    *pgxpool.Pool
-	quit    <-chan bool
-	memChan <-chan utils.BankBalance
+	quit    chan bool
+	memChan <-chan *utils.BankBalance
 }
 
-func New(ctx context.Context, quit <-chan bool, memChan <-chan utils.BankBalance) error {
+func New(ctx context.Context, memChan <-chan *utils.BankBalance, retreivalChan chan<- *utils.BankBalance) error {
+	var retreivedBalances []*utils.BankBalance
 
 	logger := log.New(os.Stderr, "[postgres] ", log.LstdFlags)
 
@@ -56,10 +58,23 @@ func New(ctx context.Context, quit <-chan bool, memChan <-chan utils.BankBalance
 		path:    path,
 		ctx:     ctx,
 		conn:    conn,
-		quit:    quit,
+		quit:    make(chan bool),
 		logger:  logger,
 		memChan: memChan,
 	}
+
+	// Restore dues in memstore
+	pgxscan.Select(
+		db.ctx,
+		db.conn,
+		&retreivedBalances,
+		getRetrieve,
+	)
+	for _, b := range retreivedBalances {
+		retreivalChan <- b
+	}
+	close(retreivalChan)
+
 	// Set up periodic update
 	go periodicallyUpdateDues()
 
@@ -74,7 +89,7 @@ func periodicallyUpdateDues() {
 		case current := <-db.memChan:
 			_, err := db.conn.Exec(
 				db.ctx,
-				addDues,
+				updateBalance,
 				current.Name,
 				current.Balance,
 			)
@@ -83,4 +98,10 @@ func periodicallyUpdateDues() {
 			}
 		}
 	}
+}
+
+func Close() (err error) {
+	db.quit <- true
+	db.conn.Close()
+	return
 }

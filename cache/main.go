@@ -20,8 +20,7 @@ import (
 
 const (
 	envPath                = "cache.env"
-	balanceInterval        = time.Duration(1) * time.Second
-	balanceChannelCapacity = 20
+	balanceChannelCapacity = 10
 )
 
 type Config struct {
@@ -81,18 +80,20 @@ func main() {
 	defer cancel()
 
 	// Initialize cache and DB connection
-	balancesChannel := make(chan utils.BankBalance)
-	memQuit := make(chan bool)
-	dbQuit := make(chan bool)
+	balancesChannel := make(chan *utils.BankBalance)
+	retreivalChannel := make(chan *utils.BankBalance) // To retreive balances from db.
 
-	err = memstore.New(ctx, balanceInterval, memQuit, balancesChannel)
+	// The dbstore must be initialized concurrently to correctly update the cache with retreived db balances.
+	go func() {
+		err = dbstore.New(ctx, balancesChannel, retreivalChannel)
+		if err != nil {
+			log.Fatalf("Could not init DB connection: %s", err)
+		}
+	}()
+
+	err = memstore.New(ctx, balancesChannel, retreivalChannel)
 	if err != nil {
 		log.Fatalf("Could not init memstore: %s", err)
-	}
-
-	err = dbstore.New(ctx, dbQuit, balancesChannel)
-	if err != nil {
-		log.Fatalf("Could not init DB connection: %s", err)
 	}
 
 	// Initialize service
@@ -102,22 +103,13 @@ func main() {
 	}
 	log.Println("HTTP service started successfully.")
 
-	// Update bank balances every 5 seconds
+	// Display updated bank balances every 5 seconds
 	go func() {
 		log.Println("Transactions processed:")
 		ticker := time.NewTicker(time.Duration(frequency) * time.Second)
 		for range ticker.C {
 			memstore.PrintDues()
 		}
-	}()
-
-	// Update db interbank records
-	go func() {
-		ticker := time.NewTicker(time.Duration(balanceInterval) * time.Second)
-		for range ticker.C {
-			memstore.UpdateDatabaseBalances()
-		}
-		log.Println("Database updated.")
 	}()
 
 	// Pipe incoming OS signals to channel
@@ -135,6 +127,19 @@ func main() {
 
 	}
 
+	// First close memstore so it updates through db connection
+	memstore.Close()
+	if err != nil {
+		log.Fatalf("Failed to close memstore: %s", err)
+	}
+
+	// Then close db connection
+	dbstore.Close()
+	if err != nil {
+		log.Fatalf("Failed to close db connection: %s", err)
+	}
+
+	// Lastly, close service
 	err = httpService.Close()
 	if err != nil {
 		log.Fatalf("Failed to close service: %s", err)

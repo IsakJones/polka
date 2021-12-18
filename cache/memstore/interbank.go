@@ -15,30 +15,44 @@ import (
 // Positive values are owed by Polka to the bank,
 // Negative values are owed by the bank to Polka.
 // An RWMutex allows to simultaneously read and write.
-type Register struct {
+type Cache struct {
 	sync.RWMutex
 	ctx            context.Context
-	quit           <-chan bool
 	dues           map[string]int64
-	dbChan         chan<- utils.BankBalance
+	quit           chan bool
+	done           chan bool
+	dbChan         chan<- *utils.BankBalance
 	updateInterval time.Duration
 }
 
+const (
+	balanceInterval = time.Duration(1) * time.Second
+)
+
 var (
-	register Register
+	memcache Cache
 	counter  uint64
 )
 
-func New(ctx context.Context, interval time.Duration, quit <-chan bool, dbChan chan<- utils.BankBalance) error {
+func New(ctx context.Context, dbChan chan<- *utils.BankBalance, retreiveChan <-chan *utils.BankBalance) error {
 	var err error
 	// Init local register
-	register = Register{
+	memcache = Cache{
 		ctx:            ctx,
-		quit:           quit,
 		dues:           make(map[string]int64),
 		dbChan:         dbChan,
-		updateInterval: interval,
+		quit:           make(chan bool),
+		done:           make(chan bool),
+		updateInterval: balanceInterval,
 	}
+
+	// Retrieve dues from database
+	memcache.Lock()
+	for balance := range retreiveChan {
+		memcache.dues[balance.Name] = balance.Balance
+	}
+	memcache.Unlock()
+
 	// Update periodically
 	go UpdateDatabaseBalances()
 
@@ -51,36 +65,45 @@ func UpdateDues(current *utils.SRBalance) error {
 	atomic.AddUint64(&counter, 1)
 
 	// These operations make writing concurrently safe.
-	register.Lock()
-	defer register.Unlock()
+	memcache.Lock()
+	defer memcache.Unlock()
 
-	register.dues[current.Sender] -= int64(current.Amount)
-	register.dues[current.Receiver] += int64(current.Amount)
+	memcache.dues[current.Sender] -= int64(current.Amount)
+	memcache.dues[current.Receiver] += int64(current.Amount)
 
 	return nil
 }
 
 func UpdateDatabaseBalances() {
-	ticker := time.NewTicker(register.updateInterval)
+	updateDB := func() {
+		memcache.RLock()
 
+		for bank, balance := range memcache.dues {
+			memcache.dbChan <- &utils.BankBalance{
+				Name:    bank,
+				Balance: balance,
+			}
+		}
+		memcache.RUnlock()
+	}
+
+	ticker := time.NewTicker(memcache.updateInterval)
 	for {
 		select {
-		case <-register.quit:
+		case <-memcache.quit:
+			updateDB()
+			memcache.done <- true
 			return
 		case <-ticker.C:
-			register.Lock()
-
-			for bank, balance := range register.dues {
-				register.dbChan <- utils.BankBalance{
-					Name:    bank,
-					Balance: balance,
-				}
-				register.dues[bank] = 0
-			}
-			register.Unlock()
-
+			updateDB()
 		}
 	}
+}
+
+func Close() (err error) {
+	memcache.quit <- true
+	<-memcache.done
+	return
 }
 
 // PrintDues prints to the console how much Polka owes to
@@ -90,11 +113,11 @@ func PrintDues() {
 	log.Printf("Processed %d transactions.", counter)
 	fmt.Printf("Dues:\n{\n")
 
-	register.RLock()
-	for bank, due := range register.dues {
+	memcache.RLock()
+	for bank, due := range memcache.dues {
 		fmt.Printf("%s: %d\n", bank, due)
 	}
-	defer register.RUnlock()
+	defer memcache.RUnlock()
 
 	fmt.Printf("}\n")
 }
