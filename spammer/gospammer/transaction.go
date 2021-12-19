@@ -44,6 +44,8 @@ var banks = []string{
 	"Capital One Financial",
 }
 
+var c *http.Client
+
 // TransactionSpammer sends transactionNumber POST requests concurrently,
 // to the specified dest. The goal is to send requests as
 // close to simultaneous as possible.
@@ -54,6 +56,11 @@ func TransactionSpammer(dest string, maxGoroutines, transactionNumber int) {
 
 	// Reset randomness
 	rand.Seed(int64(time.Now().Second()))
+
+	// Initialize custom client
+	c = &http.Client{
+		Timeout: 5 * time.Second,
+	}
 
 	// Initialize limited number of workers
 	log.Printf("initializing workers")
@@ -97,7 +104,7 @@ func Worker(lo, hi int, dest string, work <-chan interface{}, done <-chan interf
 }
 
 func sendTransaction(dest string, payload *bytes.Buffer) {
-	resp, err := http.Post(dest, contentType, payload)
+	resp, err := c.Post(dest, contentType, payload)
 	if err != nil {
 		log.Printf("Error sending request: %s", err)
 		return

@@ -6,15 +6,18 @@ List of added features:
 
  - Spammer
   - Accepts a maximum number of workers
+  - Add max worker pool and number of transactions as parameter command-line flags
   - spams given number of randomly generated transactions concurrently to API
-  - warns if request response is error
+  - warns if request response is an error
   - send hello request to check if API service works
+  - client with custom settings
 
  - API service
   - /transaction DELETE deletes a given transaction from DB transactions table and sends according request to cache
   - /transaction POST sends given transaction information to cache and updates DB transactions table
   - /transaction GET to get the latest transaction sent (slow, requires sort by time)
   - /hello GET endpoint to check if spammer can connect to API
+  - client with custom settings
 
  - Cache
   - /balance POST updates memory bank and account ledgers 
@@ -32,7 +35,6 @@ List of features to add:
 
  - Spammer
   - Test for DELETE requests
-  - Add max worker pool parameter as argument
 
  - Load balancer
   - Add load balancer
