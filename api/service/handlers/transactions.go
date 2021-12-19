@@ -94,11 +94,11 @@ func Transactions(w http.ResponseWriter, req *http.Request) {
 		ct     transaction
 	)
 
-	req.ParseForm()
-	for key, value := range req.Form {
-		log.Printf("%s: %s", key, value)
-	}
-	log.Printf("Passed form printing.")
+	// req.ParseForm()
+	// for key, value := range req.Form {
+	// 	log.Printf("%s: %s", key, value)
+	// }
+	// log.Printf("Passed form printing.")
 	// Spawn context with timeout if request has timeout
 	timeout, err := time.ParseDuration(req.FormValue("timeout"))
 	if err == nil {

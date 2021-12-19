@@ -80,18 +80,33 @@ func main() {
 	defer cancel()
 
 	// Initialize cache and DB connection
-	balancesChannel := make(chan *utils.BankBalance)
-	retreivalChannel := make(chan *utils.BankBalance) // To retreive balances from db.
+	bankBalancesChannel := make(chan *utils.BankBalance)
+	accountBalancesChannel := make(chan *utils.Balance) // For the cache to send data to the db.
+
+	bankRetreivalChannel := make(chan *utils.BankBalance)
+	accountRetreivalChannel := make(chan *utils.Balance) // To retreive balances from db.
 
 	// The dbstore must be initialized concurrently to correctly update the cache with retreived db balances.
 	go func() {
-		err = dbstore.New(ctx, balancesChannel, retreivalChannel)
+		err = dbstore.New(
+			ctx,
+			bankBalancesChannel,
+			accountBalancesChannel,
+			bankRetreivalChannel,
+			accountRetreivalChannel,
+		)
 		if err != nil {
 			log.Fatalf("Could not init DB connection: %s", err)
 		}
 	}()
 
-	err = memstore.New(ctx, balancesChannel, retreivalChannel)
+	err = memstore.New(
+		ctx,
+		bankBalancesChannel,
+		accountBalancesChannel,
+		bankRetreivalChannel,
+		accountRetreivalChannel,
+	)
 	if err != nil {
 		log.Fatalf("Could not init memstore: %s", err)
 	}

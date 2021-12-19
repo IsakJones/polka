@@ -6,7 +6,6 @@ import (
 	"log"
 	"os"
 
-	"github.com/georgysavva/scany/pgxscan"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/joho/godotenv"
 
@@ -18,16 +17,29 @@ const envPath = "db.env"
 var db *DB // Create singleton DB
 
 type DB struct {
-	path    string
-	ctx     context.Context
-	logger  *log.Logger
-	conn    *pgxpool.Pool
-	quit    chan bool
-	memChan <-chan *utils.BankBalance
+	path     string
+	ctx      context.Context
+	logger   *log.Logger
+	conn     *pgxpool.Pool
+	quit     chan bool
+	bankChan <-chan *utils.BankBalance
+	accChan  <-chan *utils.Balance
 }
 
-func New(ctx context.Context, memChan <-chan *utils.BankBalance, retreivalChan chan<- *utils.BankBalance) error {
-	var retreivedBalances []*utils.BankBalance
+func New(
+	ctx context.Context,
+	bankChan <-chan *utils.BankBalance,
+	accChan <-chan *utils.Balance,
+	bankRetChan chan<- *utils.BankBalance,
+	accRetChan chan<- *utils.Balance,
+) error {
+
+	var (
+		bank        string
+		account     uint16
+		bankBalance int64
+		accBalance  int
+	)
 
 	logger := log.New(os.Stderr, "[postgres] ", log.LstdFlags)
 
@@ -55,43 +67,86 @@ func New(ctx context.Context, memChan <-chan *utils.BankBalance, retreivalChan c
 
 	// Insert variables inside object
 	db = &DB{
-		path:    path,
-		ctx:     ctx,
-		conn:    conn,
-		quit:    make(chan bool),
-		logger:  logger,
-		memChan: memChan,
+		ctx:      ctx,
+		path:     path,
+		conn:     conn,
+		quit:     make(chan bool),
+		logger:   logger,
+		accChan:  accChan,
+		bankChan: bankChan,
 	}
 
-	// Restore dues in memstore
-	pgxscan.Select(
+	// Restore bank balances
+	rows, err := db.conn.Query(
 		db.ctx,
-		db.conn,
-		&retreivedBalances,
-		getRetrieve,
+		bankRetrieveQ,
 	)
-	for _, b := range retreivedBalances {
-		retreivalChan <- b
+	if err != nil {
+		log.Fatalf("Could not retrieve bank balances: %s", err)
 	}
-	close(retreivalChan)
+	for rows.Next() {
+		err = rows.Scan(&bank, &bankBalance)
+		if err != nil {
+			log.Printf("Could not retrieve bank balance row: %s", err)
+		}
+
+		bankRetChan <- &utils.BankBalance{
+			Name:    bank,
+			Balance: bankBalance,
+		}
+	}
+	close(bankRetChan)
+
+	// Restore account balances
+	rows, err = db.conn.Query(
+		db.ctx,
+		accRetrieveQ,
+	)
+	if err != nil {
+		log.Fatalf("Could not retrieve account balances: %s", err)
+	}
+	for rows.Next() {
+		err = rows.Scan(&bank, &account, &accBalance)
+		if err != nil {
+			log.Printf("Could not retrieve account balance row: %s", err)
+		}
+
+		accRetChan <- &utils.Balance{
+			Bank:    bank,
+			Account: account,
+			Balance: accBalance,
+		}
+	}
+	close(accRetChan)
 
 	// Set up periodic update
-	go periodicallyUpdateDues()
+	go updateDatabase()
 
 	return nil
 }
 
-func periodicallyUpdateDues() {
+func updateDatabase() {
 	for {
 		select {
 		case <-db.quit:
 			return
-		case current := <-db.memChan:
+		case bankBalance := <-db.bankChan:
 			_, err := db.conn.Exec(
 				db.ctx,
-				updateBalance,
-				current.Name,
-				current.Balance,
+				updateBankBalanceQ,
+				bankBalance.Name,
+				bankBalance.Balance,
+			)
+			if err != nil {
+				db.logger.Printf("Error updating database: %s", err)
+			}
+		case accBalance := <-db.accChan:
+			_, err := db.conn.Exec(
+				db.ctx,
+				updateAccBalanceQ,
+				accBalance.Bank,
+				accBalance.Account,
+				accBalance.Balance,
 			)
 			if err != nil {
 				db.logger.Printf("Error updating database: %s", err)

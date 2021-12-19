@@ -5,6 +5,7 @@ Initially, the database is supposed to hold two tables:
  - transactions: tracks all processed transactions, records all information recorded in the Transaction struct.
 */
 
+-- Creat banks table with built-in names
 CREATE TABLE banks (
     id SERIAL,
     name VARCHAR(128),
@@ -28,7 +29,19 @@ VALUES
 ('Bank of New York Mellon'),
 ('Capital One Financial');
 
+-- Create accounts table with index
+CREATE TABLE accounts (
+    id SERIAL,
+    account INT,
+    balance INT,
+    bank_id INT NOT NULL REFERENCES banks(id) ON DELETE CASCADE,
+    UNIQUE (account, bank_id)
+);
 
+CREATE INDEX account_index ON accounts(account);
+CREATE UNIQUE INDEX idu ON accounts(account, bank_id);
+
+-- Create transactions table
 CREATE TABLE transactions (
     id SERIAL,
     sending_account INT,
