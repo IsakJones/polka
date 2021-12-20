@@ -38,7 +38,6 @@ CREATE TABLE accounts (
     UNIQUE (account, bank_id)
 );
 
-CREATE INDEX account_index ON accounts(account);
 CREATE UNIQUE INDEX idu ON accounts(account, bank_id);
 
 -- Create transactions table

@@ -23,12 +23,16 @@ List of added features:
   - /balance POST updates memory bank and account ledgers 
   - every second the cache updates the DB banks table with its own memory ledger
   - loads bank balances from DB on startup
+  - loads account balance from DB on startup
+  - Send account balance updates to DB
   - listens for updates from multiple API services
 
  - DB
   - transactions records all transactions send through /transaction POST to API
    - records name and account number of sender and receiver, dollar amount sent, and time
   - banks records bank names and bank balances with Polka (<0 then owes to Polka, >0 then Polka owes)
+  - accounts records balances of individual accounts at all banks, hence include bank id, account number, and balance
+   - includes a unique index for upsert and an index on both accounts and bank for performance
 
 
 List of features to add:
@@ -36,22 +40,16 @@ List of features to add:
  - Spammer
   - Test for DELETE requests
 
- - Load balancer
-  - Add load balancer
-  - Add authentication
-
  - API
   - Add /transaction PATCH endpoint for different parameters (name or account of sender or receiver)
   - Detect timeout parameter for context
 
  - Cache
-  - Send account balance updates to DB
   - Implement clearing mechanism
-
- - DB
-  - Add account balances (how? relationships? Ask Andrew)
 
  - General
   - Currency info and currency conversion according to official API
+  - Authentication
+  - Load balancer
   - Fee calculation + interest rate for banks before clearing (?)
-  - Polka liquidity tracker (?)
+  - Polka liquidity tracker for clearing (?)

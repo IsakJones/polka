@@ -102,6 +102,7 @@ func Transactions(w http.ResponseWriter, req *http.Request) {
 	// Spawn context with timeout if request has timeout
 	timeout, err := time.ParseDuration(req.FormValue("timeout"))
 	if err == nil {
+		// log.Printf("Detected timeout")
 		ctx, cancel = context.WithTimeout(context.Background(), timeout)
 	} else {
 		ctx, cancel = context.WithCancel(context.Background())

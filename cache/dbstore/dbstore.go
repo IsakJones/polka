@@ -70,10 +70,10 @@ func New(
 		ctx:      ctx,
 		path:     path,
 		conn:     conn,
-		quit:     make(chan bool),
 		logger:   logger,
 		accChan:  accChan,
 		bankChan: bankChan,
+		quit:     make(chan bool),
 	}
 
 	// Restore bank balances
