@@ -22,12 +22,14 @@ type DB struct {
 	logger   *log.Logger
 	conn     *pgxpool.Pool
 	quit     chan bool
+	bankId   map[string]uint16
 	bankChan <-chan *utils.BankBalance
 	accChan  <-chan *utils.Balance
 }
 
 func New(
 	ctx context.Context,
+	bankNumChan chan<- uint16,
 	bankChan <-chan *utils.BankBalance,
 	accChan <-chan *utils.Balance,
 	bankRetChan chan<- *utils.BankBalance,
@@ -36,18 +38,21 @@ func New(
 
 	var (
 		bank        string
+		bankId      uint16
+		bankNum     uint16
 		account     uint16
 		bankBalance int64
 		accBalance  int
 	)
 
-	logger := log.New(os.Stderr, "[postgres] ", log.LstdFlags)
+	logger := log.New(os.Stderr, "[postgres] ", log.LstdFlags|log.Lshortfile)
 
 	// Get environment variables and format url
 	if err := godotenv.Load(envPath); err != nil {
 		return err
 	}
 
+	logger.Printf("Created Logger")
 	// Write db url
 	path := fmt.Sprintf(
 		"postgres://%s:%s@%s:%s/%s",
@@ -63,7 +68,6 @@ func New(
 	if err != nil {
 		return err
 	}
-	log.Printf("Max Connections: %d", conn.Stat().MaxConns())
 
 	// Insert variables inside object
 	db = &DB{
@@ -76,22 +80,34 @@ func New(
 		quit:     make(chan bool),
 	}
 
+	db.logger.Printf("Max Connections: %d", conn.Stat().MaxConns())
+	// Pass number of banks
+	err = db.conn.QueryRow(db.ctx, bankNumQ).Scan(&bankNum)
+	if err != nil {
+		db.logger.Fatalf("Error querying banks length: %s", err)
+	}
+	db.logger.Printf("Sending over banknum: %d", bankNum)
+	bankNumChan <- bankNum
+	close(bankNumChan)
+
 	// Restore bank balances
 	rows, err := db.conn.Query(
 		db.ctx,
 		bankRetrieveQ,
 	)
 	if err != nil {
-		log.Fatalf("Could not retrieve bank balances: %s", err)
+		db.logger.Fatalf("Could not retrieve bank balances: %s", err)
 	}
+	// Iterate through banks rows and send to memcache through channel
 	for rows.Next() {
-		err = rows.Scan(&bank, &bankBalance)
+		err = rows.Scan(&bankId, &bank, &bankBalance)
 		if err != nil {
-			log.Printf("Could not retrieve bank balance row: %s", err)
+			db.logger.Printf("Could not retrieve bank balance row: %s", err)
 		}
 
 		bankRetChan <- &utils.BankBalance{
 			Name:    bank,
+			BankId:  bankId,
 			Balance: bankBalance,
 		}
 	}
@@ -103,16 +119,17 @@ func New(
 		accRetrieveQ,
 	)
 	if err != nil {
-		log.Fatalf("Could not retrieve account balances: %s", err)
+		db.logger.Fatalf("Could not retrieve account balances: %s", err)
 	}
+	// Iterate through accounts rows and send to memcache through channel
 	for rows.Next() {
-		err = rows.Scan(&bank, &account, &accBalance)
+		err = rows.Scan(&bankId, &account, &accBalance)
 		if err != nil {
-			log.Printf("Could not retrieve account balance row: %s", err)
+			db.logger.Printf("Could not retrieve account balance row: %s", err)
 		}
 
 		accRetChan <- &utils.Balance{
-			Bank:    bank,
+			BankId:  bankId,
 			Account: account,
 			Balance: accBalance,
 		}
@@ -144,7 +161,7 @@ func updateDatabase() {
 			_, err := db.conn.Exec(
 				db.ctx,
 				updateAccBalanceQ,
-				accBalance.Bank,
+				accBalance.BankId,
 				accBalance.Account,
 				accBalance.Balance,
 			)

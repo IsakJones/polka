@@ -189,6 +189,7 @@ func Transactions(w http.ResponseWriter, req *http.Request) {
 }
 
 func sendTransactionToCache(ct *transaction, amount int, cacheErr chan<- error) {
+	log.Printf("Starting cache send")
 	payloadBuffer := new(bytes.Buffer)
 	currentBalance := &bankBalance{
 		Sender:   ct.Sender,
@@ -197,6 +198,7 @@ func sendTransactionToCache(ct *transaction, amount int, cacheErr chan<- error) 
 	}
 	json.NewEncoder(payloadBuffer).Encode(currentBalance)
 	cacheErr <- client.SendTransactionUpdate(payloadBuffer)
+	log.Printf("Ended cache send")
 }
 
 func PrintProcessedTransactions() {
