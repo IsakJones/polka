@@ -24,7 +24,7 @@ List of added features:
   - every second the cache updates the DB banks table with its own memory ledger
   - loads bank balances from DB on startup
   - loads account balance from DB on startup
-  - Send account balance updates to DB 
+  - Send account balance updates to DB with a personally implemented circular linked list 
   - Caches bank ids instead of subquerying to reduce latency
   - listens for updates from multiple API services
 
@@ -37,9 +37,6 @@ List of added features:
 
 
 List of features to add:
-
- - Spammer
-  - Test for DELETE requests
 
  - API
   - Add /transaction PATCH endpoint for different parameters (name or account of sender or receiver)
