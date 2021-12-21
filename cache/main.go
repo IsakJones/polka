@@ -51,10 +51,9 @@ func main() {
 
 	// Parse frequency flag
 	frequencyPtr := flag.Int("f", 5, "update frequency")
+	withAccPtr := flag.Bool("a", false, "print accounts with dues")
 	flag.Parse()
 	frequency := time.Duration(*frequencyPtr) * time.Second
-
-	logger.Printf(frequency.String())
 
 	// Get env variables and set a config
 	if err := godotenv.Load(envPath); err != nil {
@@ -123,7 +122,7 @@ func main() {
 		logger.Println("Transactions processed:")
 		ticker := time.NewTicker(frequency)
 		for range ticker.C {
-			memstore.PrintDues()
+			memstore.PrintDues(*withAccPtr)
 		}
 	}()
 
