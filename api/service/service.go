@@ -70,7 +70,7 @@ func New(conf utils.Config, ctx context.Context) (*Service, error) {
 }
 
 // Start sets up a server and listener for incoming requests.
-func (s *Service) Start(errChan chan<- error) {
+func (s *Service) Serve(errChan chan<- error) {
 
 	errChan <- s.server.Serve(s.listener)
 }

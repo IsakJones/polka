@@ -25,7 +25,6 @@ type Service struct {
 	listener net.Listener
 	server   *http.Server
 
-	wg  sync.WaitGroup
 	ctx context.Context
 }
 
@@ -61,8 +60,6 @@ func (as *apiServer) isAlive() bool {
 
 // New returns an uninitialized http service.
 func New(conf utils.Config, apiUrls []*url.URL, ctx context.Context) (*Service, error) {
-
-	var wg sync.WaitGroup
 
 	logger := log.New(os.Stderr, "[service] ", log.LstdFlags|log.Lshortfile)
 
@@ -102,7 +99,6 @@ func New(conf utils.Config, apiUrls []*url.URL, ctx context.Context) (*Service, 
 
 	// Successfully initialize service
 	s := &Service{
-		wg:       wg,
 		ctx:      ctx,
 		conf:     conf,
 		logger:   logger,
@@ -115,7 +111,7 @@ func New(conf utils.Config, apiUrls []*url.URL, ctx context.Context) (*Service, 
 }
 
 // Start sets up a server and listener for incoming requests.
-func (s *Service) Start(errChan chan<- error) {
+func (s *Service) Serve(errChan chan<- error) {
 	errChan <- s.server.Serve(s.listener)
 }
 

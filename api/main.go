@@ -108,17 +108,16 @@ func main() {
 	if err != nil {
 		logger.Fatalf("Failed to initialize service: %s", err)
 	}
-	logger.Println("HTTP service started successfully.")
+	logger.Println("HTTP service initialized successfully.")
 
 	// Listen for requests
 	go func() {
 		errChan := make(chan error)
-		s.Start(errChan)
+		s.Serve(errChan)
 		err = <-errChan
 		if err != nil {
-			logger.Printf("Error starting server: %s", err)
+			logger.Printf("Error serving: %s", err)
 		}
-
 	}()
 
 	// Print processed transactions regularly

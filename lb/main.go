@@ -111,7 +111,7 @@ func main() {
 	if err != nil {
 		logger.Fatalf("Failed to initialize service: %s", err)
 	}
-	logger.Println("HTTP service started successfully.")
+	logger.Println("HTTP service initialized successfully.")
 
 	// Listen for requests
 	go func() {
@@ -150,4 +150,5 @@ func main() {
 	if err != nil {
 		logger.Fatalf("Failed to close service: %s", err)
 	}
+	logger.Printf("Successfully shut down load balancer.")
 }
