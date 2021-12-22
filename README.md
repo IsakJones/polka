@@ -53,4 +53,3 @@ List of features to add:
     - Polka liquidity tracker for clearing (?)
 
 Concrete improvements:
- - Graceful shutdown for cache (model on api)

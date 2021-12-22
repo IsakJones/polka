@@ -116,10 +116,10 @@ func main() {
 	// Listen for requests
 	go func() {
 		errChan := make(chan error)
-		s.Start(errChan)
+		s.Serve(errChan)
 		err = <-errChan
 		if err != nil {
-			logger.Printf("Error starting server: %s", err)
+			logger.Printf("Error serving: %s", err)
 		}
 	}()
 
@@ -143,7 +143,6 @@ func main() {
 	case <-ctx.Done():
 		logger.Println("Main context cancelled, shutting down...")
 		break
-
 	}
 
 	err = s.Close()

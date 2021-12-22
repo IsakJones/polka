@@ -24,8 +24,8 @@ type Service struct {
 	conf     utils.Config
 	listener net.Listener
 	server   *http.Server
-
-	ctx context.Context
+	pool     *apiPool
+	ctx      context.Context
 }
 
 type apiPool struct {
@@ -63,6 +63,12 @@ func New(conf utils.Config, apiUrls []*url.URL, ctx context.Context) (*Service, 
 
 	logger := log.New(os.Stderr, "[service] ", log.LstdFlags|log.Lshortfile)
 
+	// Set up server
+	server := &http.Server{
+		Handler: http.HandlerFunc(handle),
+		Addr:    conf.GetListenPort(),
+	}
+
 	// Configure TCP connection
 	tcpAddr, err := net.ResolveTCPAddr("tcp4", conf.GetListenPort())
 	if err != nil {
@@ -89,12 +95,6 @@ func New(conf utils.Config, apiUrls []*url.URL, ctx context.Context) (*Service, 
 			Alive:        true,
 			Url:          u,
 		}
-
-	}
-
-	// Set up server
-	server := &http.Server{
-		Handler: mux,
 	}
 
 	// Successfully initialize service
@@ -108,6 +108,10 @@ func New(conf utils.Config, apiUrls []*url.URL, ctx context.Context) (*Service, 
 
 	// Start listening for requests
 	return s, nil
+}
+
+func handle(w http.ResponseWriter, r *http.Request) {
+
 }
 
 // Start sets up a server and listener for incoming requests.
