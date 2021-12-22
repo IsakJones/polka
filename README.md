@@ -51,3 +51,6 @@ List of features to add:
     - Load balancer
     - Fee calculation + interest rate for banks before clearing (?)
     - Polka liquidity tracker for clearing (?)
+
+Concrete improvements:
+ - Graceful shutdown for cache (model on api)

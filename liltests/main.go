@@ -1,6 +1,26 @@
 package main
 
-// import "fmt"
+import (
+	"fmt"
+	"sync"
+)
+
+func main() {
+	m := mm{num: 5}
+	fmt.Printf("%d", m.f())
+}
+
+type mm struct {
+	sync.RWMutex
+	num int
+}
+
+func (m *mm) f() int {
+	m.Lock()
+	res := m.num
+	defer m.Unlock()
+	return res
+}
 
 // func main() {
 // 	var i uint16
