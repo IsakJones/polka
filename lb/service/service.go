@@ -15,7 +15,6 @@ import (
 
 const (
 	transPath = "/transaction"
-	helloPath = "/hello"
 )
 
 // Service manages the main application functions.
