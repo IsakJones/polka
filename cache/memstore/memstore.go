@@ -12,6 +12,15 @@ import (
 	"github.com/sekerez/polka/cache/utils"
 )
 
+const (
+	backupInterval = time.Duration(1) * time.Second
+)
+
+var (
+	c       Cache // Declare cache singleton
+	counter uint64
+)
+
 // Dues registers how much Polka owes each bank.
 // Positive values are owed by Polka to the bank,
 // Negative values are owed by the bank to Polka.
@@ -42,15 +51,7 @@ type accountBalances struct {
 	accBalances map[uint16]int // bank_id -> account -> balance
 }
 
-const (
-	backupInterval = time.Duration(1) * time.Second
-)
-
-var (
-	c       Cache // Declare cache singleton
-	counter uint64
-)
-
+// New initializes the cache struct.
 func New(
 	ctx context.Context,
 	bankNumChan <-chan uint16,
@@ -143,6 +144,10 @@ func UpdateDues(current *utils.SRBalance) (err error) {
 	return
 }
 
+// ManageDatabaseBackups backs up cache data in the database.
+// Every so often (e.g. one second) it backs up the bank dues.
+// In between every other bank dues update, it updates only one
+// bank's accounts balances for performance reasons.
 func ManageDatabaseBackups() {
 	var (
 		bankTicker    *time.Ticker
@@ -170,6 +175,8 @@ func ManageDatabaseBackups() {
 	}
 }
 
+// backupDatabaseBankBalances sends bank due data to
+// the database connection through the bankChan channel.
 func backupDatabaseBankBalances() {
 	c.banks.RLock()
 	defer c.banks.RUnlock()
@@ -185,6 +192,8 @@ func backupDatabaseBankBalances() {
 // backupDatabaseAccountBalances is a function with state, like a generator in Python.
 // The goal is to update the account records of one bank at a time, in a specific order,
 // so as to update each bank's accounts at regular intervals.
+// The function sends account balance data to the database
+// connection through the accChan channel.
 func backupDatabaseAccountBalance() {
 	c.list.next()
 	id := c.list.getCurrent()
@@ -201,6 +210,8 @@ func backupDatabaseAccountBalance() {
 	}
 }
 
+// Close shuts down the cache correctly,
+// such that all current data is backed up.
 func Close() (err error) {
 	c.quit <- true
 	<-c.done

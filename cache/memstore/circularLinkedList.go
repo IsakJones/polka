@@ -2,7 +2,7 @@ package memstore
 
 /*
 The circular linked list is a data structure with state.
-It is used to back up single banks' accounts in the database to improve performance.
+It backs up single banks' accounts in the database to improve performance.
 */
 
 type node struct {
