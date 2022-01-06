@@ -2,3 +2,4 @@
 */.vscode/*
 *.env
 *.swp
+apis/api[1-9]/*
