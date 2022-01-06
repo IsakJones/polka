@@ -11,26 +11,20 @@ type node struct {
 }
 
 type circularLinkedList struct {
-	head    *node
 	current *node
 }
 
 func (cll *circularLinkedList) add(id uint16) {
-	switch {
-	case cll.head.val == 0: // This works because no bank's id can be 0, being serial!
-		cll.head.val = id
-	case cll.current == nil:
-		cll.head.next = &node{
-			val:  id,
-			next: cll.head,
-		}
-		cll.current = cll.head.next
-	default:
-		cll.current.next = &node{
-			val:  id,
-			next: cll.head,
-		}
-		cll.current = cll.current.next
+	if cll.current == nil { // This works because no bank's id can be 0, being serial!
+		cll.current = &node{val: id}
+		cll.current.next = cll.current
+		return
+	}
+
+	nxt := cll.current.next
+	cll.current.next = &node{
+		val:  id,
+		next: nxt,
 	}
 }
 
@@ -40,5 +34,4 @@ func (cll *circularLinkedList) getCurrent() uint16 {
 
 func (cll *circularLinkedList) next() {
 	cll.current = cll.current.next
-	cll.head = cll.head.next
 }

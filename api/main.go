@@ -20,11 +20,9 @@ import (
 )
 
 const (
-	mainEnv             = "api.env"
-	cacheConnTimeout    = 30 * time.Second
-	cacheReqTimeout     = 10 * time.Second
-	balanceInterval     = 1
-	balanceChanCapacity = 20
+	mainEnv          = "api.env"
+	cacheConnTimeout = 30 * time.Second
+	cacheReqTimeout  = 10 * time.Second
 )
 
 type Config struct {

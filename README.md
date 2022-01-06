@@ -48,8 +48,10 @@ List of features to add:
  - General
     - Currency info and currency conversion according to official API
     - Authentication
-    - Load balancer
     - Fee calculation + interest rate for banks before clearing (?)
     - Polka liquidity tracker for clearing (?)
+    - Deploy
+      - Local deploy scripts
+      - Cloud deploy scripts
 
 Concrete improvements:
