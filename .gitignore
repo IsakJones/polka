@@ -2,4 +2,5 @@
 */.vscode/*
 *.env
 *.swp
+liltests/*
 apis/api[1-9]/*
