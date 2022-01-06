@@ -6,7 +6,6 @@ import (
 	"net"
 	"net/http"
 	"os"
-	"sync"
 
 	"github.com/sekerez/polka/api/service/handlers"
 	"github.com/sekerez/polka/api/utils"
@@ -24,7 +23,6 @@ type Service struct {
 	listener net.Listener
 	server   *http.Server
 	mux      *http.ServeMux
-	wg       sync.WaitGroup
 	ctx      context.Context
 }
 
@@ -32,14 +30,10 @@ func (s *Service) Address() net.Addr {
 	return s.listener.Addr()
 }
 
-func (s *Service) BaseContext() context.Context {
-	return s.ctx
-}
-
 // New returns an uninitialized http service.
 func New(conf utils.Config, ctx context.Context) (*Service, error) {
 
-	var wg sync.WaitGroup
+	logger := log.New(os.Stderr, "[service] ", log.LstdFlags|log.Lshortfile)
 
 	tcpAddr, err := net.ResolveTCPAddr("tcp4", conf.GetListenPort())
 	if err != nil {
@@ -64,31 +58,21 @@ func New(conf utils.Config, ctx context.Context) (*Service, error) {
 
 	// Successfully initialize service
 	s := &Service{
-		wg:       wg,
 		ctx:      ctx,
 		mux:      mux,
 		conf:     conf,
+		logger:   logger,
 		server:   server,
 		listener: listener,
-		logger:   log.New(os.Stderr, "[main] ", log.LstdFlags),
 	}
-
-	// Start listening for requests
-	s.wg.Add(1)
-	go s.Start()
 
 	return s, nil
 }
 
 // Start sets up a server and listener for incoming requests.
-func (s *Service) Start() {
-	defer s.wg.Done()
+func (s *Service) Serve(errChan chan<- error) {
 
-	// Activate server
-	err := s.server.Serve(s.listener)
-	if err != nil {
-		s.logger.Fatalf("Error while serving: %s", err)
-	}
+	errChan <- s.server.Serve(s.listener)
 }
 
 func (s *Service) Close() (err error) {

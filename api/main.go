@@ -20,12 +20,9 @@ import (
 )
 
 const (
-	mainEnv             = "api.env"
-	cacheEnv            = "cache.env"
-	cacheConnTimeout    = 30 * time.Second
-	cacheReqTimeout     = 10 * time.Second
-	balanceInterval     = 1
-	balanceChanCapacity = 20
+	mainEnv          = "api.env"
+	cacheConnTimeout = 30 * time.Second
+	cacheReqTimeout  = 10 * time.Second
 )
 
 type Config struct {
@@ -89,9 +86,6 @@ func main() {
 	defer cancel()
 
 	// Initialize client
-	if err := godotenv.Load(cacheEnv); err != nil {
-		logger.Fatalf("Cache environmental variables failed to load: %s\n", err)
-	}
 	err = client.New(
 		os.Getenv("CACHEADDRESS"),
 		cacheConnTimeout,
@@ -108,11 +102,21 @@ func main() {
 	}
 
 	// Initialize service
-	httpService, err := service.New(config, ctx)
+	s, err := service.New(config, ctx)
 	if err != nil {
 		logger.Fatalf("Failed to initialize service: %s", err)
 	}
-	logger.Println("HTTP service started successfully.")
+	logger.Println("HTTP service initialized successfully.")
+
+	// Listen for requests
+	go func() {
+		errChan := make(chan error)
+		s.Serve(errChan)
+		err = <-errChan
+		if err != nil {
+			logger.Printf("Error serving: %s", err)
+		}
+	}()
 
 	// Print processed transactions regularly
 	go func() {
@@ -137,8 +141,9 @@ func main() {
 
 	}
 
-	err = httpService.Close()
+	err = s.Close()
 	if err != nil {
 		logger.Fatalf("Failed to close service: %s", err)
 	}
+	logger.Printf("Shut down api service.")
 }

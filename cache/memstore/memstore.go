@@ -72,8 +72,8 @@ func New(
 	// Prep bank dues singleton
 	accountDues := make(map[uint16]*accountBalances, bankNum)
 
-	// Make linked list
-	list := &circularLinkedList{head: &node{}}
+	// Initialize circular linked list
+	list := &circularLinkedList{}
 
 	// Assign Cache singleton
 	c = Cache{
@@ -82,8 +82,8 @@ func New(
 		logger:         logger,
 		bankId:         bankId,
 		accChan:        accChan,
-		bankChan:       bankChan,
 		banks:          bankDues,
+		bankChan:       bankChan,
 		accounts:       accountDues,
 		quit:           make(chan bool),
 		done:           make(chan bool),

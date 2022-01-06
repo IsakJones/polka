@@ -7,7 +7,6 @@ import (
 	"net"
 	"net/http"
 	"os"
-	"sync"
 	"time"
 
 	"github.com/sekerez/polka/cache/memstore"
@@ -25,14 +24,11 @@ type Service struct {
 	listener net.Listener
 	server   *http.Server
 	mux      *http.ServeMux
-	wg       sync.WaitGroup
 	ctx      context.Context
 }
 
 // New returns an uninitialized http service.
 func New(conf utils.Config, ctx context.Context) (*Service, error) {
-
-	var wg sync.WaitGroup
 
 	tcpAddr, err := net.ResolveTCPAddr("tcp4", conf.GetListenPort())
 	if err != nil {
@@ -56,7 +52,6 @@ func New(conf utils.Config, ctx context.Context) (*Service, error) {
 
 	// Successfully initialize service
 	s := &Service{
-		wg:       wg,
 		ctx:      ctx,
 		mux:      mux,
 		conf:     conf,
@@ -65,22 +60,12 @@ func New(conf utils.Config, ctx context.Context) (*Service, error) {
 		logger:   log.New(os.Stderr, "[main] ", log.LstdFlags),
 	}
 
-	// Start listening for requests
-	s.wg.Add(1)
-	go s.Serve()
-
 	return s, nil
 }
 
 // Start sets up a server and listener for incoming requests.
-func (s *Service) Serve() {
-	defer s.wg.Done()
-
-	// Activate server
-	err := s.server.Serve(s.listener)
-	if err != nil {
-		s.logger.Fatalf("Error while serving: %s", err)
-	}
+func (s *Service) Serve(errChan chan<- error) {
+	errChan <- s.server.Serve(s.listener)
 }
 
 func duesHandler(w http.ResponseWriter, req *http.Request) {

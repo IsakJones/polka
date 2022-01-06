@@ -111,11 +111,21 @@ func main() {
 	}
 
 	// Initialize service
-	httpService, err := service.New(config, ctx)
+	s, err := service.New(config, ctx)
 	if err != nil {
 		logger.Fatalf("Failed to initialize service: %s", err)
 	}
-	logger.Println("HTTP service started successfully.")
+	logger.Printf("HTTP service initialized successfully.")
+
+	// Listen for requests
+	go func() {
+		errChan := make(chan error)
+		s.Serve(errChan)
+		err = <-errChan
+		if err != nil {
+			logger.Printf("Error serving: %s", err)
+		}
+	}()
 
 	// Display updated bank balances every 5 seconds
 	go func() {
@@ -146,16 +156,19 @@ func main() {
 	if err != nil {
 		logger.Fatalf("Failed to close memstore: %s", err)
 	}
+	logger.Printf("Shut down memory cache.")
 
 	// Then close db connection
 	dbstore.Close()
 	if err != nil {
 		logger.Fatalf("Failed to close db connection: %s", err)
 	}
+	logger.Printf("Closed DB connection.")
 
 	// Lastly, close service
-	err = httpService.Close()
+	err = s.Close()
 	if err != nil {
-		logger.Fatalf("Failed to close service: %s", err)
+		logger.Fatalf("Failed to shut down service: %s", err)
 	}
+	logger.Printf("Successfully shut down service.")
 }
