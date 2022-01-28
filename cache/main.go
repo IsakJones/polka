@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"net/url"
 	"os"
 	"os/signal"
 	"strconv"
@@ -65,9 +66,9 @@ func main() {
 	if err != nil {
 		logger.Fatalf("Unable to read environmental port variable: %s", err)
 	}
-	config := &Config{
-		Host: host,
-		Port: port,
+	u, err := url.Parse(fmt.Sprintf("%s:%d", host, port))
+	if err != nil {
+		logger.Fatalf("Unable to parse url: %s", err)
 	}
 
 	// Initialize context
@@ -111,7 +112,7 @@ func main() {
 	}
 
 	// Initialize service
-	s, err := service.New(config, ctx)
+	s, err := service.New(u, ctx)
 	if err != nil {
 		logger.Fatalf("Failed to initialize service: %s", err)
 	}

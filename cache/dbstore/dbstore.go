@@ -151,7 +151,7 @@ func updateDatabase() {
 			_, err := db.conn.Exec(
 				db.ctx,
 				updateBankBalanceQ,
-				bankBalance.Name,
+				bankBalance.BankId,
 				bankBalance.Balance,
 			)
 			if err != nil {

@@ -3,9 +3,11 @@ package service
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net"
 	"net/http"
+	"net/url"
 	"os"
 	"time"
 
@@ -14,13 +16,12 @@ import (
 )
 
 const (
-	path = "/updatebalance"
+	path = "/balance"
 )
 
 // Service manages the main application functions.
 type Service struct {
 	logger   *log.Logger
-	conf     utils.Config
 	listener net.Listener
 	server   *http.Server
 	mux      *http.ServeMux
@@ -28,36 +29,38 @@ type Service struct {
 }
 
 // New returns an uninitialized http service.
-func New(conf utils.Config, ctx context.Context) (*Service, error) {
+func New(u *url.URL, ctx context.Context) (*Service, error) {
 
-	tcpAddr, err := net.ResolveTCPAddr("tcp4", conf.GetListenPort())
+	logger := log.New(os.Stderr, "[service] ", log.LstdFlags)
+	port := fmt.Sprintf(":%s", u.Port())
+
+	// Set up multiplexor
+	mux := http.NewServeMux()
+	mux.HandleFunc(path, balancesHandler)
+
+	// Set up server
+	server := &http.Server{
+		Handler: mux,
+		Addr:    port,
+	}
+
+	tcpAddr, err := net.ResolveTCPAddr("tcp4", port)
 	if err != nil {
 		return nil, err
 	}
-
 	// Set up listener
 	listener, err := net.Listen("tcp", tcpAddr.String())
 	if err != nil {
 		return nil, err
 	}
 
-	// Set up multiplexor
-	mux := http.NewServeMux()
-	mux.HandleFunc(path, duesHandler)
-
-	// Set up server
-	server := &http.Server{
-		Handler: mux,
-	}
-
 	// Successfully initialize service
 	s := &Service{
 		ctx:      ctx,
 		mux:      mux,
-		conf:     conf,
 		server:   server,
 		listener: listener,
-		logger:   log.New(os.Stderr, "[main] ", log.LstdFlags),
+		logger:   logger,
 	}
 
 	return s, nil
@@ -68,7 +71,7 @@ func (s *Service) Serve(errChan chan<- error) {
 	errChan <- s.server.Serve(s.listener)
 }
 
-func duesHandler(w http.ResponseWriter, req *http.Request) {
+func balancesHandler(w http.ResponseWriter, req *http.Request) {
 
 	var (
 		ctx            context.Context
@@ -92,11 +95,14 @@ func duesHandler(w http.ResponseWriter, req *http.Request) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 		}
 
-		httpDo(
+		err = httpDo(
 			ctx,
 			&currentBalance,
 			memstore.UpdateDues,
 		)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
 	case http.MethodGet:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	case http.MethodPut:

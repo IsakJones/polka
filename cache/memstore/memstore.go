@@ -90,8 +90,10 @@ func New(
 		// Update circular linked list and bank id map
 		c.list.add(balance.BankId)
 		c.bankIds[balance.Name] = balance.BankId
-		// Update value
+		// Initialize integer that pointer points to
+		c.banks[balance.BankId] = new(int64)
 		var bankPtr *int64 = c.banks[balance.BankId]
+		// Update value
 		atomic.StoreInt64(bankPtr, balance.Balance)
 		// Make map for bank accounts
 		c.accounts[balance.BankId] = make(map[uint16]*int32)
@@ -99,8 +101,10 @@ func New(
 
 	// Atomically update account balances retieved from database
 	for balance := range accRetChan {
-		// Update value
+		// Initialize integer that pointer points to
+		c.accounts[balance.BankId][balance.Account] = new(int32)
 		var accPtr *int32 = c.accounts[balance.BankId][balance.Account]
+		// Update value
 		atomic.StoreInt32(accPtr, balance.Balance)
 	}
 
@@ -119,17 +123,23 @@ func UpdateDues(current *utils.SRBalance) (err error) {
 
 	// Update sender bank's balance
 	senPtr := c.banks[senderId]
-	atomic.AddInt64(senPtr, int64(current.Amount))
+	atomic.AddInt64(senPtr, -int64(current.Amount))
 
 	// Update receiving bank's balance
 	recPtr := c.banks[receiverId]
 	atomic.AddInt64(recPtr, int64(current.Amount))
 
 	// Update sending account's balance
+	// if _, exists := c.accounts[senderId][current.Sender.Account]; !exists {
+	// 	c.accounts[senderId][current.Sender.Account] = new(int32)
+	// }
 	sAccPtr := c.accounts[senderId][current.Sender.Account]
-	atomic.AddInt32(sAccPtr, current.Amount)
+	atomic.AddInt32(sAccPtr, -current.Amount)
 
 	// Update receiving account's balance
+	// if _, exists := c.accounts[receiverId][current.Receiver.Account]; !exists {
+	// 	c.accounts[receiverId][current.Receiver.Account] = new(int32)
+	// }
 	rAccPtr := c.accounts[receiverId][current.Receiver.Account]
 	atomic.AddInt32(rAccPtr, current.Amount)
 
@@ -215,7 +225,8 @@ func PrintBalances(andAccounts bool) {
 
 	// Print bank balances
 	for name, id := range c.bankIds {
-		fmt.Printf("\t%s: %d\n", name, c.banks[id])
+		// NB c.banks[id] is a pointer to an int
+		fmt.Printf("\t%s: %d\n", name, *c.banks[id])
 	}
 	fmt.Println("}")
 
@@ -227,7 +238,7 @@ func PrintBalances(andAccounts bool) {
 			fmt.Printf("\t%s: {\n", name)
 
 			for account, amount := range c.accounts[id] {
-				fmt.Printf("\t\t%d: %d\n", account, amount)
+				fmt.Printf("\t\t%d: %d\n", account, *amount)
 			}
 			fmt.Println("\t}")
 		}

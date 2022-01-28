@@ -4,7 +4,7 @@ const (
 	bankNumQ           = "SELECT COUNT(*) FROM banks;"
 	bankRetrieveQ      = "SELECT id, name, balance FROM banks;"
 	accRetrieveQ       = "SELECT bank_id, account, balance FROM accounts;"
-	updateBankBalanceQ = "UPDATE banks SET balance = $2 WHERE name = $1;"
+	updateBankBalanceQ = "UPDATE banks SET balance = $2 WHERE id = $1;"
 	updateAccBalanceQ  = `
 		INSERT INTO accounts (
 			bank_id,
