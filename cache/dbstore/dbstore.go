@@ -42,7 +42,7 @@ func New(
 		bankNum     uint16
 		account     uint16
 		bankBalance int64
-		accBalance  int
+		accBalance  int32
 	)
 
 	logger := log.New(os.Stderr, "[postgres] ", log.LstdFlags|log.Lshortfile)

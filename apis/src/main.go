@@ -13,10 +13,9 @@ import (
 
 	"github.com/joho/godotenv"
 
-	"github.com/sekerez/polka/api/client"
-	"github.com/sekerez/polka/api/dbstore"
-	"github.com/sekerez/polka/api/service"
-	"github.com/sekerez/polka/api/service/handlers"
+	"github.com/sekerez/polka/apis/src/client"
+	"github.com/sekerez/polka/apis/src/dbstore"
+	"github.com/sekerez/polka/apis/src/service"
 )
 
 const (
@@ -122,7 +121,7 @@ func main() {
 	go func() {
 		ticker := time.NewTicker(frequency)
 		for range ticker.C {
-			handlers.PrintProcessedTransactions()
+			service.PrintProcessedTransactions()
 		}
 	}()
 

@@ -7,8 +7,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/sekerez/polka/api/service/handlers"
-	"github.com/sekerez/polka/api/utils"
+	"github.com/sekerez/polka/apis/src/utils"
 )
 
 const (
@@ -48,8 +47,8 @@ func New(conf utils.Config, ctx context.Context) (*Service, error) {
 
 	// Set up multiplexor
 	mux := http.NewServeMux()
-	mux.HandleFunc(transPath, handlers.Transactions)
-	mux.HandleFunc(helloPath, handlers.Hello)
+	mux.HandleFunc(transPath, handleTransactions)
+	mux.HandleFunc(helloPath, handleHello)
 
 	// Set up server
 	server := &http.Server{

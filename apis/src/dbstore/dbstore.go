@@ -10,7 +10,7 @@ import (
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/joho/godotenv"
 
-	"github.com/sekerez/polka/api/utils"
+	"github.com/sekerez/polka/apis/src/utils"
 )
 
 const (

@@ -21,16 +21,14 @@ var (
 	counter uint64
 )
 
-// Dues registers how much Polka owes each bank.
 // Positive values are owed by Polka to the bank,
 // Negative values are owed by the bank to Polka.
-// An RWMutex allows to simultaneously read and write.
 type Cache struct {
 	ctx            context.Context
 	list           *circularLinkedList
-	bankId         map[string]uint16
-	banks          *bankBalances
-	accounts       map[uint16]*accountBalances
+	bankIds        map[string]uint16
+	banks          map[uint16]*int64            // maps bankids to bank balances (pointers)
+	accounts       map[uint16]map[uint16]*int32 // maps bankids and accounts to account balances (pointers)
 	logger         *log.Logger
 	quit           chan bool
 	done           chan bool
@@ -55,22 +53,19 @@ type accountBalances struct {
 func New(
 	ctx context.Context,
 	bankNumChan <-chan uint16,
-	bankChan chan<- *utils.BankBalance,
-	accChan chan<- *utils.Balance,
-	bankRetChan <-chan *utils.BankBalance,
-	accRetChan <-chan *utils.Balance,
+	bankChan chan<- *utils.BankBalance, // Channel to send bank balances
+	accChan chan<- *utils.Balance, // Channel to send account balances
+	bankRetChan <-chan *utils.BankBalance, // Channel to retrieve bank balances
+	accRetChan <-chan *utils.Balance, // Channel to retrieve account balances
 ) (err error) {
 
 	logger := log.New(os.Stderr, "[cache] ", log.LstdFlags|log.Lshortfile)
 	// Prep bank dues singleton with number of banks
 	bankNum := <-bankNumChan
-	bankDues := &bankBalances{
-		dues: make(map[string]int64, bankNum),
-	}
-	bankId := make(map[string]uint16, bankNum)
 
-	// Prep bank dues singleton
-	accountDues := make(map[uint16]*accountBalances, bankNum)
+	bankIds := make(map[string]uint16, bankNum)
+	bankBalances := make(map[uint16]*int64, bankNum)
+	accountBalances := make(map[uint16]map[uint16]*int32, bankNum)
 
 	// Initialize circular linked list
 	list := &circularLinkedList{}
@@ -80,34 +75,33 @@ func New(
 		ctx:            ctx,
 		list:           list,
 		logger:         logger,
-		bankId:         bankId,
+		bankIds:        bankIds,
 		accChan:        accChan,
-		banks:          bankDues,
+		banks:          bankBalances,
 		bankChan:       bankChan,
-		accounts:       accountDues,
+		accounts:       accountBalances,
 		quit:           make(chan bool),
 		done:           make(chan bool),
 		backupInterval: backupInterval,
 	}
 
-	// Retreive bank balances from database.
-	c.banks.Lock()
+	// Atomically update bank balances retieved from database
 	for balance := range bankRetChan {
+		// Update circular linked list and bank id map
 		c.list.add(balance.BankId)
-		bankId[balance.Name] = balance.BankId
-		c.banks.dues[balance.Name] = balance.Balance
-		c.accounts[balance.BankId] = &accountBalances{
-			accBalances: make(map[uint16]int),
-		}
+		c.bankIds[balance.Name] = balance.BankId
+		// Update value
+		var bankPtr *int64 = c.banks[balance.BankId]
+		atomic.StoreInt64(bankPtr, balance.Balance)
+		// Make map for bank accounts
+		c.accounts[balance.BankId] = make(map[uint16]*int32)
 	}
-	c.banks.Unlock()
 
-	// Retrieve account balances from the database
+	// Atomically update account balances retieved from database
 	for balance := range accRetChan {
-		bankAccounts := c.accounts[balance.BankId]
-		bankAccounts.Lock()
-		bankAccounts.accBalances[balance.Account] = balance.Balance
-		bankAccounts.Unlock()
+		// Update value
+		var accPtr *int32 = c.accounts[balance.BankId][balance.Account]
+		atomic.StoreInt32(accPtr, balance.Balance)
 	}
 
 	// Update periodically DB records at regular intervals
@@ -118,28 +112,26 @@ func New(
 
 // UpdateDues changes the dues according to clearinghouse logic.
 func UpdateDues(current *utils.SRBalance) (err error) {
-	// Update counter
+	// Update counter and retrieve bank ids
 	atomic.AddUint64(&counter, 1)
+	senderId := c.bankIds[current.Sender.Name]
+	receiverId := c.bankIds[current.Receiver.Name]
 
-	// Update bank dues
-	c.banks.Lock()
+	// Update sender bank's balance
+	senPtr := c.banks[senderId]
+	atomic.AddInt64(senPtr, int64(current.Amount))
 
-	c.banks.dues[current.Sender.Name] -= int64(current.Amount)
-	c.banks.dues[current.Receiver.Name] += int64(current.Amount)
+	// Update receiving bank's balance
+	recPtr := c.banks[receiverId]
+	atomic.AddInt64(recPtr, int64(current.Amount))
 
-	c.banks.Unlock()
+	// Update sending account's balance
+	sAccPtr := c.accounts[senderId][current.Sender.Account]
+	atomic.AddInt32(sAccPtr, current.Amount)
 
-	// Update account dues
-	senderAccounts := c.accounts[c.bankId[current.Sender.Name]]
-
-	senderAccounts.Lock()
-	senderAccounts.accBalances[current.Sender.Account] -= current.Amount
-	senderAccounts.Unlock()
-
-	receiverAccounts := c.accounts[c.bankId[current.Receiver.Name]]
-	receiverAccounts.Lock()
-	receiverAccounts.accBalances[current.Receiver.Account] += current.Amount
-	receiverAccounts.Unlock()
+	// Update receiving account's balance
+	rAccPtr := c.accounts[receiverId][current.Receiver.Account]
+	atomic.AddInt32(rAccPtr, current.Amount)
 
 	return
 }
@@ -162,7 +154,7 @@ func ManageDatabaseBackups() {
 		select {
 		case <-c.quit:
 			backupDatabaseBankBalances()
-			for i := 0; i < len(c.bankId); i++ {
+			for i := 0; i < len(c.bankIds); i++ {
 				backupDatabaseAccountBalance()
 			}
 			c.done <- true
@@ -178,13 +170,11 @@ func ManageDatabaseBackups() {
 // backupDatabaseBankBalances sends bank due data to
 // the database connection through the bankChan channel.
 func backupDatabaseBankBalances() {
-	c.banks.RLock()
-	defer c.banks.RUnlock()
 
-	for bank, balance := range c.banks.dues {
+	for bankId, balance := range c.banks {
 		c.bankChan <- &utils.BankBalance{
-			Name:    bank,
-			Balance: balance,
+			BankId:  bankId,
+			Balance: *balance,
 		}
 	}
 }
@@ -198,14 +188,12 @@ func backupDatabaseAccountBalance() {
 	c.list.next()
 	id := c.list.getCurrent()
 	bankAccounts := c.accounts[id]
-	bankAccounts.Lock()
-	defer bankAccounts.Unlock()
 
-	for account, balance := range bankAccounts.accBalances {
+	for account, balance := range bankAccounts {
 		c.accChan <- &utils.Balance{
 			BankId:  id,
 			Account: account,
-			Balance: balance,
+			Balance: *balance,
 		}
 	}
 }
@@ -220,36 +208,29 @@ func Close() (err error) {
 
 // PrintDues prints to the console how much Polka owes to
 // each bank, listed in no specific order.
-func PrintDues(andAccounts bool) {
+func PrintBalances(andAccounts bool) {
 
 	log.Printf("Processed %d transactions.", counter)
-	fmt.Printf("Bank dues:\n{\n")
+	fmt.Printf("Bank balances:\n{\n")
 
-	c.banks.RLock()
-	for bank, due := range c.banks.dues {
-		fmt.Printf("\t%s: %d\n", bank, due)
+	// Print bank balances
+	for name, id := range c.bankIds {
+		fmt.Printf("\t%s: %d\n", name, c.banks[id])
 	}
-	c.banks.RUnlock()
 	fmt.Println("}")
 
+	// If specified, print account balances
 	if andAccounts {
-		fmt.Printf("}\nAccount dues:\n{\n")
+		fmt.Printf("}\nAccount balances:\n{\n")
 
-		for _, accBalance := range c.accounts {
-			accBalance.RLock()
-		}
-		for bank, id := range c.bankId {
-			fmt.Printf("\t%s: {\n", bank)
+		for name, id := range c.bankIds {
+			fmt.Printf("\t%s: {\n", name)
 
-			for account, amount := range c.accounts[id].accBalances {
+			for account, amount := range c.accounts[id] {
 				fmt.Printf("\t\t%d: %d\n", account, amount)
 			}
 			fmt.Println("\t}")
 		}
 		fmt.Println("}")
-
-		for _, accBalance := range c.accounts {
-			accBalance.RUnlock()
-		}
 	}
 }

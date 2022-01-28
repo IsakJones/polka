@@ -4,7 +4,7 @@ package utils
 type Balance struct {
 	BankId  uint16
 	Account uint16
-	Balance int
+	Balance int32
 }
 
 // BankBalance transfers bank balance data from the cache to the database.
@@ -18,7 +18,7 @@ type BankBalance struct {
 type SRBalance struct {
 	Sender   *bankInfo
 	Receiver *bankInfo
-	Amount   int
+	Amount   int32
 }
 
 type bankInfo struct {

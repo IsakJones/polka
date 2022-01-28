@@ -132,7 +132,7 @@ func main() {
 		logger.Println("Transactions processed:")
 		ticker := time.NewTicker(frequency)
 		for range ticker.C {
-			memstore.PrintDues(*withAccPtr)
+			memstore.PrintBalances(*withAccPtr)
 		}
 	}()
 
