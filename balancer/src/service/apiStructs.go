@@ -91,7 +91,7 @@ func (pool *apiPool) reviveNode(apiUrl *url.URL) error {
 // killNode sets the given node as dead.
 func (pool *apiPool) killNode(apiUrl *url.URL) error {
 	for _, api := range pool.apiNodes {
-		if &api.url == apiUrl {
+		if api.url == *apiUrl {
 			api.kill()
 			return nil
 		}

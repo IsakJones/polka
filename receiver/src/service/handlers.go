@@ -140,10 +140,12 @@ func handlePayment(w http.ResponseWriter, req *http.Request) {
 		// Read the body
 		err := json.NewDecoder(req.Body).Decode(&ct)
 		if err != nil {
+			log.Printf("Error decoding json: %s", err.Error())
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 		if err = ct.isValidPayment(); err != nil {
+			log.Printf("%s", err.Error())
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
@@ -160,6 +162,7 @@ func handlePayment(w http.ResponseWriter, req *http.Request) {
 		// Insert transaction data into db
 		err = dbstore.InsertTransaction(ctx, &ct)
 		if err != nil {
+			log.Printf("Error with database: %s", err.Error())
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
