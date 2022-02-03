@@ -41,7 +41,7 @@ type apiPool struct {
 // add adds an api node to the apiPool.
 func (pool *apiPool) add(apiUrl *url.URL) {
 	proxy := httputil.NewSingleHostReverseProxy(apiUrl)
-	proxy.ErrorHandler = proxyErrorFunc(proxy, apiUrl)
+	// proxy.ErrorHandler = proxyErrorFunc(proxy, apiUrl)
 	log.Printf("%+v", apiUrl)
 
 	node := &apiNode{
@@ -106,8 +106,9 @@ func proxyErrorFunc(proxy *httputil.ReverseProxy, apiUrl *url.URL) func(http.Res
 
 		// If there were fewer than 3 retries, try again
 		if retries := getRetries(r); retries < 3 {
-			// Give it 10 milliseconds
+			// Give it 100 milliseconds
 			<-time.After(100 * time.Millisecond)
+			// Create new context
 			ctx := context.WithValue(r.Context(), Retries, retries+1)
 			proxy.ServeHTTP(w, r.WithContext(ctx))
 			return

@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"sync/atomic"
@@ -138,17 +139,24 @@ func handlePayment(w http.ResponseWriter, req *http.Request) {
 	// Read body if post or delete request
 	if req.Method == http.MethodPost || req.Method == http.MethodDelete {
 		// Read the body
-		err := json.NewDecoder(req.Body).Decode(&ct)
+		body, err := ioutil.ReadAll(req.Body)
+		if err != nil {
+			log.Printf("Error while reading body: %s", err.Error())
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		err = json.Unmarshal(body, &ct) // .Decode(&ct)
 		if err != nil {
 			log.Printf("Error decoding json: %s", err.Error())
+			log.Printf("Request body: %s", body)
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		if err = ct.isValidPayment(); err != nil {
-			log.Printf("%s", err.Error())
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
+		// if err = ct.isValidPayment(); err != nil {
+		// 	log.Printf("%s", err.Error())
+		// 	http.Error(w, err.Error(), http.StatusBadRequest)
+		// 	return
+		// }
 	}
 
 	// Multiplex according to method
@@ -195,11 +203,11 @@ func handlePayment(w http.ResponseWriter, req *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	case http.MethodDelete:
 
-		// Read the body
-		err := json.NewDecoder(req.Body).Decode(&ct)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-		}
+		// // Read the body
+		// err := json.NewDecoder(req.Body).Decode(&ct)
+		// if err != nil {
+		// 	http.Error(w, err.Error(), http.StatusBadRequest)
+		// }
 
 		// Concurrently update cache
 		cacheErr := make(chan error)
