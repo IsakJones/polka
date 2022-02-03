@@ -21,7 +21,7 @@ import (
 )
 
 const (
-	envPath = "cache.env"
+	envPath = "env/cache.env"
 )
 
 type Config struct {

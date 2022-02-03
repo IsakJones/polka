@@ -64,14 +64,15 @@ func main() {
 		logger.Fatalf("Unable to parse url: %s", err)
 	}
 
-	// Get API addresses
-	apiNum, err := strconv.Atoi(os.Getenv("APINUM"))
+	// Get node addresses
+	apiNum, err := strconv.Atoi(os.Getenv("NODENUM"))
 	if err != nil {
-		logger.Fatalf("Unable to read environmental API address variables: %s", err)
+		logger.Fatalf("Unable to read environmental NODE address variables: %s", err)
 	}
 	apiUrls := make([]*url.URL, apiNum)
 	for i := 0; i < apiNum; i++ {
-		apiUrl, err := url.Parse(os.Getenv(fmt.Sprintf("APIADDRESS%d", i)))
+		apiUrl, err := url.Parse(os.Getenv(fmt.Sprintf("NODEADDRESS%d", i)))
+		logger.Printf("%+v", apiUrl)
 		if err != nil {
 			logger.Printf("Failed to parse %d-th api server: %s", i, err)
 		}

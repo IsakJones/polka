@@ -11,8 +11,8 @@ import (
 )
 
 const (
-	envPath  = "generator.env"
-	transUrl = "/transaction"
+	envPath  = "env/generator.env"
+	transUrl = "/payment"
 	helloUrl = "/hello"
 )
 

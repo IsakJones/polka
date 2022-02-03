@@ -13,7 +13,6 @@ import (
 )
 
 const (
-	transPath          = "/transaction"
 	checkTimeout       = 2 * time.Second
 	Attempts     uint8 = iota
 	Retries
@@ -38,15 +37,17 @@ func New(lbUrl *url.URL, apiUrls []*url.URL, ctx context.Context) (*Service, err
 
 	logger.Printf("urls. size: %v", len(apiUrls))
 
+	// Format port
+	port := fmt.Sprintf(":%s", lbUrl.Port())
+
 	// Set up server
 	server := &http.Server{
 		Handler: http.HandlerFunc(handle),
-		Addr:    fmt.Sprintf(":%s", lbUrl.Port()),
+		Addr:    port,
 	}
 
 	// Configure TCP connection
-	tcpAddr, err := net.ResolveTCPAddr("tcp4", fmt.Sprintf(":%s", lbUrl.Port()))
-
+	tcpAddr, err := net.ResolveTCPAddr("tcp4", port)
 	if err != nil {
 		return nil, err
 	}
@@ -106,7 +107,7 @@ func (s *Service) Serve(errChan chan<- error) {
 }
 
 func (s *Service) PrintRequestNumber() {
-	s.logger.Printf("%d transactions forwarded", pool.counter)
+	s.logger.Printf("%d payments forwarded", pool.counter)
 }
 
 func (s *Service) Close() (err error) {

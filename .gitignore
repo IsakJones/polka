@@ -3,5 +3,3 @@
 *.env
 *.swp
 liltests/*
-apis/api[1-9]/*
-scripts/*
