@@ -29818,3 +29818,177 @@
 [service] 2022/02/03 20:12:24 apiStructs.go:190: Api 1 is alive.
 [service] 2022/02/03 20:12:24 apiStructs.go:195: Ended health check.
 [service] 2022/02/03 20:12:24 apiStructs.go:169: top of health loop
+[service] 2022/02/03 20:12:26 apiStructs.go:180: Starting health check...
+[service] 2022/02/03 20:12:26 service.go:110: 2645 payments forwarded
+[service] 2022/02/03 20:12:26 apiStructs.go:190: Api 0 is alive.
+[service] 2022/02/03 20:12:26 apiStructs.go:190: Api 1 is alive.
+[service] 2022/02/03 20:12:26 apiStructs.go:195: Ended health check.
+[service] 2022/02/03 20:12:26 apiStructs.go:169: top of health loop
+[service] 2022/02/03 20:12:28 service.go:110: 2645 payments forwarded
+[service] 2022/02/03 20:12:28 apiStructs.go:180: Starting health check...
+[service] 2022/02/03 20:12:28 apiStructs.go:190: Api 0 is alive.
+[service] 2022/02/03 20:12:28 apiStructs.go:190: Api 1 is alive.
+[service] 2022/02/03 20:12:28 apiStructs.go:195: Ended health check.
+[service] 2022/02/03 20:12:28 apiStructs.go:169: top of health loop
+[service] 2022/02/03 20:12:30 apiStructs.go:180: Starting health check...
+[service] 2022/02/03 20:12:30 service.go:110: 2645 payments forwarded
+[service] 2022/02/03 20:12:30 apiStructs.go:190: Api 0 is alive.
+[service] 2022/02/03 20:12:30 apiStructs.go:190: Api 1 is alive.
+[service] 2022/02/03 20:12:30 apiStructs.go:195: Ended health check.
+[service] 2022/02/03 20:12:30 apiStructs.go:169: top of health loop
+[service] 2022/02/03 20:12:32 apiStructs.go:180: Starting health check...
+[service] 2022/02/03 20:12:32 service.go:110: 2645 payments forwarded
+[service] 2022/02/03 20:12:32 apiStructs.go:190: Api 0 is alive.
+[service] 2022/02/03 20:12:32 apiStructs.go:190: Api 1 is alive.
+[service] 2022/02/03 20:12:32 apiStructs.go:195: Ended health check.
+[service] 2022/02/03 20:12:32 apiStructs.go:169: top of health loop
+[service] 2022/02/03 20:12:34 service.go:110: 2645 payments forwarded
+[service] 2022/02/03 20:12:34 apiStructs.go:180: Starting health check...
+[service] 2022/02/03 20:12:34 apiStructs.go:190: Api 0 is alive.
+[service] 2022/02/03 20:12:34 apiStructs.go:190: Api 1 is alive.
+[service] 2022/02/03 20:12:34 apiStructs.go:195: Ended health check.
+[service] 2022/02/03 20:12:34 apiStructs.go:169: top of health loop
+[service] 2022/02/03 20:12:36 service.go:110: 2645 payments forwarded
+[service] 2022/02/03 20:12:36 apiStructs.go:180: Starting health check...
+[service] 2022/02/03 20:12:36 apiStructs.go:190: Api 0 is alive.
+[service] 2022/02/03 20:12:36 apiStructs.go:190: Api 1 is alive.
+[service] 2022/02/03 20:12:36 apiStructs.go:195: Ended health check.
+[service] 2022/02/03 20:12:36 apiStructs.go:169: top of health loop
+[service] 2022/02/03 20:12:38 service.go:110: 2645 payments forwarded
+[service] 2022/02/03 20:12:38 apiStructs.go:180: Starting health check...
+[service] 2022/02/03 20:12:38 apiStructs.go:190: Api 0 is alive.
+[service] 2022/02/03 20:12:38 apiStructs.go:190: Api 1 is alive.
+[service] 2022/02/03 20:12:38 apiStructs.go:195: Ended health check.
+[service] 2022/02/03 20:12:38 apiStructs.go:169: top of health loop
+[service] 2022/02/03 20:12:40 apiStructs.go:180: Starting health check...
+[service] 2022/02/03 20:12:40 service.go:110: 2645 payments forwarded
+[service] 2022/02/03 20:12:40 apiStructs.go:190: Api 0 is alive.
+[service] 2022/02/03 20:12:40 apiStructs.go:190: Api 1 is alive.
+[service] 2022/02/03 20:12:40 apiStructs.go:195: Ended health check.
+[service] 2022/02/03 20:12:40 apiStructs.go:169: top of health loop
+[service] 2022/02/03 20:12:42 apiStructs.go:180: Starting health check...
+[service] 2022/02/03 20:12:42 service.go:110: 2645 payments forwarded
+[service] 2022/02/03 20:12:42 apiStructs.go:190: Api 0 is alive.
+[service] 2022/02/03 20:12:42 apiStructs.go:190: Api 1 is alive.
+[service] 2022/02/03 20:12:42 apiStructs.go:195: Ended health check.
+[service] 2022/02/03 20:12:42 apiStructs.go:169: top of health loop
+[service] 2022/02/03 20:12:44 service.go:110: 2645 payments forwarded
+[service] 2022/02/03 20:12:44 apiStructs.go:180: Starting health check...
+[service] 2022/02/03 20:12:44 apiStructs.go:190: Api 0 is alive.
+[service] 2022/02/03 20:12:44 apiStructs.go:190: Api 1 is alive.
+[service] 2022/02/03 20:12:44 apiStructs.go:195: Ended health check.
+[service] 2022/02/03 20:12:44 apiStructs.go:169: top of health loop
+[service] 2022/02/03 20:12:46 service.go:110: 2645 payments forwarded
+[service] 2022/02/03 20:12:46 apiStructs.go:180: Starting health check...
+[service] 2022/02/03 20:12:46 apiStructs.go:190: Api 0 is alive.
+[service] 2022/02/03 20:12:46 apiStructs.go:190: Api 1 is alive.
+[service] 2022/02/03 20:12:46 apiStructs.go:195: Ended health check.
+[service] 2022/02/03 20:12:46 apiStructs.go:169: top of health loop
+[service] 2022/02/03 20:12:48 service.go:110: 2645 payments forwarded
+[service] 2022/02/03 20:12:48 apiStructs.go:180: Starting health check...
+[service] 2022/02/03 20:12:48 apiStructs.go:190: Api 0 is alive.
+[service] 2022/02/03 20:12:48 apiStructs.go:190: Api 1 is alive.
+[service] 2022/02/03 20:12:48 apiStructs.go:195: Ended health check.
+[service] 2022/02/03 20:12:48 apiStructs.go:169: top of health loop
+[service] 2022/02/03 20:12:50 apiStructs.go:180: Starting health check...
+[service] 2022/02/03 20:12:50 service.go:110: 2645 payments forwarded
+[service] 2022/02/03 20:12:50 apiStructs.go:190: Api 0 is alive.
+[service] 2022/02/03 20:12:50 apiStructs.go:190: Api 1 is alive.
+[service] 2022/02/03 20:12:50 apiStructs.go:195: Ended health check.
+[service] 2022/02/03 20:12:50 apiStructs.go:169: top of health loop
+[service] 2022/02/03 20:12:52 apiStructs.go:180: Starting health check...
+[service] 2022/02/03 20:12:52 service.go:110: 2645 payments forwarded
+[service] 2022/02/03 20:12:52 apiStructs.go:190: Api 0 is alive.
+[service] 2022/02/03 20:12:52 apiStructs.go:190: Api 1 is alive.
+[service] 2022/02/03 20:12:52 apiStructs.go:195: Ended health check.
+[service] 2022/02/03 20:12:52 apiStructs.go:169: top of health loop
+[service] 2022/02/03 20:12:54 service.go:110: 2645 payments forwarded
+[service] 2022/02/03 20:12:54 apiStructs.go:180: Starting health check...
+[service] 2022/02/03 20:12:54 apiStructs.go:190: Api 0 is alive.
+[service] 2022/02/03 20:12:54 apiStructs.go:190: Api 1 is alive.
+[service] 2022/02/03 20:12:54 apiStructs.go:195: Ended health check.
+[service] 2022/02/03 20:12:54 apiStructs.go:169: top of health loop
+[service] 2022/02/03 20:12:56 service.go:110: 2645 payments forwarded
+[service] 2022/02/03 20:12:56 apiStructs.go:180: Starting health check...
+[service] 2022/02/03 20:12:56 apiStructs.go:190: Api 0 is alive.
+[service] 2022/02/03 20:12:56 apiStructs.go:190: Api 1 is alive.
+[service] 2022/02/03 20:12:56 apiStructs.go:195: Ended health check.
+[service] 2022/02/03 20:12:56 apiStructs.go:169: top of health loop
+[service] 2022/02/03 20:12:58 apiStructs.go:180: Starting health check...
+[service] 2022/02/03 20:12:58 service.go:110: 2645 payments forwarded
+[service] 2022/02/03 20:12:58 apiStructs.go:190: Api 0 is alive.
+[service] 2022/02/03 20:12:58 apiStructs.go:190: Api 1 is alive.
+[service] 2022/02/03 20:12:58 apiStructs.go:195: Ended health check.
+[service] 2022/02/03 20:12:58 apiStructs.go:169: top of health loop
+[service] 2022/02/03 20:13:00 service.go:110: 2645 payments forwarded
+[service] 2022/02/03 20:13:00 apiStructs.go:180: Starting health check...
+[service] 2022/02/03 20:13:00 apiStructs.go:190: Api 0 is alive.
+[service] 2022/02/03 20:13:00 apiStructs.go:190: Api 1 is alive.
+[service] 2022/02/03 20:13:00 apiStructs.go:195: Ended health check.
+[service] 2022/02/03 20:13:00 apiStructs.go:169: top of health loop
+[service] 2022/02/03 20:13:02 service.go:110: 2645 payments forwarded
+[service] 2022/02/03 20:13:02 apiStructs.go:180: Starting health check...
+[service] 2022/02/03 20:13:02 apiStructs.go:190: Api 0 is alive.
+[service] 2022/02/03 20:13:02 apiStructs.go:190: Api 1 is alive.
+[service] 2022/02/03 20:13:02 apiStructs.go:195: Ended health check.
+[service] 2022/02/03 20:13:02 apiStructs.go:169: top of health loop
+[service] 2022/02/03 20:13:04 apiStructs.go:180: Starting health check...
+[service] 2022/02/03 20:13:04 service.go:110: 2645 payments forwarded
+[service] 2022/02/03 20:13:04 apiStructs.go:190: Api 0 is alive.
+[service] 2022/02/03 20:13:04 apiStructs.go:190: Api 1 is alive.
+[service] 2022/02/03 20:13:04 apiStructs.go:195: Ended health check.
+[service] 2022/02/03 20:13:04 apiStructs.go:169: top of health loop
+[service] 2022/02/03 20:13:06 apiStructs.go:180: Starting health check...
+[service] 2022/02/03 20:13:06 service.go:110: 2645 payments forwarded
+[service] 2022/02/03 20:13:06 apiStructs.go:190: Api 0 is alive.
+[service] 2022/02/03 20:13:06 apiStructs.go:190: Api 1 is alive.
+[service] 2022/02/03 20:13:06 apiStructs.go:195: Ended health check.
+[service] 2022/02/03 20:13:06 apiStructs.go:169: top of health loop
+[service] 2022/02/03 20:13:08 apiStructs.go:180: Starting health check...
+[service] 2022/02/03 20:13:08 service.go:110: 2645 payments forwarded
+[service] 2022/02/03 20:13:08 apiStructs.go:190: Api 0 is alive.
+[service] 2022/02/03 20:13:08 apiStructs.go:190: Api 1 is alive.
+[service] 2022/02/03 20:13:08 apiStructs.go:195: Ended health check.
+[service] 2022/02/03 20:13:08 apiStructs.go:169: top of health loop
+[service] 2022/02/03 20:13:10 apiStructs.go:180: Starting health check...
+[service] 2022/02/03 20:13:10 service.go:110: 2645 payments forwarded
+[service] 2022/02/03 20:13:10 apiStructs.go:190: Api 0 is alive.
+[service] 2022/02/03 20:13:10 apiStructs.go:190: Api 1 is alive.
+[service] 2022/02/03 20:13:10 apiStructs.go:195: Ended health check.
+[service] 2022/02/03 20:13:10 apiStructs.go:169: top of health loop
+[service] 2022/02/03 20:13:12 apiStructs.go:180: Starting health check...
+[service] 2022/02/03 20:13:12 service.go:110: 2645 payments forwarded
+[service] 2022/02/03 20:13:12 apiStructs.go:190: Api 0 is alive.
+[service] 2022/02/03 20:13:12 apiStructs.go:190: Api 1 is alive.
+[service] 2022/02/03 20:13:12 apiStructs.go:195: Ended health check.
+[service] 2022/02/03 20:13:12 apiStructs.go:169: top of health loop
+[service] 2022/02/03 20:13:14 service.go:110: 2645 payments forwarded
+[service] 2022/02/03 20:13:14 apiStructs.go:180: Starting health check...
+[service] 2022/02/03 20:13:14 apiStructs.go:190: Api 0 is alive.
+[service] 2022/02/03 20:13:14 apiStructs.go:190: Api 1 is alive.
+[service] 2022/02/03 20:13:14 apiStructs.go:195: Ended health check.
+[service] 2022/02/03 20:13:14 apiStructs.go:169: top of health loop
+[service] 2022/02/03 20:13:16 service.go:110: 2645 payments forwarded
+[service] 2022/02/03 20:13:16 apiStructs.go:180: Starting health check...
+[service] 2022/02/03 20:13:16 apiStructs.go:190: Api 0 is alive.
+[service] 2022/02/03 20:13:16 apiStructs.go:190: Api 1 is alive.
+[service] 2022/02/03 20:13:16 apiStructs.go:195: Ended health check.
+[service] 2022/02/03 20:13:16 apiStructs.go:169: top of health loop
+[service] 2022/02/03 20:13:18 apiStructs.go:180: Starting health check...
+[service] 2022/02/03 20:13:18 service.go:110: 2645 payments forwarded
+[service] 2022/02/03 20:13:18 apiStructs.go:190: Api 0 is alive.
+[service] 2022/02/03 20:13:18 apiStructs.go:190: Api 1 is alive.
+[service] 2022/02/03 20:13:18 apiStructs.go:195: Ended health check.
+[service] 2022/02/03 20:13:18 apiStructs.go:169: top of health loop
+[service] 2022/02/03 20:13:20 service.go:110: 2645 payments forwarded
+[service] 2022/02/03 20:13:20 apiStructs.go:180: Starting health check...
+[service] 2022/02/03 20:13:20 apiStructs.go:190: Api 0 is alive.
+[service] 2022/02/03 20:13:20 apiStructs.go:190: Api 1 is alive.
+[service] 2022/02/03 20:13:20 apiStructs.go:195: Ended health check.
+[service] 2022/02/03 20:13:20 apiStructs.go:169: top of health loop
+[service] 2022/02/03 20:13:22 apiStructs.go:180: Starting health check...
+[service] 2022/02/03 20:13:22 service.go:110: 2645 payments forwarded
+[service] 2022/02/03 20:13:22 apiStructs.go:190: Api 0 is alive.
+[service] 2022/02/03 20:13:22 apiStructs.go:190: Api 1 is alive.
+[service] 2022/02/03 20:13:22 apiStructs.go:195: Ended health check.
+[service] 2022/02/03 20:13:22 apiStructs.go:169: top of health loop
