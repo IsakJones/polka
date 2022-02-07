@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"sync/atomic"
@@ -139,16 +138,16 @@ func handlePayment(w http.ResponseWriter, req *http.Request) {
 	// Read body if post or delete request
 	if req.Method == http.MethodPost || req.Method == http.MethodDelete {
 		// Read the body
-		body, err := ioutil.ReadAll(req.Body)
-		if err != nil {
-			log.Printf("Error while reading body: %s", err.Error())
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-		err = json.Unmarshal(body, &ct) // .Decode(&ct)
+		// body, err := ioutil.ReadAll(req.Body)
+		// if err != nil {
+		// 	log.Printf("Error while reading body: %s", err.Error())
+		// 	http.Error(w, err.Error(), http.StatusBadRequest)
+		// 	return
+		// }
+		err = json.NewDecoder(req.Body).Decode(&ct)
 		if err != nil {
 			log.Printf("Error decoding json: %s", err.Error())
-			log.Printf("Request body: %s", body)
+			// log.Printf("Request body: %s", body)
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}

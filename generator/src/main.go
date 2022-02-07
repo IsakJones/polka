@@ -12,7 +12,7 @@ import (
 
 const (
 	envPath  = "env/generator.env"
-	transUrl = "/payment"
+	transUrl = "/transaction"
 	helloUrl = "/hello"
 )
 
@@ -26,8 +26,8 @@ func main() {
 	// 	log.Fatal("Too many arguments provided.")
 	// }
 	helloPtr := flag.Bool("h", false, "whether to send a hello GET request")
-	workerPtr := flag.Int("w", 3000, "the number of workers")
-	transactionsPtr := flag.Int("t", 100, "the number of transactions sent")
+	workerPtr := flag.Uint("w", 3000, "the number of workers")
+	transactionsPtr := flag.Uint("t", 100, "the number of transactions sent")
 	flag.Parse()
 
 	// Get url to api
@@ -42,5 +42,6 @@ func main() {
 	}
 
 	log.Printf("Sending %d transactions with %d workers", *transactionsPtr, *workerPtr)
-	gospammer.TransactionSpammer(mainUrl+transUrl, *workerPtr, *transactionsPtr)
+	badReqs := gospammer.TransactionSpammer(mainUrl+transUrl, *workerPtr, *transactionsPtr)
+	log.Printf("Of all requests, %d were successful and %d failed.", *transactionsPtr-uint(badReqs), badReqs)
 }

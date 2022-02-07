@@ -6,6 +6,7 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"sync/atomic"
 	"time"
 )
 
@@ -16,6 +17,8 @@ const (
 	contentType = "transaction/json"
 	timeout     = 3 * time.Second
 )
+
+var badResponses *uint32
 
 // transaction stores information constituting a transaction.
 type transaction struct {
@@ -48,8 +51,10 @@ var c *http.Client
 
 // TransactionSpammer sends transactionNumber POST requests concurrently,
 // to the specified dest. The goal is to send requests as
-// close to simultaneous as possible.
-func TransactionSpammer(dest string, maxGoroutines, transactionNumber int) {
+// close to simultaneous as possible. Returns number of bad requests.
+func TransactionSpammer(dest string, maxGoroutines, transactionNumber uint) uint32 {
+
+	badResponses = new(uint32)
 
 	workChan := make(chan interface{})
 	doneChanNew := make(chan interface{})
@@ -64,13 +69,13 @@ func TransactionSpammer(dest string, maxGoroutines, transactionNumber int) {
 
 	// Initialize limited number of workers
 	log.Printf("initializing workers")
-	for i := 0; i < maxGoroutines; i++ {
+	for i := uint(0); i < maxGoroutines; i++ {
 		go Worker(lo, hi, dest, workChan, doneChanNew)
 	}
 
 	// Assign work to workers
 	log.Printf("filling work channel")
-	for i := 0; i < transactionNumber; i++ {
+	for i := uint(0); i < transactionNumber; i++ {
 		workChan <- true
 		// if i == maxSubscriberGoroutines {
 		// 	log.Printf("Reached %d", maxSubscriberGoroutines)
@@ -79,11 +84,12 @@ func TransactionSpammer(dest string, maxGoroutines, transactionNumber int) {
 
 	// End workers
 	log.Printf("killing workers")
-	for i := 0; i < maxGoroutines; i++ {
+	for i := uint(0); i < maxGoroutines; i++ {
 		doneChanNew <- true
 	}
 	log.Printf("Finished.")
 
+	return *badResponses
 }
 
 func Worker(lo, hi int, dest string, work <-chan interface{}, done <-chan interface{}) {
@@ -103,13 +109,26 @@ func Worker(lo, hi int, dest string, work <-chan interface{}, done <-chan interf
 	}
 }
 
+// sendTransaction sends a POST request with a json-encoded
+// payment to the load balancer.
 func sendTransaction(dest string, payload *bytes.Buffer) {
 	resp, err := c.Post(dest, contentType, payload)
+	// req, err := http.NewRequest(http.MethodPost, dest, payload)
+	// if err != nil {
+	// 	log.Printf("Error making request: %s", err.Error())
+	// }
+	// req.Close = true
+	// resp, err := c.Do(req)
 	if err != nil {
-		log.Printf("Error sending request: %s", err)
+		log.Printf("Error sending request: %s", err.Error())
 		return
 	}
 	defer resp.Body.Close()
+	// In case of failure, print
+	if resp.StatusCode > 299 {
+		atomic.AddUint32(badResponses, 1)
+		log.Printf("Received response with bad status code: %s", resp.Body)
+	}
 }
 
 // Returns a buffer fit for the POST request encoding

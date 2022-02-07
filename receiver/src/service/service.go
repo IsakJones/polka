@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	paymentView = "/payment"
+	paymentView = "/transaction"
 	helloView   = "/hello"
 )
 
@@ -55,7 +55,6 @@ func New(u *url.URL, ctx context.Context) (*Service, error) {
 	// Set up server
 	server := &http.Server{
 		Handler: mux,
-		Addr:    port,
 	}
 
 	// Successfully initialize service

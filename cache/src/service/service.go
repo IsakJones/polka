@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	path = "/balance"
+	path = "/updatebalance"
 )
 
 // Service manages the main application functions.
