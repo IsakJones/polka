@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	paymentView = "/transaction"
+	paymentView = "/payment"
 	helloView   = "/hello"
 )
 

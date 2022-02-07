@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	path = "/updatebalance"
+	view = "/balance"
 )
 
 // Service manages the main application functions.
@@ -36,7 +36,7 @@ func New(u *url.URL, ctx context.Context) (*Service, error) {
 
 	// Set up multiplexor
 	mux := http.NewServeMux()
-	mux.HandleFunc(path, balancesHandler)
+	mux.HandleFunc(view, balancesHandler)
 
 	// Set up server
 	server := &http.Server{

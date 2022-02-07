@@ -12,7 +12,7 @@ import (
 
 const (
 	envPath  = "env/generator.env"
-	transUrl = "/transaction"
+	transUrl = "/payment"
 	helloUrl = "/hello"
 )
 
