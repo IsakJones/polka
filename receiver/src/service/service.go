@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"time"
 )
 
 const (
@@ -69,9 +70,14 @@ func New(u *url.URL, ctx context.Context) (*Service, error) {
 	return s, nil
 }
 
+func testHandler(w http.ResponseWriter, req *http.Request) {
+	time.Sleep(time.Second)
+	return
+}
+
 // Start sets up a server and listener for incoming requests.
 func (s *Service) Serve(errChan chan<- error) {
-	s.logger.Printf("Listening on %s", s.server.Addr)
+	s.logger.Printf("Listening on port %s", s.listener.Addr().String())
 
 	errChan <- s.server.Serve(s.listener)
 }

@@ -1,0 +1,6 @@
+2022/02/07 22:37:00 Sending 100 transactions with 3000 workers
+2022/02/07 22:37:00 initializing workers
+2022/02/07 22:37:00 filling work channel
+2022/02/07 22:37:00 killing workers
+2022/02/07 22:37:01 Finished.
+2022/02/07 22:37:01 Of all requests, 100 were successful and 0 failed.

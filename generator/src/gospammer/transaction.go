@@ -3,6 +3,7 @@ package gospammer
 import (
 	"bytes"
 	"encoding/json"
+	"io"
 	"log"
 	"math/rand"
 	"net/http"
@@ -77,9 +78,6 @@ func TransactionSpammer(dest string, maxGoroutines, transactionNumber uint) uint
 	log.Printf("filling work channel")
 	for i := uint(0); i < transactionNumber; i++ {
 		workChan <- true
-		// if i == maxSubscriberGoroutines {
-		// 	log.Printf("Reached %d", maxSubscriberGoroutines)
-		// }
 	}
 
 	// End workers
@@ -113,12 +111,6 @@ func Worker(lo, hi int, dest string, work <-chan interface{}, done <-chan interf
 // payment to the load balancer.
 func sendTransaction(dest string, payload *bytes.Buffer) {
 	resp, err := c.Post(dest, contentType, payload)
-	// req, err := http.NewRequest(http.MethodPost, dest, payload)
-	// if err != nil {
-	// 	log.Printf("Error making request: %s", err.Error())
-	// }
-	// req.Close = true
-	// resp, err := c.Do(req)
 	if err != nil {
 		log.Printf("Error sending request: %s", err.Error())
 		return
@@ -127,7 +119,11 @@ func sendTransaction(dest string, payload *bytes.Buffer) {
 	// In case of failure, print
 	if resp.StatusCode > 299 {
 		atomic.AddUint32(badResponses, 1)
-		log.Printf("Received response with bad status code: %s", resp.Body)
+		bodyBytes, err := io.ReadAll(resp.Body)
+		if err != nil {
+			log.Fatalf("Can't read body: %s", err.Error())
+		}
+		log.Printf("Received response with bad status code: %s", string(bodyBytes))
 	}
 }
 

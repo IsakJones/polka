@@ -1,0 +1,1117 @@
+[postgres] 2022/02/09 14:22:05 dbstore.go:55: Created Logger
+[postgres] 2022/02/09 14:22:05 dbstore.go:83: Max Connections: 8
+[postgres] 2022/02/09 14:22:05 dbstore.go:89: Sending over banknum: 10
+[main] 2022/02/09 14:22:05 main.go:119: HTTP service initialized successfully.
+[main] 2022/02/09 14:22:05 main.go:133: Transactions processed:
+2022/02/09 14:22:10 Processed 0 transactions.
+Bank balances:
+{
+	U.S. Bancorp: -3713
+	Bank of America: 8178
+	Truist Financial: -7080
+	JP Morgan Chase: 7400
+	Citigroup: 10936
+	Wells Fargo: -15802
+	TD Group US: 22210
+	PNC Financial Services Group: -7950
+	Capital One Financial: -19386
+	Bank of New York Mellon: 5207
+}
+2022/02/09 14:22:15 Processed 0 transactions.
+Bank balances:
+{
+	PNC Financial Services Group: -7950
+	Capital One Financial: -19386
+	Bank of New York Mellon: 5207
+	TD Group US: 22210
+	JP Morgan Chase: 7400
+	Citigroup: 10936
+	Wells Fargo: -15802
+	U.S. Bancorp: -3713
+	Bank of America: 8178
+	Truist Financial: -7080
+}
+2022/02/09 14:22:20 Processed 0 transactions.
+Bank balances:
+{
+	PNC Financial Services Group: -7950
+	Capital One Financial: -19386
+	Bank of New York Mellon: 5207
+	TD Group US: 22210
+	JP Morgan Chase: 7400
+	Citigroup: 10936
+	Wells Fargo: -15802
+	U.S. Bancorp: -3713
+	Bank of America: 8178
+	Truist Financial: -7080
+}
+2022/02/09 14:22:25 Processed 0 transactions.
+Bank balances:
+{
+	Bank of America: 8178
+	Truist Financial: -7080
+	JP Morgan Chase: 7400
+	Citigroup: 10936
+	Wells Fargo: -15802
+	U.S. Bancorp: -3713
+	PNC Financial Services Group: -7950
+	Capital One Financial: -19386
+	Bank of New York Mellon: 5207
+	TD Group US: 22210
+}
+2022/02/09 14:22:30 Processed 0 transactions.
+Bank balances:
+{
+	PNC Financial Services Group: -7950
+	Capital One Financial: -19386
+	Bank of New York Mellon: 5207
+	TD Group US: 22210
+	JP Morgan Chase: 7400
+	Citigroup: 10936
+	Wells Fargo: -15802
+	U.S. Bancorp: -3713
+	Bank of America: 8178
+	Truist Financial: -7080
+}
+2022/02/09 14:22:35 Processed 0 transactions.
+Bank balances:
+{
+	Capital One Financial: -19386
+	Bank of New York Mellon: 5207
+	TD Group US: 22210
+	PNC Financial Services Group: -7950
+	Citigroup: 10936
+	Wells Fargo: -15802
+	U.S. Bancorp: -3713
+	Bank of America: 8178
+	Truist Financial: -7080
+	JP Morgan Chase: 7400
+}
+2022/02/09 14:22:40 Processed 862 transactions.
+Bank balances:
+{
+	JP Morgan Chase: 9833
+	Citigroup: 10540
+	Wells Fargo: -4348
+	U.S. Bancorp: -19454
+	Bank of America: -1619
+	Truist Financial: 4840
+	PNC Financial Services Group: -2039
+	Capital One Financial: -15523
+	Bank of New York Mellon: -7950
+	TD Group US: 25720
+}
+2022/02/09 14:22:45 Processed 862 transactions.
+Bank balances:
+{
+	JP Morgan Chase: 9833
+	Citigroup: 10540
+	Wells Fargo: -4348
+	U.S. Bancorp: -19454
+	Bank of America: -1619
+	Truist Financial: 4840
+	PNC Financial Services Group: -2039
+	Capital One Financial: -15523
+	Bank of New York Mellon: -7950
+	TD Group US: 25720
+}
+2022/02/09 14:22:50 Processed 862 transactions.
+Bank balances:
+{
+	PNC Financial Services Group: -2039
+	Capital One Financial: -15523
+	Bank of New York Mellon: -7950
+	TD Group US: 25720
+	JP Morgan Chase: 9833
+	Citigroup: 10540
+	Wells Fargo: -4348
+	U.S. Bancorp: -19454
+	Bank of America: -1619
+	Truist Financial: 4840
+}
+2022/02/09 14:22:55 Processed 862 transactions.
+Bank balances:
+{
+	PNC Financial Services Group: -2039
+	Capital One Financial: -15523
+	Bank of New York Mellon: -7950
+	TD Group US: 25720
+	Bank of America: -1619
+	Truist Financial: 4840
+	JP Morgan Chase: 9833
+	Citigroup: 10540
+	Wells Fargo: -4348
+	U.S. Bancorp: -19454
+}
+2022/02/09 14:23:00 Processed 862 transactions.
+Bank balances:
+{
+	PNC Financial Services Group: -2039
+	Capital One Financial: -15523
+	Bank of New York Mellon: -7950
+	TD Group US: 25720
+	JP Morgan Chase: 9833
+	Citigroup: 10540
+	Wells Fargo: -4348
+	U.S. Bancorp: -19454
+	Bank of America: -1619
+	Truist Financial: 4840
+}
+2022/02/09 14:23:05 Processed 962 transactions.
+Bank balances:
+{
+	PNC Financial Services Group: -2713
+	Capital One Financial: -14717
+	Bank of New York Mellon: -4331
+	TD Group US: 22739
+	JP Morgan Chase: 7517
+	Citigroup: 9703
+	Wells Fargo: -1294
+	U.S. Bancorp: -20329
+	Bank of America: 405
+	Truist Financial: 3020
+}
+2022/02/09 14:23:10 Processed 1962 transactions.
+Bank balances:
+{
+	Citigroup: 10320
+	Wells Fargo: -2207
+	U.S. Bancorp: -19957
+	Bank of America: -671
+	Truist Financial: 2839
+	JP Morgan Chase: 18478
+	Capital One Financial: -17587
+	Bank of New York Mellon: -5415
+	TD Group US: 5898
+	PNC Financial Services Group: 8302
+}
+2022/02/09 14:23:15 Processed 1962 transactions.
+Bank balances:
+{
+	PNC Financial Services Group: 8302
+	Capital One Financial: -17587
+	Bank of New York Mellon: -5415
+	TD Group US: 5898
+	JP Morgan Chase: 18478
+	Citigroup: 10320
+	Wells Fargo: -2207
+	U.S. Bancorp: -19957
+	Bank of America: -671
+	Truist Financial: 2839
+}
+2022/02/09 14:23:20 Processed 6040 transactions.
+Bank balances:
+{
+	TD Group US: -9546
+	PNC Financial Services Group: -5561
+	Capital One Financial: 21337
+	Bank of New York Mellon: -2244
+	U.S. Bancorp: 12470
+	Bank of America: -29227
+	Truist Financial: -2234
+	JP Morgan Chase: 46382
+	Citigroup: 5469
+	Wells Fargo: -36846
+}
+2022/02/09 14:23:25 Processed 11962 transactions.
+Bank balances:
+{
+	Wells Fargo: -58119
+	U.S. Bancorp: 57113
+	Bank of America: -7651
+	Truist Financial: 12668
+	JP Morgan Chase: -8066
+	Citigroup: 2687
+	Bank of New York Mellon: 10925
+	TD Group US: -36419
+	PNC Financial Services Group: 6927
+	Capital One Financial: 19935
+}
+2022/02/09 14:23:30 Processed 11962 transactions.
+Bank balances:
+{
+	PNC Financial Services Group: 6927
+	Capital One Financial: 19935
+	Bank of New York Mellon: 10925
+	TD Group US: -36419
+	Truist Financial: 12668
+	JP Morgan Chase: -8066
+	Citigroup: 2687
+	Wells Fargo: -58119
+	U.S. Bancorp: 57113
+	Bank of America: -7651
+}
+2022/02/09 14:23:35 Processed 17078 transactions.
+Bank balances:
+{
+	JP Morgan Chase: -4472
+	Citigroup: -27790
+	Wells Fargo: -66431
+	U.S. Bancorp: 83880
+	Bank of America: 24841
+	Truist Financial: 16440
+	PNC Financial Services Group: 11606
+	Capital One Financial: 22459
+	Bank of New York Mellon: 6970
+	TD Group US: -67503
+}
+2022/02/09 14:23:40 Processed 24962 transactions.
+Bank balances:
+{
+	Bank of America: 12945
+	Truist Financial: 16364
+	JP Morgan Chase: 51992
+	Citigroup: -20570
+	Wells Fargo: -90161
+	U.S. Bancorp: 80649
+	PNC Financial Services Group: -39784
+	Capital One Financial: 39692
+	Bank of New York Mellon: -11061
+	TD Group US: -40066
+}
+2022/02/09 14:23:45 Processed 33946 transactions.
+Bank balances:
+{
+	JP Morgan Chase: 51098
+	Citigroup: -69580
+	Wells Fargo: -136066
+	U.S. Bancorp: 170647
+	Bank of America: 17565
+	Truist Financial: -7336
+	PNC Financial Services Group: -49570
+	Capital One Financial: 58971
+	Bank of New York Mellon: 2986
+	TD Group US: -38715
+}
+2022/02/09 14:23:50 Processed 42482 transactions.
+Bank balances:
+{
+	Truist Financial: 7540
+	JP Morgan Chase: 63473
+	Citigroup: -72766
+	Wells Fargo: -162880
+	U.S. Bancorp: 195356
+	Bank of America: 48825
+	PNC Financial Services Group: -47790
+	Capital One Financial: 25634
+	Bank of New York Mellon: 316
+	TD Group US: -57708
+}
+2022/02/09 14:23:55 Processed 51440 transactions.
+Bank balances:
+{
+	JP Morgan Chase: 88945
+	Citigroup: -104119
+	Wells Fargo: -179109
+	U.S. Bancorp: 221327
+	Bank of America: 33414
+	Truist Financial: 12466
+	PNC Financial Services Group: -62912
+	Capital One Financial: 41773
+	Bank of New York Mellon: 9321
+	TD Group US: -61106
+}
+2022/02/09 14:24:00 Processed 59604 transactions.
+Bank balances:
+{
+	JP Morgan Chase: 98355
+	Citigroup: -94231
+	Wells Fargo: -179528
+	U.S. Bancorp: 249708
+	Bank of America: 21110
+	Truist Financial: -24808
+	PNC Financial Services Group: -17229
+	Capital One Financial: -2696
+	Bank of New York Mellon: 2436
+	TD Group US: -53117
+}
+2022/02/09 14:24:05 Processed 67768 transactions.
+Bank balances:
+{
+	U.S. Bancorp: 262372
+	Bank of America: 8514
+	Truist Financial: -64921
+	JP Morgan Chase: 76753
+	Citigroup: -112126
+	Wells Fargo: -196229
+	TD Group US: -47641
+	PNC Financial Services Group: 33221
+	Capital One Financial: 4246
+	Bank of New York Mellon: 35811
+}
+2022/02/09 14:24:10 Processed 75780 transactions.
+Bank balances:
+{
+	PNC Financial Services Group: 49247
+	Capital One Financial: -29780
+	Bank of New York Mellon: 38692
+	TD Group US: -49429
+	JP Morgan Chase: 87197
+	Citigroup: -127949
+	Wells Fargo: -210370
+	U.S. Bancorp: 276658
+	Bank of America: 55110
+	Truist Financial: -89376
+}
+2022/02/09 14:24:15 Processed 83949 transactions.
+Bank balances:
+{
+	Wells Fargo: -236171
+	U.S. Bancorp: 288086
+	Bank of America: 59709
+	Truist Financial: -66585
+	JP Morgan Chase: 89447
+	Citigroup: -162932
+	Bank of New York Mellon: 18491
+	TD Group US: -27419
+	PNC Financial Services Group: 73141
+	Capital One Financial: -35767
+}
+2022/02/09 14:24:20 Processed 91631 transactions.
+Bank balances:
+{
+	Bank of New York Mellon: 5400
+	TD Group US: 11779
+	PNC Financial Services Group: 77113
+	Capital One Financial: -60154
+	Wells Fargo: -233769
+	U.S. Bancorp: 289648
+	Bank of America: 83148
+	Truist Financial: -55584
+	JP Morgan Chase: 76335
+	Citigroup: -193916
+}
+2022/02/09 14:24:25 Processed 99396 transactions.
+Bank balances:
+{
+	Bank of America: 56233
+	Truist Financial: -56208
+	JP Morgan Chase: 93686
+	Citigroup: -186776
+	Wells Fargo: -240757
+	U.S. Bancorp: 314680
+	PNC Financial Services Group: 79009
+	Capital One Financial: -20386
+	Bank of New York Mellon: -14364
+	TD Group US: -25117
+}
+2022/02/09 14:24:30 Processed 106689 transactions.
+Bank balances:
+{
+	U.S. Bancorp: 337660
+	Bank of America: 95800
+	Truist Financial: -87106
+	JP Morgan Chase: 35656
+	Citigroup: -186777
+	Wells Fargo: -224904
+	TD Group US: -20138
+	PNC Financial Services Group: 75926
+	Capital One Financial: -11642
+	Bank of New York Mellon: -14475
+}
+2022/02/09 14:24:35 Processed 111961 transactions.
+Bank balances:
+{
+	PNC Financial Services Group: 100495
+	Capital One Financial: -2017
+	Bank of New York Mellon: -2258
+	TD Group US: -30627
+	Bank of America: 93855
+	Truist Financial: -65196
+	JP Morgan Chase: 27451
+	Citigroup: -193596
+	Wells Fargo: -221117
+	U.S. Bancorp: 293010
+}
+2022/02/09 14:24:40 Processed 111961 transactions.
+Bank balances:
+{
+	PNC Financial Services Group: 100495
+	Capital One Financial: -2017
+	Bank of New York Mellon: -2258
+	TD Group US: -30627
+	JP Morgan Chase: 27451
+	Citigroup: -193596
+	Wells Fargo: -221117
+	U.S. Bancorp: 293010
+	Bank of America: 93855
+	Truist Financial: -65196
+}
+2022/02/09 14:24:45 Processed 111961 transactions.
+Bank balances:
+{
+	U.S. Bancorp: 293010
+	Bank of America: 93855
+	Truist Financial: -65196
+	JP Morgan Chase: 27451
+	Citigroup: -193596
+	Wells Fargo: -221117
+	TD Group US: -30627
+	PNC Financial Services Group: 100495
+	Capital One Financial: -2017
+	Bank of New York Mellon: -2258
+}
+2022/02/09 14:24:50 Processed 111961 transactions.
+Bank balances:
+{
+	Capital One Financial: -2017
+	Bank of New York Mellon: -2258
+	TD Group US: -30627
+	PNC Financial Services Group: 100495
+	Citigroup: -193596
+	Wells Fargo: -221117
+	U.S. Bancorp: 293010
+	Bank of America: 93855
+	Truist Financial: -65196
+	JP Morgan Chase: 27451
+}
+2022/02/09 14:24:55 Processed 111961 transactions.
+Bank balances:
+{
+	PNC Financial Services Group: 100495
+	Capital One Financial: -2017
+	Bank of New York Mellon: -2258
+	TD Group US: -30627
+	Truist Financial: -65196
+	JP Morgan Chase: 27451
+	Citigroup: -193596
+	Wells Fargo: -221117
+	U.S. Bancorp: 293010
+	Bank of America: 93855
+}
+2022/02/09 14:25:00 Processed 111961 transactions.
+Bank balances:
+{
+	PNC Financial Services Group: 100495
+	Capital One Financial: -2017
+	Bank of New York Mellon: -2258
+	TD Group US: -30627
+	Truist Financial: -65196
+	JP Morgan Chase: 27451
+	Citigroup: -193596
+	Wells Fargo: -221117
+	U.S. Bancorp: 293010
+	Bank of America: 93855
+}
+2022/02/09 14:25:05 Processed 111961 transactions.
+Bank balances:
+{
+	TD Group US: -30627
+	PNC Financial Services Group: 100495
+	Capital One Financial: -2017
+	Bank of New York Mellon: -2258
+	U.S. Bancorp: 293010
+	Bank of America: 93855
+	Truist Financial: -65196
+	JP Morgan Chase: 27451
+	Citigroup: -193596
+	Wells Fargo: -221117
+}
+2022/02/09 14:25:10 Processed 111961 transactions.
+Bank balances:
+{
+	TD Group US: -30627
+	PNC Financial Services Group: 100495
+	Capital One Financial: -2017
+	Bank of New York Mellon: -2258
+	U.S. Bancorp: 293010
+	Bank of America: 93855
+	Truist Financial: -65196
+	JP Morgan Chase: 27451
+	Citigroup: -193596
+	Wells Fargo: -221117
+}
+2022/02/09 14:25:15 Processed 111961 transactions.
+Bank balances:
+{
+	TD Group US: -30627
+	PNC Financial Services Group: 100495
+	Capital One Financial: -2017
+	Bank of New York Mellon: -2258
+	U.S. Bancorp: 293010
+	Bank of America: 93855
+	Truist Financial: -65196
+	JP Morgan Chase: 27451
+	Citigroup: -193596
+	Wells Fargo: -221117
+}
+2022/02/09 14:25:20 Processed 111961 transactions.
+Bank balances:
+{
+	Truist Financial: -65196
+	JP Morgan Chase: 27451
+	Citigroup: -193596
+	Wells Fargo: -221117
+	U.S. Bancorp: 293010
+	Bank of America: 93855
+	PNC Financial Services Group: 100495
+	Capital One Financial: -2017
+	Bank of New York Mellon: -2258
+	TD Group US: -30627
+}
+2022/02/09 14:25:25 Processed 111961 transactions.
+Bank balances:
+{
+	Wells Fargo: -221117
+	U.S. Bancorp: 293010
+	Bank of America: 93855
+	Truist Financial: -65196
+	JP Morgan Chase: 27451
+	Citigroup: -193596
+	Bank of New York Mellon: -2258
+	TD Group US: -30627
+	PNC Financial Services Group: 100495
+	Capital One Financial: -2017
+}
+2022/02/09 14:25:30 Processed 111961 transactions.
+Bank balances:
+{
+	JP Morgan Chase: 27451
+	Citigroup: -193596
+	Wells Fargo: -221117
+	U.S. Bancorp: 293010
+	Bank of America: 93855
+	Truist Financial: -65196
+	PNC Financial Services Group: 100495
+	Capital One Financial: -2017
+	Bank of New York Mellon: -2258
+	TD Group US: -30627
+}
+2022/02/09 14:25:35 Processed 111961 transactions.
+Bank balances:
+{
+	JP Morgan Chase: 27451
+	Citigroup: -193596
+	Wells Fargo: -221117
+	U.S. Bancorp: 293010
+	Bank of America: 93855
+	Truist Financial: -65196
+	PNC Financial Services Group: 100495
+	Capital One Financial: -2017
+	Bank of New York Mellon: -2258
+	TD Group US: -30627
+}
+2022/02/09 14:25:40 Processed 111961 transactions.
+Bank balances:
+{
+	Truist Financial: -65196
+	JP Morgan Chase: 27451
+	Citigroup: -193596
+	Wells Fargo: -221117
+	U.S. Bancorp: 293010
+	Bank of America: 93855
+	PNC Financial Services Group: 100495
+	Capital One Financial: -2017
+	Bank of New York Mellon: -2258
+	TD Group US: -30627
+}
+2022/02/09 14:25:45 Processed 111961 transactions.
+Bank balances:
+{
+	Wells Fargo: -221117
+	U.S. Bancorp: 293010
+	Bank of America: 93855
+	Truist Financial: -65196
+	JP Morgan Chase: 27451
+	Citigroup: -193596
+	Bank of New York Mellon: -2258
+	TD Group US: -30627
+	PNC Financial Services Group: 100495
+	Capital One Financial: -2017
+}
+2022/02/09 14:25:50 Processed 111961 transactions.
+Bank balances:
+{
+	PNC Financial Services Group: 100495
+	Capital One Financial: -2017
+	Bank of New York Mellon: -2258
+	TD Group US: -30627
+	JP Morgan Chase: 27451
+	Citigroup: -193596
+	Wells Fargo: -221117
+	U.S. Bancorp: 293010
+	Bank of America: 93855
+	Truist Financial: -65196
+}
+2022/02/09 14:25:55 Processed 111961 transactions.
+Bank balances:
+{
+	PNC Financial Services Group: 100495
+	Capital One Financial: -2017
+	Bank of New York Mellon: -2258
+	TD Group US: -30627
+	Bank of America: 93855
+	Truist Financial: -65196
+	JP Morgan Chase: 27451
+	Citigroup: -193596
+	Wells Fargo: -221117
+	U.S. Bancorp: 293010
+}
+2022/02/09 14:26:00 Processed 111961 transactions.
+Bank balances:
+{
+	TD Group US: -30627
+	PNC Financial Services Group: 100495
+	Capital One Financial: -2017
+	Bank of New York Mellon: -2258
+	U.S. Bancorp: 293010
+	Bank of America: 93855
+	Truist Financial: -65196
+	JP Morgan Chase: 27451
+	Citigroup: -193596
+	Wells Fargo: -221117
+}
+2022/02/09 14:26:05 Processed 111961 transactions.
+Bank balances:
+{
+	JP Morgan Chase: 27451
+	Citigroup: -193596
+	Wells Fargo: -221117
+	U.S. Bancorp: 293010
+	Bank of America: 93855
+	Truist Financial: -65196
+	PNC Financial Services Group: 100495
+	Capital One Financial: -2017
+	Bank of New York Mellon: -2258
+	TD Group US: -30627
+}
+2022/02/09 14:26:10 Processed 111961 transactions.
+Bank balances:
+{
+	PNC Financial Services Group: 100495
+	Capital One Financial: -2017
+	Bank of New York Mellon: -2258
+	TD Group US: -30627
+	Bank of America: 93855
+	Truist Financial: -65196
+	JP Morgan Chase: 27451
+	Citigroup: -193596
+	Wells Fargo: -221117
+	U.S. Bancorp: 293010
+}
+2022/02/09 14:26:15 Processed 111961 transactions.
+Bank balances:
+{
+	JP Morgan Chase: 27451
+	Citigroup: -193596
+	Wells Fargo: -221117
+	U.S. Bancorp: 293010
+	Bank of America: 93855
+	Truist Financial: -65196
+	PNC Financial Services Group: 100495
+	Capital One Financial: -2017
+	Bank of New York Mellon: -2258
+	TD Group US: -30627
+}
+2022/02/09 14:26:20 Processed 111961 transactions.
+Bank balances:
+{
+	PNC Financial Services Group: 100495
+	Capital One Financial: -2017
+	Bank of New York Mellon: -2258
+	TD Group US: -30627
+	Truist Financial: -65196
+	JP Morgan Chase: 27451
+	Citigroup: -193596
+	Wells Fargo: -221117
+	U.S. Bancorp: 293010
+	Bank of America: 93855
+}
+2022/02/09 14:26:25 Processed 111961 transactions.
+Bank balances:
+{
+	PNC Financial Services Group: 100495
+	Capital One Financial: -2017
+	Bank of New York Mellon: -2258
+	TD Group US: -30627
+	Truist Financial: -65196
+	JP Morgan Chase: 27451
+	Citigroup: -193596
+	Wells Fargo: -221117
+	U.S. Bancorp: 293010
+	Bank of America: 93855
+}
+2022/02/09 14:26:30 Processed 111961 transactions.
+Bank balances:
+{
+	PNC Financial Services Group: 100495
+	Capital One Financial: -2017
+	Bank of New York Mellon: -2258
+	TD Group US: -30627
+	JP Morgan Chase: 27451
+	Citigroup: -193596
+	Wells Fargo: -221117
+	U.S. Bancorp: 293010
+	Bank of America: 93855
+	Truist Financial: -65196
+}
+2022/02/09 14:26:35 Processed 111961 transactions.
+Bank balances:
+{
+	PNC Financial Services Group: 100495
+	Capital One Financial: -2017
+	Bank of New York Mellon: -2258
+	TD Group US: -30627
+	JP Morgan Chase: 27451
+	Citigroup: -193596
+	Wells Fargo: -221117
+	U.S. Bancorp: 293010
+	Bank of America: 93855
+	Truist Financial: -65196
+}
+2022/02/09 14:26:40 Processed 111961 transactions.
+Bank balances:
+{
+	PNC Financial Services Group: 100495
+	Capital One Financial: -2017
+	Bank of New York Mellon: -2258
+	TD Group US: -30627
+	JP Morgan Chase: 27451
+	Citigroup: -193596
+	Wells Fargo: -221117
+	U.S. Bancorp: 293010
+	Bank of America: 93855
+	Truist Financial: -65196
+}
+2022/02/09 14:26:45 Processed 111961 transactions.
+Bank balances:
+{
+	Capital One Financial: -2017
+	Bank of New York Mellon: -2258
+	TD Group US: -30627
+	PNC Financial Services Group: 100495
+	Citigroup: -193596
+	Wells Fargo: -221117
+	U.S. Bancorp: 293010
+	Bank of America: 93855
+	Truist Financial: -65196
+	JP Morgan Chase: 27451
+}
+2022/02/09 14:26:50 Processed 111961 transactions.
+Bank balances:
+{
+	Wells Fargo: -221117
+	U.S. Bancorp: 293010
+	Bank of America: 93855
+	Truist Financial: -65196
+	JP Morgan Chase: 27451
+	Citigroup: -193596
+	Bank of New York Mellon: -2258
+	TD Group US: -30627
+	PNC Financial Services Group: 100495
+	Capital One Financial: -2017
+}
+2022/02/09 14:26:55 Processed 111961 transactions.
+Bank balances:
+{
+	Wells Fargo: -221117
+	U.S. Bancorp: 293010
+	Bank of America: 93855
+	Truist Financial: -65196
+	JP Morgan Chase: 27451
+	Citigroup: -193596
+	Bank of New York Mellon: -2258
+	TD Group US: -30627
+	PNC Financial Services Group: 100495
+	Capital One Financial: -2017
+}
+2022/02/09 14:27:00 Processed 111961 transactions.
+Bank balances:
+{
+	Citigroup: -193596
+	Wells Fargo: -221117
+	U.S. Bancorp: 293010
+	Bank of America: 93855
+	Truist Financial: -65196
+	JP Morgan Chase: 27451
+	Capital One Financial: -2017
+	Bank of New York Mellon: -2258
+	TD Group US: -30627
+	PNC Financial Services Group: 100495
+}
+2022/02/09 14:27:05 Processed 111961 transactions.
+Bank balances:
+{
+	Bank of America: 93855
+	Truist Financial: -65196
+	JP Morgan Chase: 27451
+	Citigroup: -193596
+	Wells Fargo: -221117
+	U.S. Bancorp: 293010
+	PNC Financial Services Group: 100495
+	Capital One Financial: -2017
+	Bank of New York Mellon: -2258
+	TD Group US: -30627
+}
+2022/02/09 14:27:10 Processed 111961 transactions.
+Bank balances:
+{
+	PNC Financial Services Group: 100495
+	Capital One Financial: -2017
+	Bank of New York Mellon: -2258
+	TD Group US: -30627
+	Truist Financial: -65196
+	JP Morgan Chase: 27451
+	Citigroup: -193596
+	Wells Fargo: -221117
+	U.S. Bancorp: 293010
+	Bank of America: 93855
+}
+2022/02/09 14:27:15 Processed 111961 transactions.
+Bank balances:
+{
+	PNC Financial Services Group: 100495
+	Capital One Financial: -2017
+	Bank of New York Mellon: -2258
+	TD Group US: -30627
+	Bank of America: 93855
+	Truist Financial: -65196
+	JP Morgan Chase: 27451
+	Citigroup: -193596
+	Wells Fargo: -221117
+	U.S. Bancorp: 293010
+}
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: FATAL: terminating connection due to administrator command (SQLSTATE 57P01)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:19 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+2022/02/09 14:27:20 Processed 111961 transactions.
+Bank balances:
+{
+	JP Morgan Chase: 27451
+	Citigroup: -193596
+	Wells Fargo: -221117
+	U.S. Bancorp: 293010
+	Bank of America: 93855
+	Truist Financial: -65196
+	PNC Financial Services Group: 100495
+	Capital One Financial: -2017
+	Bank of New York Mellon: -2258
+	TD Group US: -30627
+}
+[postgres] 2022/02/09 14:27:20 dbstore.go:158: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:20 dbstore.go:158: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:20 dbstore.go:158: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:20 dbstore.go:158: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:20 dbstore.go:158: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:20 dbstore.go:158: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:20 dbstore.go:158: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:20 dbstore.go:158: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:20 dbstore.go:158: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:20 dbstore.go:158: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:158: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:158: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:158: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:158: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:158: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:158: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:158: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:158: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:158: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:158: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:21 dbstore.go:169: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:22 dbstore.go:158: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:22 dbstore.go:158: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:22 dbstore.go:158: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:22 dbstore.go:158: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:22 dbstore.go:158: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:22 dbstore.go:158: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:22 dbstore.go:158: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:22 dbstore.go:158: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:22 dbstore.go:158: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+[postgres] 2022/02/09 14:27:22 dbstore.go:158: Error updating database: failed to connect to `host=localhost user=polka database=payments`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)

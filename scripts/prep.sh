@@ -15,11 +15,16 @@ declare -a services=("receiver" "balancer" "cache" "generator")
 # Place env directories and files
 for service in ${services[@]}
 do
-    mkdir $service/env
-    cp envs/$service.env $service/env/
+    # The log and the .env files go in a different place for receivers
+    if [ $service != "receiver" ]
+    then
+        mkdir $service/env
+        touch $service/log.txt
+        cp envs/$service.env $service/env/
+    fi
 done
 
-echo "Made env directories"
+echo "Made env directories and log files"
 
 # Place db.env file in cache
 cp envs/db.env cache/env/
@@ -30,7 +35,7 @@ do
     cd $service/src # Go to source file
 
     go build .
-    mv src ../bin/$service
+    mv src ../bin/polka$service
 
     cd $POLKA # Return to original directory
 
@@ -47,8 +52,9 @@ do
     echo "NODEADDRESS$i=http://localhost:$CURPORT" >> balancer/env/balancer.env
     # Make node directory and include .env files
     mkdir "receiver/node$i"
-    cp receiver/bin/receiver "receiver/node$i"
-    cp receiver/env/receiver.env "receiver/node$i/"
+    touch "receiver/node$i/log.txt"
+    cp receiver/bin/polkareceiver "receiver/node$i"
+    cp envs/receiver.env "receiver/node$i/"
     cp envs/db.env "receiver/node$i/"
     sed -i -e "s/${BASEPORT}/${CURPORT}/g" "receiver/node$i/receiver.env"
     echo "Prepared node $i"

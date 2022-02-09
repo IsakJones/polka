@@ -112,7 +112,7 @@ func (s *Service) PrintRequestNumber() {
 
 func (s *Service) Close() (err error) {
 	// Wait for healthcheck to end
-	s.logger.Printf("top of s.Close()")
+	s.logger.Printf("Closing service...")
 	s.quit <- struct{}{}
 	s.logger.Printf("waiting is checkisdone")
 	<-s.checkIsDone

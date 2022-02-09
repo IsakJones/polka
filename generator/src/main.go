@@ -18,13 +18,6 @@ const (
 
 func main() {
 
-	// Check for right args
-	// args := os.Args
-	// if len(args) < 2 {
-	// 	log.Fatal("No transaction number provided.")
-	// } else if len(args) > 4 {
-	// 	log.Fatal("Too many arguments provided.")
-	// }
 	helloPtr := flag.Bool("h", false, "whether to send a hello GET request")
 	workerPtr := flag.Uint("w", 3000, "the number of workers")
 	transactionsPtr := flag.Uint("t", 100, "the number of transactions sent")

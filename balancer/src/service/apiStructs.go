@@ -166,7 +166,6 @@ func nodeResponds(apiUrl *url.URL) bool {
 func (s *Service) healthCheck() {
 	ticker := time.NewTicker(checkTimeout)
 	for {
-		s.logger.Printf("top of health loop")
 		select {
 		// Quit gracefully
 		case <-s.quit:
