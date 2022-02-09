@@ -1,36 +1,37 @@
-FROM golang:1.17
+FROM golang:1.17 AS polka
 
 WORKDIR /polka
 
 # arg[0] -> local, arg[1] -> in the image
+# COPY go.mod .
+# COPY go.sum .
+# RUN go get
+
 COPY . .
 
-# build binaries
-RUN go build -o build/payments-api ./apis/src/ 
-RUN go build -o build/generator ./generator
-RUN go build -o build/balancer ./balancer
-RUN go build -o build/cache ./cache
+RUN ./scripts/clean_up.sh 
+RUN ./scripts/prep.sh 1
+# RUN go build -o generator/bin/polkagenerator ./generator/src/
+# RUN go build -o balancer/bin/polkabalancer ./balancer/src/
+# RUN go build -o receiver/bin/polkareceiver ./receiver/src/ 
+# RUN go build -o cache/bin/polkacache ./cache/src/
 
-WORKDIR /polka/apis/api0
+# FROM polka as receiver
+# WORKDIR /polka/receiver
+# CMD ./bin/polkareceiver
 
-# docker run -p 8081:8080 payments:0.17 /polka/build/payments-api
+FROM polka AS receiver
+WORKDIR /polka/receiver/node0
+CMD ./polkareceiver
 
-# FROM alpine
+FROM polka AS cache
+WORKDIR /polka/cache
+CMD ./bin/polkacache
 
-# WORKDIR /app
+FROM polka AS balancer
+WORKDIR /polka/balancer
+CMD ./bin/polkabalancer
 
-# COPY --from=builder /polka/build/cache cache
-# COPY --from=builder /polka/build/generator generator
-# COPY --from=builder /polka/build/balancer balancer
-# COPY --from=builder /polka/build/payments-api payments-api
-
-# CMD cache --port 8081
-
-
-# COPY
-# WORKDIR
-# RUN
-# CMD
-
-# docker run -it golang:1.17 sh
-# docker build -t payments:0.1 .
+FROM polka AS generator
+WORKDIR /polka/generator
+CMD ./bin/polkagenerator -w=1000 -t=1000

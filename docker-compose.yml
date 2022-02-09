@@ -1,0 +1,49 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  receiver:
+    build:
+      context: .
+      target: receiver
+    env_file:
+      - ./envs/db.env
+      - ./envs/receiver.env
+    environment:
+      - DBHOST=db
+    networks:
+      - main
+  cache:
+    build:
+      context: .
+      target: cache
+    networks:
+      - main
+  balancer:
+    build:
+      context: .
+      target: balancer
+    ports:
+      # default namespace : container namespace
+      - "8080:8081"
+    env_file:
+      - ./envs/balancer.env
+    networks:
+      - main
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./sqlinit/setup.sql:/docker-entrypoint-initdb.d/init.sql
+      - pgdata:/var/lib/postgresql
+    environment:
+      POSTGRES_PASSWORD: polkapass
+      POSTGRES_DB: payments
+      POSTGRES_USER: polka
+    networks:
+      - main
+volumes:
+  sqlinit:
+  pgdata:
+networks:
+  main:

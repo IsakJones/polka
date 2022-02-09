@@ -1,10 +1,8 @@
-#! /usr/bin/bash
+#! /usr/bin/env bash
 set -euo pipefail
 
 # Script prepares all binaries and files. First argument is number of nodes.
 
-# Define polka directory variable
-POLKA=~/code/projects/polka
 # Define base port for receiver nodes
 BASEPORT=8082
 # Define number of receiver nodes
@@ -32,12 +30,14 @@ cp envs/db.env cache/env/
 # Build all binaries
 for service in ${services[@]}
 do
-    cd $service/src # Go to source file
+    pushd "$service" # Go to source file
 
-    go build .
-    mv src ../bin/polka$service
+    go build -o bin/polka$service ./src
 
-    cd $POLKA # Return to original directory
+    # go build .
+    # mv src ../bin/polka$service
+
+    popd # $POLKA # Return to original directory
 
     echo "Built binary in $service/bin"
 done

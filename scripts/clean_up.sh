@@ -1,4 +1,4 @@
-#! /usr/bin/bash
+#! /usr/bin/env bash
 
 # Make list of services
 declare -a services=("receiver" "balancer" "cache" "generator")
