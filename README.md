@@ -1,7 +1,7 @@
 # Polka Payments
 
 <div align="center">
-   <img alt="diagram" src="files/diagram.png">
+   <img alt="diagram" src="files/diagram2.png">
 </div>
 
 The goal is to simulate an online payments processor (think Stripe) through a concurrent Go REST API.

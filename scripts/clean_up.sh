@@ -3,6 +3,9 @@
 # Make list of services
 declare -a services=("receiver" "balancer" "cache" "generator")
 
+# Kill tmux session, if any
+tmux kill-server
+
 # Kill jobs
 for service in ${services[@]}
 do

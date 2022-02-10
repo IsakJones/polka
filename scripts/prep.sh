@@ -53,9 +53,9 @@ do
     # Make node directory and include .env files
     mkdir "receiver/node$i"
     touch "receiver/node$i/log.txt"
-    cp receiver/bin/polkareceiver "receiver/node$i"
-    cp envs/receiver.env "receiver/node$i/"
-    cp envs/db.env "receiver/node$i/"
+    cp "receiver/bin/polkareceiver" "receiver/node$i/polkareceiver$i"
+    cp "envs/receiver.env" "receiver/node$i/"
+    cp "envs/db.env" "receiver/node$i/"
     sed -i -e "s/${BASEPORT}/${CURPORT}/g" "receiver/node$i/receiver.env"
     echo "Prepared node $i"
 done
