@@ -250,3 +250,9 @@ func handleHello(writer http.ResponseWriter, _ *http.Request) {
 	fmt.Println("Successfully got a hello HTTP request!")
 	fmt.Fprintf(writer, "Hello!!!\n")
 }
+
+// testHandler is used to monitor the machine's performance during long tasks
+func testHandler(w http.ResponseWriter, req *http.Request) {
+	time.Sleep(time.Second)
+	return
+}
