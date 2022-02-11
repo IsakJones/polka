@@ -1,4 +1,6 @@
-# Polka Payments
+<div align="center">
+   <img alt="logo" src="files/logo.png">
+</div>
 
 <p align="center">
   <a>

@@ -22,7 +22,7 @@ echo "Started cache and balancer"
 for node in $(find -name "node*")
 do
     pushd $node
-    ./polkareceiver > log.txt 2>&1 &
+    ./$(ls | grep "polkareceiver") > log.txt 2>&1 &
     popd
 done
 

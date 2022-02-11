@@ -57,6 +57,7 @@ then
     for node in $(find -name "node*")
     do
         cd "$POLKA/$node"
+
         tmux rename-window "receiver$i"
         tmux send-keys "cd ${POLKA}/receiver/node$i; ./polkareceiver" "C-m"
         tmux new-window
