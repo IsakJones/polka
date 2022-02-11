@@ -70,9 +70,9 @@ $ go get
 
 To set up all binaries and a given number of receiver servers, run
 ```bash
-$ ./scripts/prep.sh <num>
+$ ./scripts/prep.sh $num
 ```
-where *num* is the number of receiver servers.
+where $num is the number of receiver servers.
 
 To run the application and view streams of logs in tmux windows, run
 ```bash
@@ -87,9 +87,9 @@ Of note, multitail must be installed in order to view multiple logs at once in t
 
 To load test the application, run from the generator directory
 ```bash
-$ ./bin/polkagenerator -w=<workers> -t=<transactions>
+$ ./bin/polkagenerator -w=$workers -t=$transactions
 ```
-where *workers* is the number of maximum ongoing requests in any given moment, and *transactions* is the number of randomly generated transactions (as in payments) that are sent. 
+where $workers is the number of maximum ongoing requests in any given moment, and $transactions is the number of randomly generated transactions (as in payments) that are sent. 
 
 To shut down the application, run
 ```bash
