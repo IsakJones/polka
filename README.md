@@ -37,6 +37,10 @@ Polka Payments comprises 4 essential components:
  - A [cache](https://github.com/sekerez/polka/tree/main/cache) that acts as a memstore to register changes in account balances efficiently. 
  - A database storing data from each payment and net balances owed to individual banks and accounts.
 
+<div align="center">
+   <img alt="schema" src="files/erd.png">
+</div>
+
 Additionally, since Polka doesn't have any users (yet!), the project includes a [load generator](https://github.com/sekerez/polka/tree/main/generator) to load test the application. 
 
 ## Installation
@@ -50,7 +54,6 @@ Polka Payments' components require environmental variables. These can be set up 
 ### Database
 
 Polka Payments requires a PostgreSQL database configured with a dedicated user. For an example of the required login information, check out [envs/db.env](https://github.com/sekerez/polka/blob/main/envs/db.env). For the schema, run [setup.sql](https://github.com/sekerez/polka/blob/main/receiver/src/dbstore/setup.sql) to create the required tables. 
-
 
 ### Dependencies
 
