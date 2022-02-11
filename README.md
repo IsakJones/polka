@@ -1,5 +1,20 @@
 # Polka Payments
 
+<p align="center">
+  <a>
+    <img alt="Go" src="https://img.shields.io/badge/Go-1.17-lightblue">
+  </a> 
+  <a>
+    <img alt="pgx" src="https://img.shields.io/badge/pgx-3.6.2-orange">
+  </a> 
+  <a>
+    <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-12.9-green">
+  </a> 
+  <a>
+    <img alt="License" src="https://img.shields.io/badge/License-MIT-red">
+  </a>
+</p>
+
 ### Intro
 
 Polka Payments is my attempt to build a peer-to-peer payments application, similar to [Zelle](https://www.zellepay.com/). Instead of having an internal ledger like Venmo, Polka wires payments between bank accounts from different banks. Polka benefits consumers with fast and free inter-bank cash transfers, but it also benefits banks, simplifying inter-bank settlements by acting as a [clearing house](https://en.wikipedia.org/wiki/Clearing_house_(finance)) between banks.
