@@ -99,6 +99,6 @@ $ ./scripts/clean_up.sh
 ## License
 Polka Payments is licensed under the MIT Licence Copyright (c) 2022.
 
-See the [LICENSE](https://github.com/sekerez/polka/LICENSE) for information on the history of this software, terms & conditions for usage, and a DISCLAIMER OF ALL WARRANTIES.
+See the [LICENSE](https://github.com/sekerez/polka/blob/main/LICENSE) for information on the history of this software, terms & conditions for usage, and a DISCLAIMER OF ALL WARRANTIES.
 
 All trademarks referenced herein are property of their respective holders.
