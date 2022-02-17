@@ -81,6 +81,12 @@ func New(lbUrl *url.URL, apiUrls []*url.URL, ctx context.Context) (*Service, err
 }
 
 func handle(w http.ResponseWriter, r *http.Request) {
+	if len(pool.apiNodes) == 0 {
+		log.Printf("Tried to handle request without any apis available.")
+		http.Error(w, "Service not available", http.StatusServiceUnavailable)
+		return
+	}
+
 	attempts := getAttempts(r)
 	if attempts > 3 {
 		log.Printf("%s(%s) Max attempts reached, terminating\n", r.RemoteAddr, r.URL.Path)

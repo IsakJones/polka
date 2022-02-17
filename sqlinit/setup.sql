@@ -15,19 +15,20 @@ CREATE TABLE banks (
 );
 
 INSERT INTO banks (
-    name
+    name,
+    balance
 )
 VALUES
-('JP Morgan Chase'),
-('Bank of America'),
-('Wells Fargo'),
-('Citigroup'),
-('U.S. Bancorp'),
-('Truist Financial'),
-('PNC Financial Services Group'),
-('TD Group US'),
-('Bank of New York Mellon'),
-('Capital One Financial');
+('JP Morgan Chase', 0),
+('Bank of America', 0),
+('Wells Fargo', 0),
+('Citigroup', 0),
+('U.S. Bancorp', 0),
+('Truist Financial', 0),
+('PNC Financial Services Group', 0),
+('TD Group US', 0),
+('Bank of New York Mellon', 0),
+('Capital One Financial', 0);
 
 -- Create accounts table with index
 CREATE TABLE accounts (

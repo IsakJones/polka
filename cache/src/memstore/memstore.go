@@ -37,11 +37,26 @@ type Cache struct {
 	snap           *snapshot
 }
 
+// type accounts map[uint16]*int32
+
 type snapshot struct {
 	timestamp time.Time
 	banks     map[uint16]int64
 	accounts  map[uint16]map[uint16]int32
 }
+
+/* just test code
+type Bank struct {
+	id uint16
+	name string
+	balance int64
+	accounts map[string]Account
+}
+
+type Cache struct {
+	banks map[string]Bank
+}
+*/
 
 // New initializes the cache struct.
 func New(
@@ -106,6 +121,15 @@ func New(
 		atomic.StoreInt32(accPtr, balance.Balance)
 	}
 
+	for _, accMap := range c.accounts {
+		for i := uint16(0); i < 100; i++ {
+			if accMap[i] == nil {
+				accMap[i] = new(int32)
+			}
+		}
+
+	}
+
 	// Initialize snapshot and assign to cache
 	snap := &snapshot{
 		timestamp: time.Time{},
@@ -136,14 +160,14 @@ func UpdateDues(current *utils.SRBalance) (err error) {
 	atomic.AddInt64(recPtr, int64(current.Amount))
 
 	// Update sending account's balance
-	// if _, exists := c.accounts[senderId][current.Sender.Account]; !exists {
+	// if c.accounts[senderId][current.Sender.Account] == nil {
 	// 	c.accounts[senderId][current.Sender.Account] = new(int32)
 	// }
 	sAccPtr := c.accounts[senderId][current.Sender.Account]
 	atomic.AddInt32(sAccPtr, -current.Amount)
 
 	// Update receiving account's balance
-	// if _, exists := c.accounts[receiverId][current.Receiver.Account]; !exists {
+	// if c.accounts[receiverId][current.Receiver.Account] == nil {
 	// 	c.accounts[receiverId][current.Receiver.Account] = new(int32)
 	// }
 	rAccPtr := c.accounts[receiverId][current.Receiver.Account]

@@ -1,3 +1,8 @@
+# TODO
+# Only run setup.sql if on a "fresh" database
+
+
+---
 version: "3.9"  # optional since v1.27.0
 services:
   receiver:
@@ -10,13 +15,15 @@ services:
     environment:
       - DBHOST=db
     networks:
-      - main
+      - mynet
   cache:
     build:
       context: .
       target: cache
+    environment:
+      - DBHOST=db
     networks:
-      - main
+      - mynet
   balancer:
     build:
       context: .
@@ -24,10 +31,12 @@ services:
     ports:
       # default namespace : container namespace
       - "8080:8081"
+    environment:
+      - NODEADDRESS0=http://receiver:8082
     env_file:
       - ./envs/balancer.env
     networks:
-      - main
+      - mynet
   db:
     image: postgres
     restart: always
@@ -41,9 +50,9 @@ services:
       POSTGRES_DB: payments
       POSTGRES_USER: polka
     networks:
-      - main
+      - mynet
 volumes:
   sqlinit:
   pgdata:
 networks:
-  main:
+  mynet:
