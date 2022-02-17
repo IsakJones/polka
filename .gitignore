@@ -1,5 +1,6 @@
 */__pycache__/
-*/.vscode/*
+.vscode/*
 *.swp
 liltests/
 other/
+log.txt
