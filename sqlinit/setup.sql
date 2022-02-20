@@ -3,6 +3,7 @@ Initially, the database is supposed to hold two tables:
 
  - banks: tracks the (10) largest US consumer banks, records their name and an id referenced in the next table;
  - transactions: tracks all processed transactions, records all information recorded in the Transaction struct.
+
 */
 
 -- Creat banks table with built-in names

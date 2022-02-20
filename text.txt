@@ -6,3 +6,5 @@ hello
 hello
 hello
 hello
+
+Just make accounts and banks a RW mutex!!! Aghhhh!!!
