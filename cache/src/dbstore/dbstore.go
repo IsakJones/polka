@@ -37,10 +37,10 @@ func New(
 ) error {
 
 	var (
-		bank        string
+		bankName    string
 		bankId      uint16
 		bankNum     uint16
-		account     uint16
+		account     uint32
 		bankBalance int64
 		accBalance  int32
 	)
@@ -85,6 +85,7 @@ func New(
 	err = db.conn.QueryRow(db.ctx, bankNumQ).Scan(&bankNum)
 	if err != nil {
 		db.logger.Fatalf("Error querying banks length: %s", err)
+		return err
 	}
 	db.logger.Printf("Sending over banknum: %d", bankNum)
 	bankNumChan <- bankNum
@@ -97,16 +98,18 @@ func New(
 	)
 	if err != nil {
 		db.logger.Fatalf("Could not retrieve bank balances: %s", err)
+		return err
 	}
 	// Iterate through banks rows and send to memcache through channel
 	for rows.Next() {
-		err = rows.Scan(&bankId, &bank, &bankBalance)
+		err = rows.Scan(&bankId, &bankName, &bankBalance)
 		if err != nil {
 			db.logger.Printf("Could not retrieve bank balance row: %s", err)
+			return err
 		}
 
 		bankRetChan <- &utils.BankBalance{
-			Name:    bank,
+			Name:    bankName,
 			BankId:  bankId,
 			Balance: bankBalance,
 		}
@@ -120,18 +123,20 @@ func New(
 	)
 	if err != nil {
 		db.logger.Fatalf("Could not retrieve account balances: %s", err)
+		return err
 	}
 	// Iterate through accounts rows and send to memcache through channel
 	for rows.Next() {
-		err = rows.Scan(&bankId, &account, &accBalance)
+		err = rows.Scan(&bankName, &account, &accBalance)
 		if err != nil {
 			db.logger.Printf("Could not retrieve account balance row: %s", err)
+			return err
 		}
 
 		accRetChan <- &utils.Balance{
-			BankId:  bankId,
-			Account: account,
-			Balance: accBalance,
+			BankName: bankName,
+			Account:  account,
+			Balance:  accBalance,
 		}
 	}
 	close(accRetChan)
@@ -142,11 +147,15 @@ func New(
 	return nil
 }
 
+// updateDatabase is a goroutine that awaits bank and account backups from memstore
+// and submits them to the database.
 func updateDatabase() {
 	for {
 		select {
+		// In case of a quit message, end the goroutine
 		case <-db.quit:
 			return
+		// In case of a bank balance, update the banks table
 		case bankBalance := <-db.bankChan:
 			_, err := db.conn.Exec(
 				db.ctx,
@@ -157,13 +166,14 @@ func updateDatabase() {
 			if err != nil {
 				db.logger.Printf("Error updating database: %s", err)
 			}
+		// In case of a account balance, update the accounts table
 		case accBalance := <-db.accChan:
 			_, err := db.conn.Exec(
 				db.ctx,
 				updateAccBalanceQ,
-				accBalance.BankId,
 				accBalance.Account,
 				accBalance.Balance,
+				accBalance.BankName,
 			)
 			if err != nil {
 				db.logger.Printf("Error updating database: %s", err)

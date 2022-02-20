@@ -2,9 +2,9 @@ package utils
 
 // Balance transfers data to update the database accounts ledger.
 type Balance struct {
-	BankId  uint16
-	Account uint16
-	Balance int32
+	BankName string
+	Account  uint32
+	Balance  int32
 }
 
 // BankBalance transfers bank balance data from the cache to the database.
@@ -23,5 +23,5 @@ type SRBalance struct {
 
 type bankInfo struct {
 	Name    string
-	Account uint16
+	Account uint32
 }

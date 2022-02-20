@@ -99,7 +99,7 @@ func main() {
 	}()
 
 	// Initialize cache
-	err = memstore.New(
+	memstore.New(
 		ctx,
 		bankNumChan,
 		bankBalancesChannel,
@@ -107,9 +107,6 @@ func main() {
 		bankRetreivalChannel,
 		accountRetreivalChannel,
 	)
-	if err != nil {
-		logger.Fatalf("Could not init memstore: %s", err)
-	}
 
 	// Initialize service
 	s, err := service.New(u, ctx)

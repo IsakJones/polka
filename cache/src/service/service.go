@@ -98,7 +98,7 @@ func balancesHandler(w http.ResponseWriter, req *http.Request) {
 		err = enqueueBalance(
 			ctx,
 			&currentBalance,
-			memstore.UpdateDues,
+			memstore.UpdateBalances,
 		)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
