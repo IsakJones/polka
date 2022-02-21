@@ -36,7 +36,7 @@ services:
       # default namespace : container namespace
       - "8080:8081"
     environment:
-      - NODEADDRESS0=http://receiver:8082
+      - NODEADDRESS0=http://receiver:8083
     env_file:
       - ./envs/balancer.env
     networks:

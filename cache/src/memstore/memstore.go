@@ -51,7 +51,7 @@ type balancesRW struct {
 type bank struct {
 	Id      uint16
 	Balance *int64
-	Accs    accounts
+	Accs    *accounts
 }
 
 // snapBank stores bank data relevant to a snapshot.
@@ -62,7 +62,10 @@ type snapBank struct {
 }
 
 // accounts maps account ids to pointers to balances.
-type accounts map[uint32]*int32
+type accounts struct {
+	sync.RWMutex
+	Mp map[uint32]*int32
+}
 
 // snapshot stores a synchronized snapshort of all balances.
 // It stores integers and not pointers, since there's no need
@@ -132,7 +135,9 @@ func New(
 			c.Balances.Banks[bankName] = &bank{
 				Id:      bankId,
 				Balance: new(int64),
-				Accs:    make(accounts),
+				Accs: &accounts{
+					Mp: make(map[uint32]*int32),
+				},
 			}
 		}
 		cacheBank := c.Balances.Banks[bankName]
@@ -149,13 +154,9 @@ func New(
 		accountNum := incomingBalance.Account
 		accountBalance := incomingBalance.Balance
 
-		// If the bank is not in the cache map, allocate it.
-		if _, exists := c.Balances.Banks[bankName].Accs[accountNum]; !exists {
-			c.Balances.Banks[bankName].Accs[accountNum] = new(int32)
-		}
-		accountPtr := c.Balances.Banks[bankName].Accs[accountNum]
-		// Update value
-		atomic.StoreInt32(accountPtr, accountBalance)
+		// Update account in cache
+		accs := c.Balances.Banks[bankName].Accs
+		updateAccount(accs, accountNum, accountBalance)
 	}
 
 	c.Balances.Unlock()
@@ -165,7 +166,7 @@ func New(
 }
 
 // UpdateBalances changes bank and account balances given an incoming payment.
-func UpdateBalances(current *utils.SRBalance) (err error) {
+func UpdateBalances(current *utils.SRBalance) error {
 
 	// Update counter and retrieve bank ids
 	atomic.AddUint64(&counter, 1)
@@ -184,21 +185,11 @@ func UpdateBalances(current *utils.SRBalance) (err error) {
 	// Update receiving bank's balance
 	atomic.AddInt64(recBank.Balance, int64(current.Amount)) // ... and added to receiver.
 
-	// Check if sending account exists
-	if _, exists := senBank.Accs[current.Sender.Account]; exists {
-		senBank.Accs[current.Sender.Account] = new(int32)
-	}
-	senAcc := senBank.Accs[current.Sender.Account]
-	atomic.AddInt32(senAcc, -current.Amount)
+	// Update sender and receiver account balances
+	updateAccount(senBank.Accs, current.Sender.Account, -current.Amount)
+	updateAccount(recBank.Accs, current.Receiver.Account, current.Amount)
 
-	// Check if receiving account exists
-	if _, exists := recBank.Accs[current.Receiver.Account]; exists {
-		recBank.Accs[current.Receiver.Account] = new(int32)
-	}
-	recAcc := recBank.Accs[current.Receiver.Account]
-	atomic.AddInt32(recAcc, current.Amount)
-
-	return
+	return nil
 }
 
 // ManageDatabaseBackups backs up cache data in the database.
@@ -264,8 +255,12 @@ func backupDatabaseAccountBalance() {
 	name := c.List.getCurrent()
 	bankAccounts := c.Balances.Banks[name].Accs
 
+	// Read lock the bank accounts
+	bankAccounts.RLock()
+	defer bankAccounts.RUnlock()
+
 	// Back up each account
-	for account, balance := range bankAccounts {
+	for account, balance := range bankAccounts.Mp {
 		c.Chans.AccChan <- &utils.Balance{
 			BankName: name,
 			Account:  account,
@@ -280,6 +275,26 @@ func Close() (err error) {
 	c.Chans.Quit <- true
 	<-c.Chans.Done
 	return
+}
+
+// addAccount adds a key to an accounts map in a
+// thread-safe way.
+func updateAccount(accs *accounts, accNum uint32, balance int32) {
+	// Read lock and defer unlock
+	accs.RLock()
+	defer accs.RUnlock()
+
+	// Check if the key exists, if not add it
+	if _, exists := accs.Mp[accNum]; !exists {
+		accs.RUnlock() // Release read lock to avoid deadlock
+		accs.Lock()
+		accs.Mp[accNum] = new(int32)
+		accs.Unlock()
+		accs.RLock() // Read lock again to read val
+	}
+	accountPtr := accs.Mp[accNum]
+	// Update value
+	atomic.AddInt32(accountPtr, balance)
 }
 
 // PrintDues prints to the console how much Polka owes to
@@ -307,10 +322,16 @@ func PrintBalances(andAccounts bool) {
 		for name, bnk := range c.Balances.Banks {
 			fmt.Printf("\t%s: {\n", name)
 
-			for account, amount := range bnk.Accs {
+			// Read lock the accounts
+			bnk.Accs.RLock()
+
+			for account, amount := range bnk.Accs.Mp {
 				fmt.Printf("\t\t%d: %d\n", account, *amount)
 			}
 			fmt.Println("\t}")
+
+			// Read unlock them
+			bnk.Accs.RUnlock()
 		}
 		fmt.Println("}")
 	}
