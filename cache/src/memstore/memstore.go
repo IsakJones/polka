@@ -2,6 +2,7 @@ package memstore
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -26,7 +27,7 @@ var (
 type cache struct {
 	Ctx            context.Context
 	List           *circularLinkedList
-	Snap           *snapshot
+	Snap           *Snapshot
 	Chans          *channels
 	Logger         *log.Logger
 	Balances       *balancesRW
@@ -56,9 +57,9 @@ type bank struct {
 
 // snapBank stores bank data relevant to a snapshot.
 // snapBank does not include the bank's id or name.
-type snapBank struct {
-	Balance int64
-	Accs    map[uint32]int32
+type SnapBank struct {
+	Balance  int64
+	Accounts map[uint32]int32
 }
 
 // accounts maps account ids to pointers to balances.
@@ -70,9 +71,9 @@ type accounts struct {
 // snapshot stores a synchronized snapshort of all balances.
 // It stores integers and not pointers, since there's no need
 // for concurrent access.
-type snapshot struct {
+type Snapshot struct {
 	ready     bool
-	banks     map[string]*snapBank
+	Banks     map[string]*SnapBank
 	timestamp time.Time
 }
 
@@ -106,9 +107,9 @@ func New(
 	}
 
 	// Initialize snapshot struct.
-	snap := &snapshot{
+	snap := &Snapshot{
 		ready: false,
-		banks: make(map[string]*snapBank, bankNum),
+		Banks: make(map[string]*SnapBank, bankNum),
 	}
 
 	// Assign Cache singleton
@@ -162,7 +163,15 @@ func New(
 	c.Balances.Unlock()
 
 	// Update periodically DB records at regular intervals
-	go ManageDatabaseBackups()
+	go manageDatabaseBackups()
+}
+
+// Close shuts down the cache correctly,
+// such that all current data is backed up.
+func Close() (err error) {
+	c.Chans.Quit <- true
+	<-c.Chans.Done
+	return
 }
 
 // UpdateBalances changes bank and account balances given an incoming payment.
@@ -192,11 +201,134 @@ func UpdateBalances(current *utils.SRBalance) error {
 	return nil
 }
 
-// ManageDatabaseBackups backs up cache data in the database.
+// SettleSnapshot subtracts all balances by the balances stored in the snapshot.
+// It is called when clearing payments.
+func SettleSnapshot() error {
+	// If there's no snapshot, return an error
+	if !c.Snap.ready {
+		return errors.New("no snapshot taken - must request a snapshot before settling payments.")
+	}
+
+	// Read because there's no synchronization required.
+	c.Balances.RLock()
+	defer c.Balances.RUnlock()
+
+	for name, bnk := range c.Balances.Banks {
+		snapBnk := c.Snap.Banks[name]
+
+		// change balance and reset snapshot
+		atomic.AddInt64(bnk.Balance, -snapBnk.Balance)
+		snapBnk.Balance = 0
+
+		// change all accounts
+		bnk.Accs.RLock()
+		for accNum, accPtr := range bnk.Accs.Mp {
+			// change balance and reset snapshot
+			atomic.AddInt32(accPtr, -snapBnk.Accounts[accNum])
+			snapBnk.Accounts[accNum] = 0
+		}
+		bnk.Accs.RUnlock()
+	}
+
+	return nil
+}
+
+// GetSnapshot returns a snapshot of all balances in a given instant.
+// It returns a pointer to the snapshot for performance reasons.
+func GetSnapshot() (*Snapshot, error) {
+	var sum int32
+	var err error
+	var snapbnk SnapBank // Stores the current snapbank
+
+	c.Balances.Lock() // Lock to keep out other reader threads
+
+	// Loop through banks, adding them one by one
+	for name, bnk := range c.Balances.Banks {
+		// Make the snapbank with the balance
+		snapbnk = SnapBank{
+			Balance: *bnk.Balance,
+		}
+
+		// Add all accounts
+		bnk.Accs.RLock()
+		for accNum, accBalance := range bnk.Accs.Mp {
+			snapbnk.Accounts[accNum] = *accBalance
+		}
+		bnk.Accs.RUnlock()
+
+		// Add snapbank to snapshot
+		c.Snap.Banks[name] = &snapbnk
+	}
+
+	// Unlock, letting reader threads back in
+	c.Balances.Unlock()
+
+	// Check that each bank balance corresponds to the sum of its accounts
+	for name, bnk := range c.Snap.Banks {
+		sum = 0
+		for _, accountBalance := range bnk.Accounts {
+			sum += accountBalance
+		}
+
+		// Make the check, if so print error
+		if bnk.Balance != int64(sum) {
+			c.Logger.Printf("Error: account balances not synched with bank balance for %s", name)
+			err = errors.New("incoherent snapshot")
+		}
+	}
+
+	// Update time of snapshot and readiness
+	c.Snap.timestamp = time.Now()
+	c.Snap.ready = true
+
+	return c.Snap, err
+}
+
+// PrintDues prints to the console how much Polka owes to
+// each bank, listed in no specific order.
+func PrintBalances(andAccounts bool) {
+
+	log.Printf("Processed %d transactions.", counter)
+	fmt.Printf("Bank balances:\n{\n")
+
+	// Lock and unlock
+	c.Balances.RLock()
+	defer c.Balances.RUnlock()
+
+	// Print bank balances
+	for name, bnk := range c.Balances.Banks {
+		// NB bnk.Balance is a pointer to an int
+		fmt.Printf("\t%s: %d\n", name, *bnk.Balance)
+	}
+	fmt.Println("}")
+
+	// If specified, print account balances
+	if andAccounts {
+		fmt.Printf("}\nAccount balances:\n{\n")
+
+		for name, bnk := range c.Balances.Banks {
+			fmt.Printf("\t%s: {\n", name)
+
+			// Read lock the accounts
+			bnk.Accs.RLock()
+
+			for account, amount := range bnk.Accs.Mp {
+				fmt.Printf("\t\t%d: %d\n", account, *amount)
+			}
+			fmt.Println("\t}")
+
+			// Read unlock them
+			bnk.Accs.RUnlock()
+		}
+		fmt.Println("}")
+	}
+}
+
+// manageDatabaseBackups backs up cache data in the database.
 // Every so often (e.g. one second) it backs up the bank dues.
 // In between every other bank dues update, it updates only one
 // bank's accounts balances for performance reasons.
-func ManageDatabaseBackups() {
+func manageDatabaseBackups() {
 	var (
 		bankTicker    *time.Ticker
 		accountTicker *time.Ticker
@@ -269,14 +401,6 @@ func backupDatabaseAccountBalance() {
 	}
 }
 
-// Close shuts down the cache correctly,
-// such that all current data is backed up.
-func Close() (err error) {
-	c.Chans.Quit <- true
-	<-c.Chans.Done
-	return
-}
-
 // addAccount adds a key to an accounts map in a
 // thread-safe way.
 func updateAccount(accs *accounts, accNum uint32, balance int32) {
@@ -287,7 +411,7 @@ func updateAccount(accs *accounts, accNum uint32, balance int32) {
 	// Check if the key exists, if not add it
 	if _, exists := accs.Mp[accNum]; !exists {
 		accs.RUnlock() // Release read lock to avoid deadlock
-		accs.Lock()
+		accs.Lock()    // Lock to make key change
 		accs.Mp[accNum] = new(int32)
 		accs.Unlock()
 		accs.RLock() // Read lock again to read val
@@ -295,44 +419,4 @@ func updateAccount(accs *accounts, accNum uint32, balance int32) {
 	accountPtr := accs.Mp[accNum]
 	// Update value
 	atomic.AddInt32(accountPtr, balance)
-}
-
-// PrintDues prints to the console how much Polka owes to
-// each bank, listed in no specific order.
-func PrintBalances(andAccounts bool) {
-
-	log.Printf("Processed %d transactions.", counter)
-	fmt.Printf("Bank balances:\n{\n")
-
-	// Lock and unlock
-	c.Balances.RLock()
-	defer c.Balances.RUnlock()
-
-	// Print bank balances
-	for name, bnk := range c.Balances.Banks {
-		// NB c.banks[id] is a pointer to an int
-		fmt.Printf("\t%s: %d\n", name, *bnk.Balance)
-	}
-	fmt.Println("}")
-
-	// If specified, print account balances
-	if andAccounts {
-		fmt.Printf("}\nAccount balances:\n{\n")
-
-		for name, bnk := range c.Balances.Banks {
-			fmt.Printf("\t%s: {\n", name)
-
-			// Read lock the accounts
-			bnk.Accs.RLock()
-
-			for account, amount := range bnk.Accs.Mp {
-				fmt.Printf("\t\t%d: %d\n", account, *amount)
-			}
-			fmt.Println("\t}")
-
-			// Read unlock them
-			bnk.Accs.RUnlock()
-		}
-		fmt.Println("}")
-	}
 }
