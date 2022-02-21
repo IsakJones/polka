@@ -33,6 +33,7 @@ type cache struct {
 	BackupInterval time.Duration
 }
 
+// channels contains channels relevant to the cache.
 type channels struct {
 	Quit     chan bool
 	Done     chan bool
