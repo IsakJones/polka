@@ -4,7 +4,7 @@ set -euo pipefail
 # Script prepares all binaries and files. First argument is number of nodes.
 
 # Define base port for receiver nodes
-BASEPORT=8082
+BASEPORT=8083
 # Define number of receiver nodes
 NODES=$(($1-1))
 # Make list of services
