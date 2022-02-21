@@ -28,6 +28,8 @@ done
 
 echo "Started receiver nodes"
 
+cd $POLKA
+
 # Display logs with multitail
 multitail -s 2 -sn 1,2 cache/log.txt \
                        balancer/log.txt \

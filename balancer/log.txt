@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 [main] 2022/02/11 21:34:23 main.go:75: http://localhost:8082
 [main] 2022/02/11 21:34:23 main.go:75: http://localhost:8083
 [service] 2022/02/11 21:34:23 service.go:38: urls. size: 2
@@ -301,3 +302,120 @@
 [service] 2022/02/11 21:36:20 service.go:117: waiting is checkisdone
 2022/02/11 21:36:20 got quit message
 [main] 2022/02/11 21:36:20 main.go:129: Successfully shut down load balancer.
+=======
+[main] 2022/02/20 22:21:54 main.go:75: http://receiver:8082NODEADDRESS0=http://localhost:8082
+[service] 2022/02/20 22:21:54 service.go:38: urls. size: 1
+[service] 2022/02/20 22:21:54 service.go:64: url: host: receiver:8082NODEADDRESS0=http:, port: 
+2022/02/20 22:21:54 http://receiver:8082NODEADDRESS0=http://localhost:8082
+[main] 2022/02/20 22:21:54 main.go:91: HTTP service initialized successfully.
+[service] 2022/02/20 22:21:56 service.go:116: 0 payments forwarded
+[service] 2022/02/20 22:21:56 apiStructs.go:179: Starting health check...
+2022/02/20 22:21:56 Url receiver:8082NODEADDRESS0=http:: unreachable: dial tcp: address receiver:8082NODEADDRESS0=http:: too many colons in address
+[service] 2022/02/20 22:21:56 apiStructs.go:191: Api 0 is dead.
+[service] 2022/02/20 22:21:56 apiStructs.go:194: Ended health check.
+[service] 2022/02/20 22:21:58 apiStructs.go:179: Starting health check...
+2022/02/20 22:21:58 Url receiver:8082NODEADDRESS0=http:: unreachable: dial tcp: address receiver:8082NODEADDRESS0=http:: too many colons in address
+[service] 2022/02/20 22:21:58 apiStructs.go:191: Api 0 is dead.
+[service] 2022/02/20 22:21:58 apiStructs.go:194: Ended health check.
+[service] 2022/02/20 22:21:58 service.go:116: 0 payments forwarded
+[service] 2022/02/20 22:22:00 apiStructs.go:179: Starting health check...
+2022/02/20 22:22:00 Url receiver:8082NODEADDRESS0=http:: unreachable: dial tcp: address receiver:8082NODEADDRESS0=http:: too many colons in address
+[service] 2022/02/20 22:22:00 apiStructs.go:191: Api 0 is dead.
+[service] 2022/02/20 22:22:00 apiStructs.go:194: Ended health check.
+[service] 2022/02/20 22:22:00 service.go:116: 0 payments forwarded
+[service] 2022/02/20 22:22:02 apiStructs.go:179: Starting health check...
+2022/02/20 22:22:02 Url receiver:8082NODEADDRESS0=http:: unreachable: dial tcp: address receiver:8082NODEADDRESS0=http:: too many colons in address
+[service] 2022/02/20 22:22:02 apiStructs.go:191: Api 0 is dead.
+[service] 2022/02/20 22:22:02 apiStructs.go:194: Ended health check.
+[service] 2022/02/20 22:22:02 service.go:116: 0 payments forwarded
+[service] 2022/02/20 22:22:04 service.go:116: 0 payments forwarded
+[service] 2022/02/20 22:22:04 apiStructs.go:179: Starting health check...
+2022/02/20 22:22:04 Url receiver:8082NODEADDRESS0=http:: unreachable: dial tcp: address receiver:8082NODEADDRESS0=http:: too many colons in address
+[service] 2022/02/20 22:22:04 apiStructs.go:191: Api 0 is dead.
+[service] 2022/02/20 22:22:04 apiStructs.go:194: Ended health check.
+[service] 2022/02/20 22:22:06 service.go:116: 0 payments forwarded
+[service] 2022/02/20 22:22:06 apiStructs.go:179: Starting health check...
+2022/02/20 22:22:06 Url receiver:8082NODEADDRESS0=http:: unreachable: dial tcp: address receiver:8082NODEADDRESS0=http:: too many colons in address
+[service] 2022/02/20 22:22:06 apiStructs.go:191: Api 0 is dead.
+[service] 2022/02/20 22:22:06 apiStructs.go:194: Ended health check.
+[service] 2022/02/20 22:22:08 service.go:116: 0 payments forwarded
+[service] 2022/02/20 22:22:08 apiStructs.go:179: Starting health check...
+2022/02/20 22:22:08 Url receiver:8082NODEADDRESS0=http:: unreachable: dial tcp: address receiver:8082NODEADDRESS0=http:: too many colons in address
+[service] 2022/02/20 22:22:08 apiStructs.go:191: Api 0 is dead.
+[service] 2022/02/20 22:22:08 apiStructs.go:194: Ended health check.
+[service] 2022/02/20 22:22:10 service.go:116: 0 payments forwarded
+[service] 2022/02/20 22:22:10 apiStructs.go:179: Starting health check...
+2022/02/20 22:22:10 Url receiver:8082NODEADDRESS0=http:: unreachable: dial tcp: address receiver:8082NODEADDRESS0=http:: too many colons in address
+[service] 2022/02/20 22:22:10 apiStructs.go:191: Api 0 is dead.
+[service] 2022/02/20 22:22:10 apiStructs.go:194: Ended health check.
+[service] 2022/02/20 22:22:12 service.go:116: 0 payments forwarded
+[service] 2022/02/20 22:22:12 apiStructs.go:179: Starting health check...
+2022/02/20 22:22:12 Url receiver:8082NODEADDRESS0=http:: unreachable: dial tcp: address receiver:8082NODEADDRESS0=http:: too many colons in address
+[service] 2022/02/20 22:22:12 apiStructs.go:191: Api 0 is dead.
+[service] 2022/02/20 22:22:12 apiStructs.go:194: Ended health check.
+[service] 2022/02/20 22:22:14 service.go:116: 0 payments forwarded
+[service] 2022/02/20 22:22:14 apiStructs.go:179: Starting health check...
+2022/02/20 22:22:14 Url receiver:8082NODEADDRESS0=http:: unreachable: dial tcp: address receiver:8082NODEADDRESS0=http:: too many colons in address
+[service] 2022/02/20 22:22:14 apiStructs.go:191: Api 0 is dead.
+[service] 2022/02/20 22:22:14 apiStructs.go:194: Ended health check.
+[service] 2022/02/20 22:22:16 apiStructs.go:179: Starting health check...
+2022/02/20 22:22:16 Url receiver:8082NODEADDRESS0=http:: unreachable: dial tcp: address receiver:8082NODEADDRESS0=http:: too many colons in address
+[service] 2022/02/20 22:22:16 apiStructs.go:191: Api 0 is dead.
+[service] 2022/02/20 22:22:16 apiStructs.go:194: Ended health check.
+[service] 2022/02/20 22:22:16 service.go:116: 0 payments forwarded
+[service] 2022/02/20 22:22:18 service.go:116: 0 payments forwarded
+[service] 2022/02/20 22:22:18 apiStructs.go:179: Starting health check...
+2022/02/20 22:22:18 Url receiver:8082NODEADDRESS0=http:: unreachable: dial tcp: address receiver:8082NODEADDRESS0=http:: too many colons in address
+[service] 2022/02/20 22:22:18 apiStructs.go:191: Api 0 is dead.
+[service] 2022/02/20 22:22:18 apiStructs.go:194: Ended health check.
+[service] 2022/02/20 22:22:20 service.go:116: 0 payments forwarded
+[service] 2022/02/20 22:22:20 apiStructs.go:179: Starting health check...
+2022/02/20 22:22:20 Url receiver:8082NODEADDRESS0=http:: unreachable: dial tcp: address receiver:8082NODEADDRESS0=http:: too many colons in address
+[service] 2022/02/20 22:22:20 apiStructs.go:191: Api 0 is dead.
+[service] 2022/02/20 22:22:20 apiStructs.go:194: Ended health check.
+[service] 2022/02/20 22:22:22 apiStructs.go:179: Starting health check...
+2022/02/20 22:22:22 Url receiver:8082NODEADDRESS0=http:: unreachable: dial tcp: address receiver:8082NODEADDRESS0=http:: too many colons in address
+[service] 2022/02/20 22:22:22 apiStructs.go:191: Api 0 is dead.
+[service] 2022/02/20 22:22:22 service.go:116: 0 payments forwarded
+[service] 2022/02/20 22:22:22 apiStructs.go:194: Ended health check.
+[service] 2022/02/20 22:22:24 service.go:116: 0 payments forwarded
+[service] 2022/02/20 22:22:24 apiStructs.go:179: Starting health check...
+2022/02/20 22:22:24 Url receiver:8082NODEADDRESS0=http:: unreachable: dial tcp: address receiver:8082NODEADDRESS0=http:: too many colons in address
+[service] 2022/02/20 22:22:24 apiStructs.go:191: Api 0 is dead.
+[service] 2022/02/20 22:22:24 apiStructs.go:194: Ended health check.
+[service] 2022/02/20 22:22:26 service.go:116: 0 payments forwarded
+[service] 2022/02/20 22:22:26 apiStructs.go:179: Starting health check...
+2022/02/20 22:22:26 Url receiver:8082NODEADDRESS0=http:: unreachable: dial tcp: address receiver:8082NODEADDRESS0=http:: too many colons in address
+[service] 2022/02/20 22:22:26 apiStructs.go:191: Api 0 is dead.
+[service] 2022/02/20 22:22:26 apiStructs.go:194: Ended health check.
+[service] 2022/02/20 22:22:28 service.go:116: 0 payments forwarded
+[service] 2022/02/20 22:22:28 apiStructs.go:179: Starting health check...
+2022/02/20 22:22:28 Url receiver:8082NODEADDRESS0=http:: unreachable: dial tcp: address receiver:8082NODEADDRESS0=http:: too many colons in address
+[service] 2022/02/20 22:22:28 apiStructs.go:191: Api 0 is dead.
+[service] 2022/02/20 22:22:28 apiStructs.go:194: Ended health check.
+[service] 2022/02/20 22:22:30 service.go:116: 0 payments forwarded
+[service] 2022/02/20 22:22:30 apiStructs.go:179: Starting health check...
+2022/02/20 22:22:30 Url receiver:8082NODEADDRESS0=http:: unreachable: dial tcp: address receiver:8082NODEADDRESS0=http:: too many colons in address
+[service] 2022/02/20 22:22:30 apiStructs.go:191: Api 0 is dead.
+[service] 2022/02/20 22:22:30 apiStructs.go:194: Ended health check.
+[service] 2022/02/20 22:22:32 service.go:116: 0 payments forwarded
+[service] 2022/02/20 22:22:32 apiStructs.go:179: Starting health check...
+2022/02/20 22:22:32 Url receiver:8082NODEADDRESS0=http:: unreachable: dial tcp: address receiver:8082NODEADDRESS0=http:: too many colons in address
+[service] 2022/02/20 22:22:32 apiStructs.go:191: Api 0 is dead.
+[service] 2022/02/20 22:22:32 apiStructs.go:194: Ended health check.
+[service] 2022/02/20 22:22:34 apiStructs.go:179: Starting health check...
+2022/02/20 22:22:34 Url receiver:8082NODEADDRESS0=http:: unreachable: dial tcp: address receiver:8082NODEADDRESS0=http:: too many colons in address
+[service] 2022/02/20 22:22:34 apiStructs.go:191: Api 0 is dead.
+[service] 2022/02/20 22:22:34 apiStructs.go:194: Ended health check.
+[service] 2022/02/20 22:22:34 service.go:116: 0 payments forwarded
+[service] 2022/02/20 22:22:36 apiStructs.go:179: Starting health check...
+2022/02/20 22:22:36 Url receiver:8082NODEADDRESS0=http:: unreachable: dial tcp: address receiver:8082NODEADDRESS0=http:: too many colons in address
+[service] 2022/02/20 22:22:36 apiStructs.go:191: Api 0 is dead.
+[service] 2022/02/20 22:22:36 apiStructs.go:194: Ended health check.
+[service] 2022/02/20 22:22:36 service.go:116: 0 payments forwarded
+[service] 2022/02/20 22:22:38 service.go:116: 0 payments forwarded
+[service] 2022/02/20 22:22:38 apiStructs.go:179: Starting health check...
+2022/02/20 22:22:38 Url receiver:8082NODEADDRESS0=http:: unreachable: dial tcp: address receiver:8082NODEADDRESS0=http:: too many colons in address
+[service] 2022/02/20 22:22:38 apiStructs.go:191: Api 0 is dead.
+[service] 2022/02/20 22:22:38 apiStructs.go:194: Ended health check.
+>>>>>>> cache-overhaul

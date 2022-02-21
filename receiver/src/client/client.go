@@ -38,7 +38,7 @@ func New(destUrl string, connTimeout, reqTimeout time.Duration) (err error) {
 
 func SendTransactionUpdate(payload *bytes.Buffer) error {
 
-	resp, err := c.Client.Post(c.destUrl, c.content, payload)
-	defer resp.Body.Close()
+	_, err := c.Client.Post(c.destUrl, c.content, payload)
+	// defer resp.Body.Close()
 	return err
 }

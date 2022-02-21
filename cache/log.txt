@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 [postgres] 2022/02/11 21:34:23 dbstore.go:55: Created Logger
 [postgres] 2022/02/11 21:34:23 dbstore.go:83: Max Connections: 8
 [postgres] 2022/02/11 21:34:23 dbstore.go:89: Sending over banknum: 10
@@ -329,3 +330,7 @@ Bank balances:
 [main] 2022/02/11 21:36:22 main.go:160: Shut down memory cache.
 [main] 2022/02/11 21:36:22 main.go:167: Closed DB connection.
 [main] 2022/02/11 21:36:22 main.go:174: Successfully shut down service.
+=======
+[postgres] 2022/02/20 22:21:54 dbstore.go:55: Created Logger
+[main] 2022/02/20 22:21:54 main.go:97: Could not init DB connection: failed to connect to `host=postgres user=polka database=payments`: hostname resolving error (lookup postgres: Temporary failure in name resolution)
+>>>>>>> cache-overhaul

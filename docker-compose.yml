@@ -1,0 +1,64 @@
+# TODO
+# Only run setup.sql if on a "fresh" database
+
+
+---
+version: "3.9"  # optional since v1.27.0
+services:
+  receiver:
+    build:
+      context: .
+      target: receiver
+    env_file:
+      - ./envs/db.env
+      - ./envs/receiver.env
+    environment:
+      - DBHOST=db
+    networks:
+      - mynet
+    depends_on:
+      - cache
+  cache:
+    build:
+      context: .
+      target: cache
+    environment:
+      - DBHOST=db
+    depends_on:
+      - db
+    networks:
+      - mynet
+  balancer:
+    build:
+      context: .
+      target: balancer
+    ports:
+      # default namespace : container namespace
+      - "8080:8081"
+    environment:
+      - NODEADDRESS0=http://receiver:8082
+    env_file:
+      - ./envs/balancer.env
+    networks:
+      - mynet
+    depends_on:
+      - receiver
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./sqlinit/setup.sql:/docker-entrypoint-initdb.d/init.sql
+      - pgdata:/var/lib/postgresql
+    environment:
+      POSTGRES_PASSWORD: polkapass
+      POSTGRES_DB: payments
+      POSTGRES_USER: polka
+    networks:
+      - mynet
+volumes:
+  sqlinit:
+  pgdata:
+networks:
+  mynet:
