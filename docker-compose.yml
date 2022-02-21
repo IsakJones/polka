@@ -16,12 +16,16 @@ services:
       - DBHOST=db
     networks:
       - mynet
+    depends_on:
+      - cache
   cache:
     build:
       context: .
       target: cache
     environment:
       - DBHOST=db
+    depends_on:
+      - db
     networks:
       - mynet
   balancer:
@@ -37,6 +41,8 @@ services:
       - ./envs/balancer.env
     networks:
       - mynet
+    depends_on:
+      - receiver
   db:
     image: postgres
     restart: always
