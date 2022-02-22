@@ -2,21 +2,17 @@ package service
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"log"
 	"net"
 	"net/http"
 	"net/url"
 	"os"
-	"time"
-
-	"github.com/sekerez/polka/cache/src/memstore"
-	"github.com/sekerez/polka/cache/src/utils"
 )
 
 const (
-	view = "/balance"
+	balancePath  = "/balance"
+	clearingPath = "/clear"
 )
 
 // Service manages the main application functions.
@@ -36,7 +32,8 @@ func New(u *url.URL, ctx context.Context) (*Service, error) {
 
 	// Set up multiplexor
 	mux := http.NewServeMux()
-	mux.HandleFunc(view, balancesHandler)
+	mux.HandleFunc(balancePath, balancesHandler)
+	mux.HandleFunc(clearingPath, clearingHandler)
 
 	// Set up server
 	server := &http.Server{
@@ -69,63 +66,6 @@ func New(u *url.URL, ctx context.Context) (*Service, error) {
 // Start sets up a server and listener for incoming requests.
 func (s *Service) Serve(errChan chan<- error) {
 	errChan <- s.server.Serve(s.listener)
-}
-
-func balancesHandler(w http.ResponseWriter, req *http.Request) {
-
-	var (
-		ctx            context.Context
-		cancel         context.CancelFunc
-		currentBalance utils.SRBalance
-	)
-
-	// Spawn context with timeout if request has timeout
-	timeout, err := time.ParseDuration(req.FormValue("Timeout"))
-	if err == nil {
-		ctx, cancel = context.WithTimeout(context.Background(), timeout)
-	} else {
-		ctx, cancel = context.WithCancel(context.Background())
-	}
-	defer cancel()
-
-	switch req.Method {
-	case http.MethodPost:
-		err := json.NewDecoder(req.Body).Decode(&currentBalance)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-		}
-
-		err = enqueueBalance(
-			ctx,
-			&currentBalance,
-			memstore.UpdateBalances,
-		)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-		}
-	case http.MethodGet:
-		w.WriteHeader(http.StatusMethodNotAllowed)
-	case http.MethodPut:
-		w.WriteHeader(http.StatusMethodNotAllowed)
-	case http.MethodDelete:
-		w.WriteHeader(http.StatusMethodNotAllowed)
-	}
-}
-
-// enqueueBalance calls the f function on the current transaction while abiding by the context.
-func enqueueBalance(ctx context.Context, cb *utils.SRBalance, f func(*utils.SRBalance) error) error {
-	// Update the dues in a goroutine and pass the result to fChan
-	fChan := make(chan error)
-	go func() { fChan <- f(cb) }()
-
-	// Return an error if the context times out or if the function returns an error.
-	select {
-	case <-ctx.Done():
-		<-fChan
-		return ctx.Err()
-	case err := <-fChan:
-		return err
-	}
 }
 
 func (s *Service) Close() (err error) {

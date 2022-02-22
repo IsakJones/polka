@@ -10,7 +10,7 @@ WORKDIR /polka
 COPY . .
 
 RUN ./scripts/clean_up.sh 
-RUN ./scripts/prep.sh 1
+RUN ./scripts/prep.sh 2
 # RUN go build -o generator/bin/polkagenerator ./generator/src/
 # RUN go build -o balancer/bin/polkabalancer ./balancer/src/
 # RUN go build -o receiver/bin/polkareceiver ./receiver/src/ 

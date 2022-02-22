@@ -5,7 +5,7 @@ set -euo pipefail
 # Must download 'multitail' for the terminal.
 
 # Make list of services
-declare -a services=("balancer" "cache")
+declare -a services=("settler" "balancer" "cache")
 
 # start services
 for service in ${services[@]}
@@ -16,7 +16,7 @@ do
     popd
 done
 
-echo "Started cache and balancer"
+echo "Started cache, balancer, and settler"
 
 # start nodes
 for node in $(find -name "node*")
@@ -27,8 +27,6 @@ do
 done
 
 echo "Started receiver nodes"
-
-cd $POLKA
 
 # Display logs with multitail
 multitail -s 2 -sn 1,2 cache/log.txt \

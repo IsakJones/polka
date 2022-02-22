@@ -2,6 +2,7 @@ package utils
 
 // Balance transfers data to update the database accounts ledger.
 type Balance struct {
+	BankId   uint16
 	BankName string
 	Account  uint32
 	Balance  int32

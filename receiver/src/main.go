@@ -12,6 +12,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/joho/godotenv"
 	"github.com/sekerez/polka/receiver/src/client"
 	"github.com/sekerez/polka/receiver/src/dbstore"
 	"github.com/sekerez/polka/receiver/src/service"
@@ -35,10 +36,10 @@ func main() {
 
 	logger.Printf(frequency.String())
 
-	// // Get env variables and set a config
-	// if err := godotenv.Load(mainEnv); err != nil {
-	// 	logger.Fatalf("Environmental variables failed to load: %s\n", err)
-	// }
+	// Get env variables and set a config
+	if err := godotenv.Load(mainEnv); err != nil {
+		logger.Fatalf("Environmental variables failed to load: %s\n", err)
+	}
 
 	// Set config
 	host := os.Getenv("HOST")

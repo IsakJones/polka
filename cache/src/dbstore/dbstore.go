@@ -171,9 +171,9 @@ func updateDatabase() {
 			_, err := db.conn.Exec(
 				db.ctx,
 				updateAccBalanceQ,
+				accBalance.BankId,
 				accBalance.Account,
 				accBalance.Balance,
-				accBalance.BankName,
 			)
 			if err != nil {
 				db.logger.Printf("Error updating database: %s", err)

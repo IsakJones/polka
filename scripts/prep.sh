@@ -8,7 +8,7 @@ BASEPORT=8083
 # Define number of receiver nodes
 NODES=$(($1-1))
 # Make list of services
-declare -a services=("receiver" "balancer" "cache" "generator")
+declare -a services=("receiver" "balancer" "cache" "generator" "settler")
 
 # Place env directories and files
 for service in ${services[@]}

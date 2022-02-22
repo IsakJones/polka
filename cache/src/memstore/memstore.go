@@ -206,7 +206,7 @@ func UpdateBalances(current *utils.SRBalance) error {
 func SettleSnapshot() error {
 	// If there's no snapshot, return an error
 	if !c.Snap.ready {
-		return errors.New("no snapshot taken - must request a snapshot before settling payments.")
+		return errors.New("no snapshot taken - must request a snapshot before settling payments")
 	}
 
 	// Read because there's no synchronization required.
@@ -282,6 +282,11 @@ func GetSnapshot() (*Snapshot, error) {
 	c.Snap.ready = true
 
 	return c.Snap, err
+}
+
+// Cancels the last snapshot.
+func CancelSnapshot() {
+	c.Snap.ready = false
 }
 
 // PrintDues prints to the console how much Polka owes to
@@ -385,6 +390,7 @@ func backupDatabaseAccountBalance() {
 	// Get next bank
 	c.List.next()
 	name := c.List.getCurrent()
+	bankId := c.Balances.Banks[name].Id
 	bankAccounts := c.Balances.Banks[name].Accs
 
 	// Read lock the bank accounts
@@ -394,9 +400,9 @@ func backupDatabaseAccountBalance() {
 	// Back up each account
 	for account, balance := range bankAccounts.Mp {
 		c.Chans.AccChan <- &utils.Balance{
-			BankName: name,
-			Account:  account,
-			Balance:  *balance,
+			BankId:  bankId,
+			Account: account,
+			Balance: *balance,
 		}
 	}
 }

@@ -5,7 +5,7 @@
 ---
 version: "3.9"  # optional since v1.27.0
 services:
-  receiver:
+  receiver_0:
     build:
       context: .
       target: receiver
@@ -14,6 +14,23 @@ services:
       - ./envs/receiver.env
     environment:
       - DBHOST=db
+      - PORT=8083
+      - CACHEADDRESS=http://cache:8081/balance
+    networks:
+      - mynet
+    depends_on:
+      - cache
+  receiver_1:
+    build:
+      context: .
+      target: receiver
+    env_file:
+      - ./envs/db.env
+      - ./envs/receiver.env
+    environment:
+      - DBHOST=db
+      - PORT=8084
+      - CACHEADDRESS=http://cache:8081/balance
     networks:
       - mynet
     depends_on:
@@ -34,15 +51,17 @@ services:
       target: balancer
     ports:
       # default namespace : container namespace
-      - "8080:8081"
+      - "8080:8080"
     environment:
-      - NODEADDRESS0=http://receiver:8083
+      - NODEADDRESS0=http://receiver_0:8083
+      - NODEADDRESS1=http://receiver_1:8084
     env_file:
       - ./envs/balancer.env
     networks:
       - mynet
     depends_on:
-      - receiver
+      - receiver_0
+      - receiver_1
   db:
     image: postgres
     restart: always
