@@ -36,6 +36,8 @@ func handle(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 
 	case http.MethodGet:
+		log.Printf("Got a snapshot request!")
+
 		snapshot, err := client.RequestSnapshot()
 		if err != nil {
 			fmt.Fprintf(w, "Error retrieving balances: %s", err)

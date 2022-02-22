@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	path = "/clearing"
+	path = "/settle"
 )
 
 // Service manages the main application functions.

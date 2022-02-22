@@ -15,7 +15,7 @@ const (
 	lo = 0
 	hi = 1000
 
-	contentType = "transaction/json"
+	contentType = "application/json"
 	timeout     = 3 * time.Second
 )
 

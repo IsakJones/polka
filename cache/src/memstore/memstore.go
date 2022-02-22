@@ -55,17 +55,17 @@ type bank struct {
 	Accs    *accounts
 }
 
-// snapBank stores bank data relevant to a snapshot.
-// snapBank does not include the bank's id or name.
-type SnapBank struct {
-	Balance  int64
-	Accounts map[uint32]int32
-}
-
 // accounts maps account ids to pointers to balances.
 type accounts struct {
 	sync.RWMutex
 	Mp map[uint32]*int32
+}
+
+// SnapBank stores bank data relevant to a snapshot.
+// SnapBank does not include the bank's id or name.
+type SnapBank struct {
+	Balance  int64
+	Accounts map[uint32]int32
 }
 
 // snapshot stores a synchronized snapshort of all balances.
@@ -235,29 +235,34 @@ func SettleSnapshot() error {
 
 // GetSnapshot returns a snapshot of all balances in a given instant.
 // It returns a pointer to the snapshot for performance reasons.
-func GetSnapshot() (*Snapshot, error) {
+func GetSnapshot() (map[string]*SnapBank, error) {
 	var sum int32
 	var err error
-	var snapbnk SnapBank // Stores the current snapbank
+	var snapbnk *SnapBank // Stores the current snapbank
 
 	c.Balances.Lock() // Lock to keep out other reader threads
 
 	// Loop through banks, adding them one by one
 	for name, bnk := range c.Balances.Banks {
 		// Make the snapbank with the balance
-		snapbnk = SnapBank{
-			Balance: *bnk.Balance,
+		snapbnk = &SnapBank{
+			Balance:  *bnk.Balance,
+			Accounts: make(map[uint32]int32),
 		}
 
 		// Add all accounts
 		bnk.Accs.RLock()
+		if len(bnk.Accs.Mp) == 0 {
+			bnk.Accs.RUnlock()
+			continue
+		}
 		for accNum, accBalance := range bnk.Accs.Mp {
 			snapbnk.Accounts[accNum] = *accBalance
 		}
 		bnk.Accs.RUnlock()
 
 		// Add snapbank to snapshot
-		c.Snap.Banks[name] = &snapbnk
+		c.Snap.Banks[name] = snapbnk
 	}
 
 	// Unlock, letting reader threads back in
@@ -281,7 +286,10 @@ func GetSnapshot() (*Snapshot, error) {
 	c.Snap.timestamp = time.Now()
 	c.Snap.ready = true
 
-	return c.Snap, err
+	c.Logger.Printf("finished sending back snapshot...")
+
+	// Return only banks, as other metadata is irrelevant to client
+	return c.Snap.Banks, err
 }
 
 // Cancels the last snapshot.

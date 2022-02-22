@@ -30,7 +30,7 @@ var validBanks = []string{
 	"Capital One Financial",
 }
 
-type transaction struct {
+type payment struct {
 	Sender   bankInfo
 	Receiver bankInfo
 	Amount   int
@@ -49,7 +49,7 @@ type bankBalance struct {
 	Amount   int
 }
 
-func (ct *transaction) isValidPayment() error {
+func (ct *payment) isValidPayment() error {
 	if ct.Amount > maxPayment {
 		return errors.New("payments over $1000 are not allowed")
 	}
@@ -59,51 +59,51 @@ func (ct *transaction) isValidPayment() error {
 	return nil
 }
 
-func (trans *transaction) GetSenBank() string {
+func (trans *payment) GetSenBank() string {
 	return trans.Sender.Name
 }
 
-func (trans *transaction) GetRecBank() string {
+func (trans *payment) GetRecBank() string {
 	return trans.Receiver.Name
 }
 
-func (trans *transaction) GetSenAcc() int {
+func (trans *payment) GetSenAcc() int {
 	return trans.Sender.Account
 }
 
-func (trans *transaction) GetRecAcc() int {
+func (trans *payment) GetRecAcc() int {
 	return trans.Receiver.Account
 }
 
-func (trans *transaction) GetAmount() int {
+func (trans *payment) GetAmount() int {
 	return trans.Amount
 }
 
-func (trans *transaction) GetTime() time.Time {
+func (trans *payment) GetTime() time.Time {
 	return trans.Time
 }
 
-func (trans *transaction) SetSenBank(name string) {
+func (trans *payment) SetSenBank(name string) {
 	trans.Sender.Name = name
 }
 
-func (trans *transaction) SetSenAcc(accNum int) {
+func (trans *payment) SetSenAcc(accNum int) {
 	trans.Sender.Account = accNum
 }
 
-func (trans *transaction) SetRecBank(name string) {
+func (trans *payment) SetRecBank(name string) {
 	trans.Receiver.Name = name
 }
 
-func (trans *transaction) SetRecAcc(accNum int) {
+func (trans *payment) SetRecAcc(accNum int) {
 	trans.Receiver.Account = accNum
 }
 
-func (trans *transaction) SetTime(time time.Time) {
+func (trans *payment) SetTime(time time.Time) {
 	trans.Time = time
 }
 
-func (trans *transaction) SetAmount(amount int) {
+func (trans *payment) SetAmount(amount int) {
 	trans.Amount = amount
 }
 
@@ -117,7 +117,7 @@ func handlePayment(w http.ResponseWriter, req *http.Request) {
 	var (
 		ctx    context.Context
 		cancel context.CancelFunc
-		ct     transaction
+		ct     payment
 	)
 
 	// req.ParseForm()
@@ -229,7 +229,7 @@ func handlePayment(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func sendTransactionToCache(ct *transaction, amount int, cacheErr chan<- error) {
+func sendTransactionToCache(ct *payment, amount int, cacheErr chan<- error) {
 	payloadBuffer := new(bytes.Buffer)
 	currentBalance := &bankBalance{
 		Sender:   ct.Sender,

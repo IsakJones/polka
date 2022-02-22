@@ -75,6 +75,8 @@ func clearingHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+
+		// NB only
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(balances)
 
@@ -108,10 +110,10 @@ func enqueueBalance(ctx context.Context, cb *utils.SRBalance, f func(*utils.SRBa
 }
 
 // enqueueBalance calls the f function on the current transaction while abiding by the context.
-func enqueueSnapRequest(ctx context.Context, f func() (*memstore.Snapshot, error)) (*memstore.Snapshot, error) {
+func enqueueSnapRequest(ctx context.Context, f func() (map[string]*memstore.SnapBank, error)) (map[string]*memstore.SnapBank, error) {
 	// Make error channel
 	errChan := make(chan error)
-	snapChan := make(chan *memstore.Snapshot)
+	snapChan := make(chan map[string]*memstore.SnapBank)
 
 	// Pass function result to channel
 	go func() {
