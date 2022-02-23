@@ -59,6 +59,7 @@ func main() {
 		err := settleBalances(settleDest + settleUrl)
 		if err != nil {
 			log.Printf("Error requesting snapshot: %s", err.Error())
+			return
 		}
 		log.Printf("Balances have been settled successfully.")
 		return

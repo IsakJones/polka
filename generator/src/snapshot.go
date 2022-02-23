@@ -45,14 +45,14 @@ func getSnapshot(dest string) (Snapshot, error) {
 }
 
 func settleBalances(dest string) error {
-	var payload *bytes.Buffer
+	var payload bytes.Buffer
 
 	// Initialize custom client
 	c := &http.Client{
 		Timeout: 5 * time.Second,
 	}
 
-	resp, err := c.Post(dest, contentType, payload)
+	resp, err := c.Post(dest, contentType, &payload)
 	if err != nil {
 		return err
 	}
