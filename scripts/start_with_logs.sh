@@ -18,7 +18,7 @@ done
 
 echo "Started cache, balancer, and settler"
 
-# start nodes
+# start receivers
 for node in $(find -name "node*")
 do
     pushd $node

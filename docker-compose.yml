@@ -5,6 +5,19 @@
 ---
 version: "3.9"  # optional since v1.27.0
 services:
+  settler:
+    build:
+      context: .
+      target: settler
+    env_file:
+      - ./envs/settler.env
+    environment:
+      - PORT=8082
+      - CACHEADDRESS=http://cache:8081/balance
+    networks:
+      - mynet
+    depends_on:
+      - cache
   receiver_0:
     build:
       context: .
@@ -76,6 +89,7 @@ services:
       POSTGRES_USER: polka
     networks:
       - mynet
+
 volumes:
   sqlinit:
   pgdata:
