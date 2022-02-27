@@ -12,7 +12,7 @@ import (
 	"github.com/sekerez/polka/cache/src/utils"
 )
 
-const envPath = "env/db.env"
+const envPath = "env/postgres.env"
 
 var db *DB // Create singleton DB
 

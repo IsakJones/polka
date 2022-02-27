@@ -23,7 +23,7 @@ services:
       context: .
       target: receiver
     env_file:
-      - ./envs/db.env
+      - ./envs/postgres.env
       - ./envs/receiver.env
     environment:
       - DBHOST=db
@@ -38,7 +38,7 @@ services:
       context: .
       target: receiver
     env_file:
-      - ./envs/db.env
+      - ./envs/postgres.env
       - ./envs/receiver.env
     environment:
       - DBHOST=db

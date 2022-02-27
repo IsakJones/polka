@@ -167,7 +167,7 @@ func handlePayment(w http.ResponseWriter, req *http.Request) {
 
 		// innerStart := time.Now()
 		// Insert transaction data into db
-		err = dbstore.InsertTransaction(ctx, &ct)
+		err = dbstore.InsertPayment(ctx, &ct)
 		if err != nil {
 			log.Printf("Error with database: %s", err.Error())
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -186,7 +186,7 @@ func handlePayment(w http.ResponseWriter, req *http.Request) {
 
 	case http.MethodGet:
 		// Scan table row in current transaction struct
-		err = dbstore.GetTransaction(ctx, &ct)
+		err = dbstore.GetPayment(ctx, &ct)
 		if err != nil {
 			log.Printf("Error: %s", err)
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -202,19 +202,13 @@ func handlePayment(w http.ResponseWriter, req *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	case http.MethodDelete:
 
-		// // Read the body
-		// err := json.NewDecoder(req.Body).Decode(&ct)
-		// if err != nil {
-		// 	http.Error(w, err.Error(), http.StatusBadRequest)
-		// }
-
 		// Concurrently update cache
 		cacheErr := make(chan error)
 		// Send the negative of the amount
 		go sendTransactionToCache(&ct, -ct.Amount, cacheErr)
 
 		// Update database
-		err = dbstore.DeleteTransaction(ctx, &ct)
+		err = dbstore.DeletePayment(ctx, &ct)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return

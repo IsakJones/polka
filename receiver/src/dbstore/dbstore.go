@@ -14,29 +14,16 @@ import (
 )
 
 const (
-	envPath = "db.env"
+	envPath = "postgres.env"
 )
 
 // Create singleton DB
 var db *DB
 
 type DB struct {
-	path   string
 	ctx    context.Context
-	logger *log.Logger
 	conn   *pgxpool.Pool
-}
-
-func (db *DB) GetPath() string {
-	return db.path
-}
-
-func (db *DB) GetCtx() context.Context {
-	return db.ctx
-}
-
-func (db *DB) GetConn() *pgxpool.Pool {
-	return db.conn
+	logger *log.Logger
 }
 
 func New(ctx context.Context) error {
@@ -49,25 +36,24 @@ func New(ctx context.Context) error {
 	}
 
 	// Write db url
-	path := fmt.Sprintf(
+	uri := fmt.Sprintf(
 		"postgres://%s:%s@%s:%s/%s",
-		os.Getenv("DBUSER"),
-		os.Getenv("DBPASS"),
-		os.Getenv("DBHOST"),
-		os.Getenv("DBPORT"),
-		os.Getenv("DBNAME"),
+		os.Getenv("POSTGRESUSER"),
+		os.Getenv("POSTGRESPASS"),
+		os.Getenv("POSTGRESHOST"),
+		os.Getenv("POSTGRESPORT"),
+		os.Getenv("POSTGRESNAME"),
 	)
 
 	// Connect to database
-	conn, err := pgxpool.Connect(ctx, path)
+	conn, err := pgxpool.Connect(ctx, uri)
 	if err != nil {
 		return err
 	}
-	log.Printf("Max Connections: %d", conn.Stat().MaxConns())
+	// log.Printf("Max Connections: %d", conn.Stat().MaxConns())
 
 	// Insert variables inside object
 	db = &DB{
-		path:   path,
 		ctx:    ctx,
 		conn:   conn,
 		logger: logger,
@@ -76,7 +62,7 @@ func New(ctx context.Context) error {
 	return nil
 }
 
-func GetTransaction(ctx context.Context, destTransaction utils.Transaction) error {
+func GetTransaction(ctx context.Context, destTransaction utils.Payment) error {
 	var (
 		senBank string
 		recBank string
@@ -113,7 +99,7 @@ func GetTransaction(ctx context.Context, destTransaction utils.Transaction) erro
 
 }
 
-func InsertTransaction(ctx context.Context, transaction utils.Transaction) error {
+func InsertPayment(ctx context.Context, transaction utils.Payment) error {
 	_, err := db.conn.Exec(
 		ctx,
 		insertTransactionQ,
@@ -127,7 +113,7 @@ func InsertTransaction(ctx context.Context, transaction utils.Transaction) error
 	return err
 }
 
-func DeleteTransaction(ctx context.Context, transaction utils.Transaction) error {
+func DeletePayment(ctx context.Context, transaction utils.Payment) error {
 	_, err := db.conn.Exec(
 		ctx,
 		deleteTransactionQ,
