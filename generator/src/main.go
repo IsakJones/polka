@@ -11,10 +11,7 @@ import (
 )
 
 const (
-	envPath    = "env/generator.env"
-	paymentUrl = "/payment"
-	helloUrl   = "/hello"
-	settleUrl  = "/settle"
+	envPath = "env/generator.env"
 )
 
 func main() {
@@ -33,16 +30,17 @@ func main() {
 	// Parse flags
 	flag.Parse()
 
-	// Get url to api
+	// Get url to services
 	if err := godotenv.Load(envPath); err != nil {
 		log.Fatalf("Environmental variables failed to load: %s\n", err)
 	}
 
 	mainDest := os.Getenv("MAINURL")
+	helloDest := os.Getenv("HELLOURL")
 	settleDest := os.Getenv("SETTLERURL")
 
 	if *getSnapshotPtr {
-		_, err := getSnapshot(settleDest + settleUrl)
+		_, err := getSnapshot(settleDest)
 		if err != nil {
 			log.Fatalf("Error requesting snapshot: %s", err.Error())
 		}
@@ -50,7 +48,7 @@ func main() {
 	}
 
 	if *settleBalancesPtr {
-		err := settleBalances(settleDest + settleUrl)
+		err := settleBalances(settleDest)
 		if err != nil {
 			log.Printf("Error requesting snapshot: %s", err.Error())
 			return
@@ -61,10 +59,10 @@ func main() {
 
 	// Say hello if asked!
 	if *helloPtr {
-		gospammer.SayHello(mainDest + helloUrl)
+		gospammer.SayHello(helloDest)
 	}
 
 	log.Printf("Sending %d transactions with %d workers", *transactionsPtr, *workerPtr)
-	badReqs := gospammer.TransactionSpammer(mainDest+paymentUrl, *workerPtr, *transactionsPtr)
+	badReqs := gospammer.TransactionSpammer(mainDest, *workerPtr, *transactionsPtr)
 	log.Printf("Of all requests, %d were successful and %d failed.", *transactionsPtr-uint(badReqs), badReqs)
 }

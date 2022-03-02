@@ -7,7 +7,10 @@
     <img alt="Go" src="https://img.shields.io/badge/Go-1.17-lightblue">
   </a> 
   <a href="https://www.postgresql.org/docs/12/release-12-9.html">
-    <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-12.9-green">
+    <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-12.9-orange">
+  </a> 
+  <a href="https://docs.mongodb.com/manual/release-notes/5.0/">
+    <img alt="MongoDB" src="https://img.shields.io/badge/MongoDB-5.0.6-green">
   </a> 
   <a href="https://docs.docker.com/engine/release-notes/">
     <img alt="Docker" src="https://img.shields.io/badge/Docker-20.10.12-blue">
@@ -35,27 +38,28 @@ Polka Payments is my attempt to build a peer-to-peer payments application, simil
 
 Polka Payments comprises 4 essential components: 
  - A [load balancer](./balancer/) that distributes a high volume of transactions evenly among servers.
- - An [array of servers](./receiver/) that handle requests, submitting data to the database and cache.
+ - An [array of servers](./processor/) that handle requests, submitting data to the database and cache.
  - A [cache](./cache) that acts as a memstore to register changes in account balances efficiently. 
- - A database storing data from each payment and net balances owed to individual banks and accounts.
+ - A PostgreSQL database storing data from each payment and net balances owed to individual banks and accounts.
+ - A MongoDB database storing balance snapshots 
 
 <div align="center">
    <img alt="schema" src="files/erd.png">
 </div>
 
-Additionally, since Polka doesn't have any users (yet!), the project includes a [load generator](https://github.com/sekerez/polka/tree/main/generator) to load test the application. 
+Additionally, since Polka doesn't have any clients (yet!), the project includes a [load generator](https://github.com/sekerez/polka/tree/main/generator) to load test the application. 
 
 ## Installation
 
-Polka Payments requires no specific installation, though it does require installing certain Go dependencies. Running a database requires connecting to a [PostgreSQL server](https://www.postgresql.org/). Running scripts on Linux may require either [tmux](https://github.com/tmux/tmux/wiki) or [multitail](https://www.vanheusden.com/multitail/). Lastly, using docker requires both [Docker](https://docs.docker.com/get-docker/) and [docker-compose](https://docs.docker.com/compose/install/).
+Polka Payments requires no specific installation, though it does require installing certain Go dependencies. Running a database requires connecting to a [PostgreSQL server](https://www.postgresql.org/) and a [MongoDB server](https://www.mongodb.com/). Running scripts on Linux may require either [tmux](https://github.com/tmux/tmux/wiki) or [multitail](https://www.vanheusden.com/multitail/). Lastly, using docker requires both [Docker](https://docs.docker.com/get-docker/) and [docker-compose](https://docs.docker.com/compose/install/).
 
 ### Environmental Variables
 
 Polka Payments' components require environmental variables. These can be set up in the [envs](./envs) directory.
 
-### Database
+### Databases
 
-Polka Payments requires a PostgreSQL database configured with a dedicated user. With Docker, setting up your own database is unnecessary, as Docker automatically runs an isolated PostgreSQL container. Without Docker, the database must be configured from scratch. For an example of the required login information, check out [envs/postgres.env](https://github.com/sekerez/polka/blob/main/envs/postgres.env). For the schema, run [setup.sql](./dbinit/setup.sql) to create the required tables. 
+Polka Payments requires two databases, one with running PostgreSQL and the other running MongoDB, both configured with a dedicated user. With Docker, setting up your own databases is unnecessary, as Docker automatically runs isolated PostgreSQL and MongoDB containers. Without Docker, the databases must be configured from scratch. For an example of the required login information, check out [envs/postgres.env](envs/postgres.env) and [envs/mongo.env](envs/mongo.env). For the schema, run [setup.sql](./dbinit/setup.sql) to create the required tables in the PostgreSQL database.
 
 ### Dependencies
 
@@ -77,11 +81,11 @@ Running Polka is easy with Docker. To start all services, run
 docker-compose up
 ```
 
-However, this will only run one [receiver](./receiver/) server. To run multiple, run
+However, this will only run one [processor](./processor/) server. To run multiple, run
 ```bash
-docker-compose up --scale receiver=<num>
+docker-compose up --scale processor=<num>
 ```
-where *num* is the number of receiver servers.
+where *num* is the number of processor servers.
 
 To shut down the application, run
 ```bash
@@ -90,35 +94,44 @@ docker-compose down
 
 ### Running Polka on Linux without Docker &#128039;
 
-To set up all binaries and a given number of receiver servers, run
+To set up all binaries and a given number of processor servers, run
 ```bash
-./scripts/prep.sh <num>
+make prep n=$num
 ```
-where $num is the number of receiver servers.
+where $num is the number of processor servers.
 
 To run the application and view streams of logs in tmux windows and panes, run
 ```bash
-./scripts/start_with_tmux.sh
+make stmux
 ```
 
 To run the application and record logs in dedicated log.txt files, run
 ```bash
-./scripts/start_with_logs.sh
+make stlog
 ```
 Of note, multitail must be installed in order to view multiple logs at once in the same terminal window.
 
 To shut down the application, run
 ```bash
-./scripts/clean_up.sh
+make clean
 ```
 
 ### Load testing 
 
 To load test the application, run from the [generator](./generator/) directory
 ```bash
-./bin/polkagenerator -w=<workers> -t=<transactions>
+make spam w=<workers> t=<transactions>
 ```
 where *workers* is the number of maximum ongoing requests in any given moment, and *transactions* is the number of randomly generated transactions (as in payments) that are sent. 
+
+To get a snapshot of all balances stored in the cache, run
+```bash
+make getsnap
+```
+To then approve the snapshot and settle all balances, run
+```bash
+make settle
+```
 
 ## License
 Polka Payments is licensed under the MIT Licence Copyright (c) 2022.

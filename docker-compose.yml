@@ -18,13 +18,13 @@ services:
       - mynet
     depends_on:
       - cache
-  receiver_0:
+  processor_0:
     build:
       context: .
-      target: receiver
+      target: processor
     env_file:
       - ./envs/postgres.env
-      - ./envs/receiver.env
+      - ./envs/processor.env
     environment:
       - DBHOST=db
       - PORT=8083
@@ -33,13 +33,13 @@ services:
       - mynet
     depends_on:
       - cache
-  receiver_1:
+  processor_1:
     build:
       context: .
-      target: receiver
+      target: processor
     env_file:
       - ./envs/postgres.env
-      - ./envs/receiver.env
+      - ./envs/processor.env
     environment:
       - DBHOST=db
       - PORT=8084
@@ -66,15 +66,15 @@ services:
       # default namespace : container namespace
       - "8080:8080"
     environment:
-      - NODEADDRESS0=http://receiver_0:8083
-      - NODEADDRESS1=http://receiver_1:8084
+      - NODEADDRESS0=http://processor:8083
+      - NODEADDRESS1=http://processor:8084
     env_file:
       - ./envs/balancer.env
     networks:
       - mynet
     depends_on:
-      - receiver_0
-      - receiver_1
+      - processor_0
+      - processor_1
   db:
     image: postgres
     restart: always

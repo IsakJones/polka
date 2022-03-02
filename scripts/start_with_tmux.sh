@@ -25,8 +25,8 @@ i=0
 for node in $(find -name "node*")
 do
     cd "$POLKA/$node"
-    tmux rename-window "receiver$i"
-    tmux send-keys "cd ${POLKA}/receiver/node$i; ./polkareceiver" "C-m"
+    tmux rename-window "processor$i"
+    tmux send-keys "cd ${POLKA}/processor/node$i; ./polkaprocessor" "C-m"
     tmux new-window
     i=$((i+1))
 done
@@ -53,13 +53,13 @@ then
         prlimit --pid $(pgrep "^polka$service$") --nofile=10000:10000
     done
 
-    # Increase ulimits for receivers
+    # Increase ulimits for processors
     for node in $(find -name "node*")
     do
         cd "$POLKA/$node"
 
-        tmux rename-window "receiver$i"
-        tmux send-keys "cd ${POLKA}/receiver/node$i; ./polkareceiver" "C-m"
+        tmux rename-window "processor$i"
+        tmux send-keys "cd ${POLKA}/processor/node$i; ./polkaprocessor" "C-m"
         tmux new-window
         i=$((i+1))
     done
