@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-const contentType = "transaction/json"
+const contentType = "application/json"
 
 type client struct {
 	Client  *http.Client

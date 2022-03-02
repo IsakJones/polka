@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -13,9 +12,8 @@ import (
 
 	"github.com/sekerez/polka/receiver/src/client"
 	"github.com/sekerez/polka/receiver/src/dbstore"
+	"github.com/sekerez/polka/utils"
 )
-
-const maxPayment = 100000
 
 var validBanks = []string{
 	"JP Morgan Chase",
@@ -30,81 +28,11 @@ var validBanks = []string{
 	"Capital One Financial",
 }
 
-type payment struct {
-	Sender   bankInfo
-	Receiver bankInfo
-	Amount   int
-	Time     time.Time
-}
-
-type bankInfo struct {
-	Name    string
-	Account int
-}
-
 // bankBalance stores information processed by the cache.
 type bankBalance struct {
-	Sender   bankInfo
-	Receiver bankInfo
+	Sender   utils.BankInfo
+	Receiver utils.BankInfo
 	Amount   int
-}
-
-func (ct *payment) isValidPayment() error {
-	if ct.Amount > maxPayment {
-		return errors.New("payments over $1000 are not allowed")
-	}
-	if ct.Amount < 0 {
-		return errors.New("payment can't have a negative amount")
-	}
-	return nil
-}
-
-func (trans *payment) GetSenBank() string {
-	return trans.Sender.Name
-}
-
-func (trans *payment) GetRecBank() string {
-	return trans.Receiver.Name
-}
-
-func (trans *payment) GetSenAcc() int {
-	return trans.Sender.Account
-}
-
-func (trans *payment) GetRecAcc() int {
-	return trans.Receiver.Account
-}
-
-func (trans *payment) GetAmount() int {
-	return trans.Amount
-}
-
-func (trans *payment) GetTime() time.Time {
-	return trans.Time
-}
-
-func (trans *payment) SetSenBank(name string) {
-	trans.Sender.Name = name
-}
-
-func (trans *payment) SetSenAcc(accNum int) {
-	trans.Sender.Account = accNum
-}
-
-func (trans *payment) SetRecBank(name string) {
-	trans.Receiver.Name = name
-}
-
-func (trans *payment) SetRecAcc(accNum int) {
-	trans.Receiver.Account = accNum
-}
-
-func (trans *payment) SetTime(time time.Time) {
-	trans.Time = time
-}
-
-func (trans *payment) SetAmount(amount int) {
-	trans.Amount = amount
 }
 
 var counter uint64
@@ -113,11 +41,11 @@ var counter uint64
 func handlePayment(w http.ResponseWriter, req *http.Request) {
 
 	// start := time.Now()
-	// ct stands for current transaction
+	// paymnt stands for current transaction
 	var (
 		ctx    context.Context
 		cancel context.CancelFunc
-		ct     payment
+		paymnt utils.Payment
 	)
 
 	// req.ParseForm()
@@ -144,18 +72,18 @@ func handlePayment(w http.ResponseWriter, req *http.Request) {
 		// 	http.Error(w, err.Error(), http.StatusBadRequest)
 		// 	return
 		// }
-		err = json.NewDecoder(req.Body).Decode(&ct)
+		err = json.NewDecoder(req.Body).Decode(&paymnt)
 		if err != nil {
 			log.Printf("Error decoding json: %s", err.Error())
 			// log.Printf("Request body: %s", body)
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		// if err = ct.isValidPayment(); err != nil {
-		// 	log.Printf("%s", err.Error())
-		// 	http.Error(w, err.Error(), http.StatusBadRequest)
-		// 	return
-		// }
+		if err = paymnt.IsValidPayment(); err != nil {
+			log.Printf("%s", err.Error())
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
 	}
 
 	// Multiplex according to method
@@ -163,11 +91,11 @@ func handlePayment(w http.ResponseWriter, req *http.Request) {
 	case http.MethodPost:
 		// Concurrently send request over to cache
 		cacheErr := make(chan error)
-		go sendTransactionToCache(&ct, ct.Amount, cacheErr)
+		go sendTransactionToCache(&paymnt, paymnt.Amount, cacheErr)
 
 		// innerStart := time.Now()
 		// Insert transaction data into db
-		err = dbstore.InsertPayment(ctx, &ct)
+		err = dbstore.InsertPayment(ctx, &paymnt)
 		if err != nil {
 			log.Printf("Error with database: %s", err.Error())
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -186,13 +114,13 @@ func handlePayment(w http.ResponseWriter, req *http.Request) {
 
 	case http.MethodGet:
 		// Scan table row in current transaction struct
-		err = dbstore.GetPayment(ctx, &ct)
+		err = dbstore.GetPayment(ctx, &paymnt)
 		if err != nil {
 			log.Printf("Error: %s", err)
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		fmt.Fprintf(w, "%+v", ct)
+		fmt.Fprintf(w, "%+v", paymnt)
 
 		// Encode transaction data and send back to client
 	// end := time.Now()
@@ -205,10 +133,10 @@ func handlePayment(w http.ResponseWriter, req *http.Request) {
 		// Concurrently update cache
 		cacheErr := make(chan error)
 		// Send the negative of the amount
-		go sendTransactionToCache(&ct, -ct.Amount, cacheErr)
+		go sendTransactionToCache(&paymnt, -paymnt.Amount, cacheErr)
 
 		// Update database
-		err = dbstore.DeletePayment(ctx, &ct)
+		err = dbstore.DeletePayment(ctx, &paymnt)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
@@ -223,11 +151,11 @@ func handlePayment(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func sendTransactionToCache(ct *payment, amount int, cacheErr chan<- error) {
+func sendTransactionToCache(paymnt *utils.Payment, amount int, cacheErr chan<- error) {
 	payloadBuffer := new(bytes.Buffer)
 	currentBalance := &bankBalance{
-		Sender:   ct.Sender,
-		Receiver: ct.Receiver,
+		Sender:   paymnt.Sender,
+		Receiver: paymnt.Receiver,
 		Amount:   amount,
 	}
 	json.NewEncoder(payloadBuffer).Encode(currentBalance)

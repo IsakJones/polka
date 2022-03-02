@@ -9,7 +9,6 @@ import (
 	"github.com/joho/godotenv"
 	"gopkg.in/mgo.v2/bson"
 
-	// "go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -55,8 +54,7 @@ func New(ctx context.Context) error {
 	}
 
 	// Get shorthand for snapshots collection
-	snapshots := client.Database(os.Getenv("MONGONAME")).
-		Collection(os.Getenv("MONGOCOLL"))
+	snapshots := client.Database(os.Getenv("MONGONAME")).Collection(os.Getenv("MONGOCOLL"))
 
 	// Ping connection to make sure that the database is on
 	if err = client.Ping(ctx, readpref.Primary()); err != nil {
@@ -80,12 +78,14 @@ func Close() error {
 }
 
 func InsertSnapshot(ctx context.Context, snapshot []byte) error {
-	var snapDoc bson.D
+	var snapDoc interface{}
 
 	err := bson.UnmarshalJSON(snapshot, &snapDoc)
 	if err != nil {
+		db.logger.Printf("Error inserting snapshot: %s", snapshot)
 		return err
 	}
+	fmt.Printf("%s\n", snapshot)
 
 	result, err := db.snapshots.InsertOne(ctx, snapDoc)
 	if err != nil {

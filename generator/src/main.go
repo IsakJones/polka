@@ -42,16 +42,10 @@ func main() {
 	settleDest := os.Getenv("SETTLERURL")
 
 	if *getSnapshotPtr {
-		snapshot, err := getSnapshot(settleDest + settleUrl)
+		_, err := getSnapshot(settleDest + settleUrl)
 		if err != nil {
-			log.Printf("Error requesting snapshot: %s", err.Error())
+			log.Fatalf("Error requesting snapshot: %s", err.Error())
 		}
-
-		for name, bnk := range snapshot {
-			log.Printf("%s: %d", name, bnk.Balance)
-		}
-
-		log.Printf("This is the snapshot: \n %v", snapshot)
 		return
 	}
 

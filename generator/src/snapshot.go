@@ -7,24 +7,14 @@ import (
 	"fmt"
 	"net/http"
 	"time"
+
+	"github.com/sekerez/polka/utils"
 )
 
 const contentType = "application/json"
 
-// SnapBank stores bank data relevant to a snapshot.
-// SnapBank does not include the bank's id or name.
-type SnapBank struct {
-	Balance  int64
-	Accounts map[uint32]int32
-}
-
-// Snapshot stores a synchronized snapshort of all balances.
-// It stores integers and not pointers, since there's no need
-// for concurrent access.
-type Snapshot map[string]*SnapBank
-
-func getSnapshot(dest string) (Snapshot, error) {
-	var snap Snapshot
+func getSnapshot(dest string) (*utils.Snapshot, error) {
+	var snap utils.Snapshot
 
 	// Initialize custom client
 	c := &http.Client{
@@ -37,11 +27,33 @@ func getSnapshot(dest string) (Snapshot, error) {
 		return nil, err
 	}
 
-	// Decode body
 	defer resp.Body.Close()
-	json.NewDecoder(resp.Body).Decode(&snap)
+	if resp.StatusCode > 299 {
+		errStr := fmt.Sprintf("bad response status code: %d", resp.StatusCode)
+		return nil, errors.New(errStr)
+	}
 
-	return snap, err
+	// byteBody, err := ioutil.ReadAll(resp.Body)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// fmt.Printf("%s\n", byteBody)
+
+	// return nil, nil
+
+	// Decode body
+	err = json.NewDecoder(resp.Body).Decode(&snap)
+	if err != nil {
+		return nil, err
+	}
+
+	if snap.Banks == nil {
+		return nil, errors.New("Got nil snapshot")
+	}
+	snap.Print()
+
+	return &snap, err
 }
 
 func settleBalances(dest string) error {

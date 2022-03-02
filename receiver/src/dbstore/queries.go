@@ -17,7 +17,7 @@ const (
 	dollar_amount=$5 AND
 	time=$6;
 	`
-	getLatestTransactionQ = `
+	getLatestPaymentQ = `
 	SELECT
 		sender.name,
 		receiver.name,
@@ -30,7 +30,7 @@ const (
 	JOIN banks receiver ON receiver.id=transactions.receiving_bank_id
 	ORDER BY time;
 	`
-	insertTransactionQ = `
+	insertPaymentQ = `
 	INSERT INTO transactions (
 		sending_bank_id,
 		receiving_bank_id,
@@ -47,7 +47,7 @@ const (
 		$6
 	);
 	`
-	deleteTransactionQ = `
+	deletePaymentQ = `
 	DELETE FROM transactions WHERE 
 	sending_bank_id=(SELECT id FROM banks WHERE name=$1) AND
 	receiving_bank_id=(SELECT id FROM banks WHERE name=$2) AND

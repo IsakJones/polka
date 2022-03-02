@@ -12,7 +12,7 @@ import (
 
 const (
 	balancePath  = "/balance"
-	clearingPath = "/clear"
+	clearingPath = "/settle"
 )
 
 // Service manages the main application functions.

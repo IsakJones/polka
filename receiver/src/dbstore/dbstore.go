@@ -10,7 +10,7 @@ import (
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/joho/godotenv"
 
-	"github.com/sekerez/polka/receiver/src/utils"
+	"github.com/sekerez/polka/utils"
 )
 
 const (
@@ -62,7 +62,7 @@ func New(ctx context.Context) error {
 	return nil
 }
 
-func GetTransaction(ctx context.Context, destTransaction utils.Payment) error {
+func GetPayment(ctx context.Context, paymnt *utils.Payment) error {
 	var (
 		senBank string
 		recBank string
@@ -75,7 +75,7 @@ func GetTransaction(ctx context.Context, destTransaction utils.Payment) error {
 
 	err = db.conn.QueryRow(
 		ctx,
-		getLatestTransactionQ,
+		getLatestPaymentQ,
 	).Scan(
 		&senBank,
 		&recBank,
@@ -88,41 +88,40 @@ func GetTransaction(ctx context.Context, destTransaction utils.Payment) error {
 		return err
 	}
 
-	destTransaction.SetSenBank(senBank)
-	destTransaction.SetRecBank(recBank)
-	destTransaction.SetSenAcc(senAcc)
-	destTransaction.SetRecAcc(recAcc)
-	destTransaction.SetAmount(amount)
-	destTransaction.SetTime(time)
+	paymnt.Sender.Name = senBank
+	paymnt.Receiver.Name = recBank
+	paymnt.Sender.Account = senAcc
+	paymnt.Receiver.Account = recAcc
+	paymnt.Amount = amount
+	paymnt.Time = time
 
 	return err
-
 }
 
-func InsertPayment(ctx context.Context, transaction utils.Payment) error {
+func InsertPayment(ctx context.Context, paymnt *utils.Payment) error {
 	_, err := db.conn.Exec(
 		ctx,
-		insertTransactionQ,
-		transaction.GetSenBank(),
-		transaction.GetRecBank(),
-		transaction.GetSenAcc(),
-		transaction.GetRecAcc(),
-		transaction.GetAmount(),
-		transaction.GetTime(),
+		insertPaymentQ,
+		paymnt.Sender.Name,
+		paymnt.Receiver.Name,
+		paymnt.Sender.Account,
+		paymnt.Receiver.Account,
+		paymnt.Amount,
+		paymnt.Time,
 	)
 	return err
 }
 
-func DeletePayment(ctx context.Context, transaction utils.Payment) error {
+func DeletePayment(ctx context.Context, paymnt *utils.Payment) error {
 	_, err := db.conn.Exec(
 		ctx,
-		deleteTransactionQ,
-		transaction.GetSenBank(),
-		transaction.GetRecBank(),
-		transaction.GetSenAcc(),
-		transaction.GetRecAcc(),
-		transaction.GetAmount(),
-		transaction.GetTime(),
+		deletePaymentQ,
+		paymnt.Sender.Name,
+		paymnt.Receiver.Name,
+		paymnt.Sender.Account,
+		paymnt.Receiver.Account,
+		paymnt.Amount,
+		paymnt.Time,
 	)
 	return err
 }

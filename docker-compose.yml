@@ -81,7 +81,7 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - ./sqlinit/setup.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./dbinit/setup.sql:/docker-entrypoint-initdb.d/init.sql
       - pgdata:/var/lib/postgresql
     environment:
       POSTGRES_PASSWORD: polkapass
@@ -91,7 +91,7 @@ services:
       - mynet
 
 volumes:
-  sqlinit:
+  dbinit:
   pgdata:
 networks:
   mynet:
