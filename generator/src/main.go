@@ -7,7 +7,7 @@ import (
 
 	"github.com/joho/godotenv"
 
-	"github.com/sekerez/polka/generator/src/gospammer"
+	"github.com/sekerez/polka/generator/src/spammer"
 )
 
 const (
@@ -40,7 +40,7 @@ func main() {
 	settleDest := os.Getenv("SETTLERURL")
 
 	if *getSnapshotPtr {
-		_, err := getSnapshot(settleDest)
+		_, err := spammer.GetSnapshot(settleDest)
 		if err != nil {
 			log.Fatalf("Error requesting snapshot: %s", err.Error())
 		}
@@ -48,7 +48,7 @@ func main() {
 	}
 
 	if *settleBalancesPtr {
-		err := settleBalances(settleDest)
+		err := spammer.SettleBalances(settleDest)
 		if err != nil {
 			log.Printf("Error requesting snapshot: %s", err.Error())
 			return
@@ -59,10 +59,10 @@ func main() {
 
 	// Say hello if asked!
 	if *helloPtr {
-		gospammer.SayHello(helloDest)
+		spammer.SayHello(helloDest)
 	}
 
 	log.Printf("Sending %d transactions with %d workers", *transactionsPtr, *workerPtr)
-	badReqs := gospammer.TransactionSpammer(mainDest, *workerPtr, *transactionsPtr)
+	badReqs := spammer.TransactionSpammer(mainDest, *workerPtr, *transactionsPtr)
 	log.Printf("Of all requests, %d were successful and %d failed.", *transactionsPtr-uint(badReqs), badReqs)
 }

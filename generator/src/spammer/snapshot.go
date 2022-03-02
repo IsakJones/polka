@@ -1,4 +1,4 @@
-package main
+package spammer
 
 import (
 	"bytes"
@@ -11,9 +11,7 @@ import (
 	"github.com/sekerez/polka/utils"
 )
 
-const contentType = "application/json"
-
-func getSnapshot(dest string) (*utils.Snapshot, error) {
+func GetSnapshot(dest string) (*utils.Snapshot, error) {
 	var snap utils.Snapshot
 
 	// Initialize custom client
@@ -56,7 +54,7 @@ func getSnapshot(dest string) (*utils.Snapshot, error) {
 	return &snap, err
 }
 
-func settleBalances(dest string) error {
+func SettleBalances(dest string) error {
 	var payload bytes.Buffer
 
 	// Initialize custom client

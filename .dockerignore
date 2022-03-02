@@ -2,3 +2,5 @@ README.md
 other
 liltests
 .vscode
+*.vscode
+generator/src/python*

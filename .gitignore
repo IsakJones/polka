@@ -5,3 +5,4 @@
 liltests/
 other/
 log.txt
+generator/src/python*

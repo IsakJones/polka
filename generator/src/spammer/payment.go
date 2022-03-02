@@ -1,4 +1,4 @@
-package gospammer
+package spammer
 
 import (
 	"bytes"
