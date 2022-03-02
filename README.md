@@ -30,7 +30,7 @@ Polka Payments is my attempt to build a peer-to-peer payments application, simil
 ## Architecture
 
 <div align="center">
-   <img alt="diagram" src="files/diagram2.png">
+   <img alt="diagram" src="files/diagram.png">
 </div>
 
 Polka Payments comprises 4 essential components: 
