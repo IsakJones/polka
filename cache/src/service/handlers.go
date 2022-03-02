@@ -3,11 +3,12 @@ package service
 import (
 	"context"
 	"encoding/json"
+	"log"
 	"net/http"
 	"time"
 
 	"github.com/sekerez/polka/cache/src/memstore"
-	"github.com/sekerez/polka/cache/src/utils"
+	"github.com/sekerez/polka/utils"
 )
 
 func balancesHandler(w http.ResponseWriter, r *http.Request) {
@@ -69,6 +70,7 @@ func clearingHandler(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case http.MethodGet:
+		log.Printf("Got Snapshot get request!")
 		// The only thing you need to do is take the snapshot and send it back
 		balances, err := enqueueSnapRequest(ctx, memstore.GetSnapshot)
 		if balances == nil || err != nil {
@@ -81,6 +83,7 @@ func clearingHandler(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(balances)
 
 	case http.MethodPost:
+		log.Printf("Got Snapshot post request!")
 		err := memstore.SettleSnapshot()
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -110,10 +113,10 @@ func enqueueBalance(ctx context.Context, cb *utils.SRBalance, f func(*utils.SRBa
 }
 
 // enqueueBalance calls the f function on the current transaction while abiding by the context.
-func enqueueSnapRequest(ctx context.Context, f func() (map[string]*memstore.SnapBank, error)) (map[string]*memstore.SnapBank, error) {
+func enqueueSnapRequest(ctx context.Context, f func() (*utils.Snapshot, error)) (*utils.Snapshot, error) {
 	// Make error channel
 	errChan := make(chan error)
-	snapChan := make(chan map[string]*memstore.SnapBank)
+	snapChan := make(chan *utils.Snapshot)
 
 	// Pass function result to channel
 	go func() {

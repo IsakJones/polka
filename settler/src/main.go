@@ -14,6 +14,7 @@ import (
 	"github.com/joho/godotenv"
 
 	"github.com/sekerez/polka/settler/src/client"
+	"github.com/sekerez/polka/settler/src/dbstore"
 	"github.com/sekerez/polka/settler/src/service"
 )
 
@@ -67,6 +68,12 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
+	// Initialize database connection
+	err = dbstore.New(ctx)
+	if err != nil {
+		logger.Fatalf("Could not initialize MongoDB database connection: %s", err.Error())
+	}
+
 	// Initialize client
 	err = client.New(os.Getenv("CACHEADDRESS"), cacheReqTimeout)
 	if err != nil {
@@ -106,9 +113,17 @@ func main() {
 
 	}
 
+	// Close service
 	err = s.Close()
 	if err != nil {
 		logger.Fatalf("Failed to close service: %s", err)
 	}
+
+	// Close database connection
+	err = dbstore.Close()
+	if err != nil {
+		logger.Fatalf("Failed to close database: %s", err)
+	}
+
 	logger.Printf("Shut down api service.")
 }

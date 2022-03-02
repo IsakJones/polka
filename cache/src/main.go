@@ -17,33 +17,12 @@ import (
 	"github.com/sekerez/polka/cache/src/dbstore"
 	"github.com/sekerez/polka/cache/src/memstore"
 	"github.com/sekerez/polka/cache/src/service"
-	"github.com/sekerez/polka/cache/src/utils"
+	"github.com/sekerez/polka/utils"
 )
 
 const (
 	envPath = "env/cache.env"
 )
-
-type Config struct {
-	Host string
-	Port int
-}
-
-func (c *Config) GetHost() string {
-	return c.Host
-}
-
-func (c *Config) GetPort() int {
-	return c.Port
-}
-
-func (c *Config) GetAddress() string {
-	return fmt.Sprintf("%s:%d", c.Host, c.Port)
-}
-
-func (c *Config) GetListenPort() string {
-	return fmt.Sprintf(":%d", c.Port)
-}
 
 func main() {
 

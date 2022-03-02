@@ -9,10 +9,10 @@ import (
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/joho/godotenv"
 
-	"github.com/sekerez/polka/cache/src/utils"
+	"github.com/sekerez/polka/utils"
 )
 
-const envPath = "env/db.env"
+const envPath = "env/postgres.env"
 
 var db *DB // Create singleton DB
 
@@ -56,11 +56,11 @@ func New(
 	// Write db url
 	path := fmt.Sprintf(
 		"postgres://%s:%s@%s:%s/%s",
-		os.Getenv("DBUSER"),
-		os.Getenv("DBPASS"),
-		os.Getenv("DBHOST"),
-		os.Getenv("DBPORT"),
-		os.Getenv("DBNAME"),
+		os.Getenv("POSTGRESUSER"),
+		os.Getenv("POSTGRESPASS"),
+		os.Getenv("POSTGRESHOST"),
+		os.Getenv("POSTGRESPORT"),
+		os.Getenv("POSTGRESNAME"),
 	)
 
 	// Connect to database

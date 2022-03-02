@@ -24,8 +24,11 @@ done
 
 echo "Made env directories and log files"
 
-# Place db.env file in cache
-cp envs/db.env cache/env/
+# Place postgres.env file in cache
+cp envs/postgres.env cache/env/
+
+# Place mongo.env file in settler
+cp envs/mongo.env settler/env/
 
 # Build all binaries
 for service in ${services[@]}
@@ -55,7 +58,7 @@ do
     touch "receiver/node$i/log.txt"
     cp "receiver/bin/polkareceiver" "receiver/node$i/polkareceiver$i"
     cp "envs/receiver.env" "receiver/node$i/"
-    cp "envs/db.env" "receiver/node$i/"
+    cp "envs/postgres.env" "receiver/node$i/"
     sed -i -e "s/${BASEPORT}/${CURPORT}/g" "receiver/node$i/receiver.env"
     echo "Prepared node $i"
 done

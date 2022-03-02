@@ -16,21 +16,21 @@ RUN ./scripts/prep.sh 2
 # RUN go build -o receiver/bin/polkareceiver ./receiver/src/ 
 # RUN go build -o cache/bin/polkacache ./cache/src/
 
-# FROM polka as receiver
-# WORKDIR /polka/receiver
-# CMD ./bin/polkareceiver
-
-FROM polka AS receiver
-WORKDIR /polka/receiver/node0
-CMD ./polkareceiver
+FROM polka AS balancer
+WORKDIR /polka/balancer
+CMD ./bin/polkabalancer
 
 FROM polka AS cache
 WORKDIR /polka/cache
 CMD ./bin/polkacache
 
-FROM polka AS balancer
-WORKDIR /polka/balancer
-CMD ./bin/polkabalancer
+FROM polka AS receiver
+WORKDIR /polka/receiver/node0
+CMD ./polkareceiver
+
+FROM polka AS settler
+WORKDIR /polka/settler
+CMD ./bin/polkasettler
 
 FROM polka AS generator
 WORKDIR /polka/generator

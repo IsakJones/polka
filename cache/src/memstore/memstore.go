@@ -2,7 +2,6 @@ package memstore
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -10,7 +9,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/sekerez/polka/cache/src/utils"
+	"github.com/sekerez/polka/utils"
 )
 
 const (
@@ -27,7 +26,7 @@ var (
 type cache struct {
 	Ctx            context.Context
 	List           *circularLinkedList
-	Snap           *Snapshot
+	Snap           *utils.Snapshot // Snap is an option, it's nil if no snapshot has been taken
 	Chans          *channels
 	Logger         *log.Logger
 	Balances       *balancesRW
@@ -61,22 +60,6 @@ type accounts struct {
 	Mp map[uint32]*int32
 }
 
-// SnapBank stores bank data relevant to a snapshot.
-// SnapBank does not include the bank's id or name.
-type SnapBank struct {
-	Balance  int64
-	Accounts map[uint32]int32
-}
-
-// snapshot stores a synchronized snapshort of all balances.
-// It stores integers and not pointers, since there's no need
-// for concurrent access.
-type Snapshot struct {
-	ready     bool
-	Banks     map[string]*SnapBank
-	timestamp time.Time
-}
-
 // New initializes the cache struct.
 func New(
 	ctx context.Context,
@@ -106,17 +89,11 @@ func New(
 		Banks: make(map[string]*bank, bankNum),
 	}
 
-	// Initialize snapshot struct.
-	snap := &Snapshot{
-		ready: false,
-		Banks: make(map[string]*SnapBank, bankNum),
-	}
-
 	// Assign Cache singleton
 	c = cache{
 		Ctx:            ctx,
 		List:           list,
-		Snap:           snap,
+		Snap:           nil, // Snapshot is nil because it wasn't taken
 		Chans:          chans,
 		Logger:         logger,
 		Balances:       balances,
@@ -199,102 +176,6 @@ func UpdateBalances(current *utils.SRBalance) error {
 	updateAccount(recBank.Accs, current.Receiver.Account, current.Amount)
 
 	return nil
-}
-
-// SettleSnapshot subtracts all balances by the balances stored in the snapshot.
-// It is called when clearing payments.
-func SettleSnapshot() error {
-	// If there's no snapshot, return an error
-	if !c.Snap.ready {
-		return errors.New("no snapshot taken - must request a snapshot before settling payments")
-	}
-
-	// Read because there's no synchronization required.
-	c.Balances.RLock()
-	defer c.Balances.RUnlock()
-
-	for name, bnk := range c.Balances.Banks {
-		snapBnk := c.Snap.Banks[name]
-
-		// change balance and reset snapshot
-		atomic.AddInt64(bnk.Balance, -snapBnk.Balance)
-		snapBnk.Balance = 0
-
-		// change all accounts
-		bnk.Accs.RLock()
-		for accNum, accPtr := range bnk.Accs.Mp {
-			// change balance and reset snapshot
-			atomic.AddInt32(accPtr, -snapBnk.Accounts[accNum])
-			snapBnk.Accounts[accNum] = 0
-		}
-		bnk.Accs.RUnlock()
-	}
-
-	return nil
-}
-
-// GetSnapshot returns a snapshot of all balances in a given instant.
-// It returns a pointer to the snapshot for performance reasons.
-func GetSnapshot() (map[string]*SnapBank, error) {
-	var sum int32
-	var err error
-	var snapbnk *SnapBank // Stores the current snapbank
-
-	c.Balances.Lock() // Lock to keep out other reader threads
-
-	// Loop through banks, adding them one by one
-	for name, bnk := range c.Balances.Banks {
-		// Make the snapbank with the balance
-		snapbnk = &SnapBank{
-			Balance:  *bnk.Balance,
-			Accounts: make(map[uint32]int32),
-		}
-
-		// Add all accounts
-		bnk.Accs.RLock()
-		if len(bnk.Accs.Mp) == 0 {
-			bnk.Accs.RUnlock()
-			continue
-		}
-		for accNum, accBalance := range bnk.Accs.Mp {
-			snapbnk.Accounts[accNum] = *accBalance
-		}
-		bnk.Accs.RUnlock()
-
-		// Add snapbank to snapshot
-		c.Snap.Banks[name] = snapbnk
-	}
-
-	// Unlock, letting reader threads back in
-	c.Balances.Unlock()
-
-	// Check that each bank balance corresponds to the sum of its accounts
-	for name, bnk := range c.Snap.Banks {
-		sum = 0
-		for _, accountBalance := range bnk.Accounts {
-			sum += accountBalance
-		}
-
-		// Make the check, if so print error
-		if bnk.Balance != int64(sum) {
-			c.Logger.Printf("Error: account balances not synched with bank balance for %s", name)
-			err = errors.New("incoherent snapshot")
-		}
-	}
-
-	// Update time of snapshot and readiness
-	c.Snap.timestamp = time.Now()
-	c.Snap.ready = true
-
-	c.Logger.Printf("finished sending back snapshot...")
-
-	// Return only banks, as other metadata is irrelevant to client
-	return c.Snap.Banks, err
-}
-
-// Cancels the last snapshot.
-func CancelSnapshot() {
-	c.Snap.ready = false
 }
 
 // PrintDues prints to the console how much Polka owes to

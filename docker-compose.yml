@@ -5,12 +5,25 @@
 ---
 version: "3.9"  # optional since v1.27.0
 services:
+  settler:
+    build:
+      context: .
+      target: settler
+    env_file:
+      - ./envs/settler.env
+    environment:
+      - PORT=8082
+      - CACHEADDRESS=http://cache:8081/balance
+    networks:
+      - mynet
+    depends_on:
+      - cache
   receiver_0:
     build:
       context: .
       target: receiver
     env_file:
-      - ./envs/db.env
+      - ./envs/postgres.env
       - ./envs/receiver.env
     environment:
       - DBHOST=db
@@ -25,7 +38,7 @@ services:
       context: .
       target: receiver
     env_file:
-      - ./envs/db.env
+      - ./envs/postgres.env
       - ./envs/receiver.env
     environment:
       - DBHOST=db
@@ -68,7 +81,7 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - ./sqlinit/setup.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./dbinit/setup.sql:/docker-entrypoint-initdb.d/init.sql
       - pgdata:/var/lib/postgresql
     environment:
       POSTGRES_PASSWORD: polkapass
@@ -76,8 +89,9 @@ services:
       POSTGRES_USER: polka
     networks:
       - mynet
+
 volumes:
-  sqlinit:
+  dbinit:
   pgdata:
 networks:
   mynet:

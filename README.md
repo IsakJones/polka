@@ -55,7 +55,7 @@ Polka Payments' components require environmental variables. These can be set up 
 
 ### Database
 
-Polka Payments requires a PostgreSQL database configured with a dedicated user. With Docker, setting up your own database is unnecessary, as Docker automatically runs an isolated PostgreSQL container. Without Docker, the database must be configured from scratch. For an example of the required login information, check out [envs/db.env](https://github.com/sekerez/polka/blob/main/envs/db.env). For the schema, run [setup.sql](./sqlinit/setup.sql) to create the required tables. 
+Polka Payments requires a PostgreSQL database configured with a dedicated user. With Docker, setting up your own database is unnecessary, as Docker automatically runs an isolated PostgreSQL container. Without Docker, the database must be configured from scratch. For an example of the required login information, check out [envs/postgres.env](https://github.com/sekerez/polka/blob/main/envs/postgres.env). For the schema, run [setup.sql](./dbinit/setup.sql) to create the required tables. 
 
 ### Dependencies
 
