@@ -3,4 +3,6 @@ other
 liltests
 .vscode
 *.vscode
+measurements.txt
 generator/src/python*
+grapher.py

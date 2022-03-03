@@ -16,14 +16,17 @@ const (
 
 func main() {
 
-	// Check if we should send a hello!
+	// Send a hello?
 	helloPtr := flag.Bool("h", false, "whether to send a hello GET request")
 
-	// Check if we should spam transactions, and if so how many
+	// Send random payments?
 	workerPtr := flag.Uint("w", 3000, "the number of workers")
 	transactionsPtr := flag.Uint("t", 100, "the number of transactions sent")
 
-	// Check if we should take a snapshot
+	// Measure performance?
+	measurePtr := flag.Bool("m", false, "whether to measure request time")
+
+	// Request a snapshot or request a settlement?
 	getSnapshotPtr := flag.Bool("gs", false, "whether to get a snapshot")
 	settleBalancesPtr := flag.Bool("sb", false, "whether to settle balances given a snapshot")
 
@@ -63,6 +66,6 @@ func main() {
 	}
 
 	log.Printf("Sending %d transactions with %d workers", *transactionsPtr, *workerPtr)
-	badReqs := spammer.TransactionSpammer(mainDest, *workerPtr, *transactionsPtr)
+	badReqs := spammer.PaymentSpammer(mainDest, *workerPtr, *transactionsPtr, *measurePtr)
 	log.Printf("Of all requests, %d were successful and %d failed.", *transactionsPtr-uint(badReqs), badReqs)
 }

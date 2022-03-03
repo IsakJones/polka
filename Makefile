@@ -1,6 +1,9 @@
 prep:
 	./scripts/prep.sh $(n)
 
+stnone:
+	./scripts/start_without.sh
+
 stlog:
 	./scripts/start_with_logs.sh 
 
@@ -19,6 +22,10 @@ docker_prep:
 spam:
 	./scripts/check_gen_env.sh
 	./generator/bin/polkagenerator -w=$(w) -t=$(t)
+
+spamm:
+	./scripts/check_gen_env.sh
+	./generator/bin/polkagenerator -w=$(w) -t=$(t) -m
 
 getsnap:
 	./generator/bin/polkagenerator -gs

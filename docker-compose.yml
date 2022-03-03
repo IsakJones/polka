@@ -19,7 +19,7 @@ services:
       - mynet
     environment:
       - NODENUM=1
-      - NODEADDRESS0=http://receiver:8083/balance
+      - NODEADDRESS0=http://receiver:8083
     depends_on:
       - receiver
 
@@ -45,7 +45,7 @@ services:
       - ./envs/settler.env
     environment:
       - PORT=8082
-      - CACHEADDRESS=http://cache:8081/balance
+      - CACHEADDRESS=http://cache:8081/settle
     networks:
       - mynet
     depends_on:
@@ -69,8 +69,6 @@ services:
   mngdb:
     image: mongo
     restart: always
-    ports:
-      - "27017:27017"
     volumes:
       - mongodata:/var/lib/mongodb
     environment:
@@ -83,8 +81,8 @@ services:
   postgresdb:
     image: postgres
     restart: always
-    ports:
-      - "5433:5432"
+    # ports:
+    #   - "5433:5432"
     volumes:
       - ./dbinit/setup.sql:/docker-entrypoint-initdb.d/init.sql
       - pgdata:/var/lib/postgresql

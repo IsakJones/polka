@@ -7,6 +7,8 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"os"
+	"strconv"
 	"sync/atomic"
 	"time"
 
@@ -15,7 +17,7 @@ import (
 
 const (
 	lo = 0
-	hi = 1000
+	hi = 100000
 
 	timeout     = 3 * time.Second
 	contentType = "application/json"
@@ -40,10 +42,10 @@ var (
 	}
 )
 
-// TransactionSpammer sends transactionNumber POST requests concurrently,
+// PaymentSpammer sends transactionNumber POST requests concurrently,
 // to the specified dest. The goal is to send requests as
 // close to simultaneous as possible. Returns number of bad requests.
-func TransactionSpammer(dest string, maxGoroutines, transactionNumber uint) uint32 {
+func PaymentSpammer(dest string, maxGoroutines, transactionNumber uint, measure bool) uint32 {
 
 	badResponses = new(uint32)
 
@@ -61,7 +63,7 @@ func TransactionSpammer(dest string, maxGoroutines, transactionNumber uint) uint
 	// Initialize limited number of workers
 	log.Printf("initializing workers")
 	for i := uint(0); i < maxGoroutines; i++ {
-		go Worker(lo, hi, dest, workChan, doneChanNew)
+		go Worker(lo, hi, dest, workChan, doneChanNew, measure)
 	}
 
 	// Assign work to workers
@@ -80,7 +82,7 @@ func TransactionSpammer(dest string, maxGoroutines, transactionNumber uint) uint
 	return *badResponses
 }
 
-func Worker(lo, hi int, dest string, work <-chan interface{}, done <-chan interface{}) {
+func Worker(lo, hi int, dest string, work <-chan interface{}, done <-chan interface{}, measure bool) {
 	for {
 		select {
 		case <-done:
@@ -88,10 +90,29 @@ func Worker(lo, hi int, dest string, work <-chan interface{}, done <-chan interf
 		case <-work:
 			payload := generateTransaction(lo, hi)
 
+			if !measure {
+				sendTransaction(dest, payload)
+				continue
+			}
+
 			// Post request
-			// start := time.Now()
+			start := time.Now()
 			sendTransaction(dest, payload)
-			// end := time.Now()
+			elapsedNum := int64(time.Since(start) / time.Nanosecond)
+			elapsedBytes := []byte(strconv.FormatInt(elapsedNum, 10) + "\n")
+
+			// Append to file
+			f, err := os.OpenFile("measurements.txt", os.O_APPEND|os.O_WRONLY, 0644)
+			if err != nil {
+				log.Fatalf("Error appending measurements to file: %s", err.Error())
+			}
+			if _, err := f.Write(elapsedBytes); err != nil {
+				log.Fatalf("Error writing to measurements file: %s", err.Error())
+			}
+			if err := f.Close(); err != nil {
+				log.Fatalf("Error writing to measurements file: %s", err.Error())
+			}
+
 			// log.Printf("Sending the transation took %s", end.Sub(start))
 		}
 	}
