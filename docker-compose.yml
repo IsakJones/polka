@@ -5,10 +5,42 @@
 ---
 version: "3.9"  # optional since v1.27.0
 services:
+
+  balancer:
+    build:
+      context: .
+      target: balancer
+    ports:
+      # default namespace : container namespace
+      - "8080:8080"
+    env_file:
+      - ./envs/balancer.env
+    networks:
+      - mynet
+    environment:
+      - NODENUM=1
+      - NODEADDRESS0=http://receiver:8083/balance
+    depends_on:
+      - receiver
+
+  cache:
+    build:
+      context: .
+      target: cache
+    environment:
+      - DBHOST=postgresdb
+    depends_on:
+      - postgresdb
+    networks:
+      - mynet
+
   settler:
     build:
       context: .
       target: settler
+    ports:
+      # default namespace : container namespace
+      - "8082:8082"
     env_file:
       - ./envs/settler.env
     environment:
@@ -18,64 +50,37 @@ services:
       - mynet
     depends_on:
       - cache
-  processor_0:
+
+  receiver:
     build:
       context: .
-      target: processor
+      target: receiver
     env_file:
       - ./envs/postgres.env
-      - ./envs/processor.env
+      - ./envs/receiver.env
     environment:
-      - DBHOST=db
-      - PORT=8083
+      - DBHOST=postgresdb
       - CACHEADDRESS=http://cache:8081/balance
     networks:
       - mynet
     depends_on:
       - cache
-  processor_1:
-    build:
-      context: .
-      target: processor
-    env_file:
-      - ./envs/postgres.env
-      - ./envs/processor.env
-    environment:
-      - DBHOST=db
-      - PORT=8084
-      - CACHEADDRESS=http://cache:8081/balance
-    networks:
-      - mynet
-    depends_on:
-      - cache
-  cache:
-    build:
-      context: .
-      target: cache
-    environment:
-      - DBHOST=db
-    depends_on:
-      - db
-    networks:
-      - mynet
-  balancer:
-    build:
-      context: .
-      target: balancer
+
+  mngdb:
+    image: mongo
+    restart: always
     ports:
-      # default namespace : container namespace
-      - "8080:8080"
+      - "27017:27017"
+    volumes:
+      - mongodata:/var/lib/mongodb
     environment:
-      - NODEADDRESS0=http://processor:8083
-      - NODEADDRESS1=http://processor:8084
-    env_file:
-      - ./envs/balancer.env
+      - MONGO_INITDB_ROOT_USERNAME=polka
+      - MONGO_INITDB_ROOT_PASSWORD=polkapass
+      - MONGO_INITDB_DATABASE=payments
     networks:
       - mynet
-    depends_on:
-      - processor_0
-      - processor_1
-  db:
+
+  postgresdb:
     image: postgres
     restart: always
     ports:
@@ -84,14 +89,15 @@ services:
       - ./dbinit/setup.sql:/docker-entrypoint-initdb.d/init.sql
       - pgdata:/var/lib/postgresql
     environment:
-      POSTGRES_PASSWORD: polkapass
-      POSTGRES_DB: payments
       POSTGRES_USER: polka
+      POSTGRES_DB: payments
+      POSTGRES_PASSWORD: polkapass
     networks:
       - mynet
 
 volumes:
   dbinit:
   pgdata:
+  mongodata:
 networks:
   mynet:

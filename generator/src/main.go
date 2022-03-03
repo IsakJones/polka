@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	envPath = "env/generator.env"
+	envPath = "generator/env/generator.env"
 )
 
 func main() {

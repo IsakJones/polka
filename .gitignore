@@ -1,8 +1,8 @@
 */__pycache__/
 */.vscode
 .vscode/*
-*.swp
 liltests/
 other/
+*.swp
 log.txt
 generator/src/python*

@@ -15,8 +15,8 @@ do
     done
 done
 
-# Kill processors
-for pid in $(pgrep "^polkaprocessor[0-9]+$")
+# Kill receivers
+for pid in $(pgrep "^polkareceiver[0-9]+$")
 do
     kill -SIGINT $pid
 done
@@ -24,7 +24,7 @@ done
 echo "Killed all processes"
 
 # Remove node directories
-rm -r -f processor/node*
+rm -r -f receiver/node*
 
 echo "Removed node directories"
 

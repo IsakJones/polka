@@ -18,17 +18,17 @@ done
 
 echo "Started cache, balancer, and settler"
 
-# start processors
+# start receiver
 for node in $(find -name "node*")
 do
     pushd $node
-    ./$(ls | grep "polkaprocessor") > log.txt 2>&1 &
+    ./$(ls | grep "polkareceiver") > log.txt 2>&1 &
     popd
 done
 
-echo "Started processor nodes"
+echo "Started receiver nodes"
 
 # Display logs with multitail
 multitail -s 2 -sn 1,2 cache/log.txt \
                        balancer/log.txt \
-                       processor/node0/log.txt
+                       receiver/node0/log.txt

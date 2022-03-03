@@ -39,7 +39,7 @@ Polka Payments is my attempt to build a peer-to-peer payments application, simil
 Polka Payments comprises 6 essential components: 
  - A [load balancer](./balancer/) that distributes a high volume of transactions evenly among servers.
  - An [array of servers](./processor/) that handle requests, submitting data to the database and cache.
- - A [cache](./cache) that acts as a memstore to register changes in account balances efficiently. 
+ - A [cache](./cache) registering changes in account balances efficiently. 
  - A [settler](./settler) that requests a snapshot of all balances from the cache and refers it to both the client and the MongoDB database
  - A PostgreSQL database storing data from each payment and net balances owed to individual banks and accounts.
  - A MongoDB database storing balance snapshots 

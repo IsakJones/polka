@@ -3,18 +3,18 @@ set -euo pipefail
 
 # Script prepares all binaries and files. First argument is number of nodes.
 
-# Define base port for processor nodes
+# Define base port for receiver nodes
 BASEPORT=8083
-# Define number of processor nodes
+# Define number of receiver nodes
 NODES=$(($1-1))
 # Make list of services
-declare -a services=("processor" "balancer" "cache" "generator" "settler")
+declare -a services=("receiver" "balancer" "cache" "generator" "settler")
 
 # Place env directories and files
 for service in ${services[@]}
 do
-    # The log and the .env files go in a different place for processor
-    if [ $service != "processor" ]
+    # The log and the .env files go in a different place for receiver
+    if [ $service != "receiver" ]
     then
         mkdir $service/env
         touch $service/log.txt
@@ -54,11 +54,11 @@ do
     # Add address to node
     echo "NODEADDRESS$i=http://localhost:$CURPORT" >> balancer/env/balancer.env
     # Make node directory and include .env files
-    mkdir "processor/node$i"
-    touch "processor/node$i/log.txt"
-    cp "processor/bin/polkaprocessor" "processor/node$i/polkaprocessor$i"
-    cp "envs/processor.env" "processor/node$i/"
-    cp "envs/postgres.env" "processor/node$i/"
-    sed -i -e "s/${BASEPORT}/${CURPORT}/g" "processor/node$i/processor.env"
+    mkdir "receiver/node$i"
+    touch "receiver/node$i/log.txt"
+    cp "receiver/bin/polkareceiver" "receiver/node$i/polkareceiver$i"
+    cp "envs/receiver.env" "receiver/node$i/"
+    cp "envs/postgres.env" "receiver/node$i/"
+    sed -i -e "s/${BASEPORT}/${CURPORT}/g" "receiver/node$i/receiver.env"
     echo "Prepared node $i"
 done
